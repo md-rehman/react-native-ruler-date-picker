@@ -8,7 +8,7 @@ build/
 storybook-static/
 
 # Documentation / Internal planning docs
-docs/
+/docs/
 
 # Turborepo
 .turbo/

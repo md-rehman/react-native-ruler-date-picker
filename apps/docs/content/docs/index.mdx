@@ -1,0 +1,77 @@
+---
+title: Getting Started
+description: Introduction to react-native-ruler-date-picker
+---
+
+# `react-native-ruler-date-picker` 📐📅
+
+A performant, customizable ruler-style date picker component for React Native built on Reanimated 3 decay physics and dual-speed haptic feedback.
+
+## Key Features
+
+- **60 FPS Physics**: Fluid Reanimated 3 decay animations with automatic snap alignment.
+- **Dual-Speed Haptics Engine**: Seamless transition between discrete tick feedback during slow drag and continuous haptic pulses during fast swipe gestures.
+- **Windowed Tick Rendering**: Only visible ticks plus an adjustable buffer are rendered, ensuring zero lag even across multi-year date ranges.
+- **Fully Customizable Aesthetics**: Independently style small ticks (`tickColor`) vs tall ticks (`tickTallColor`), indicators, labels, and container bounds.
+- **Flexible Label Rules**: Support for daily, weekly, monthly, or custom weekend/callback label intervals.
+- **Graceful Haptics Fallback**: Automatically uses `expo-haptics` when present, accepts custom triggers, or safely degrades to silent mode.
+
+---
+
+## Quick Installation
+
+```bash
+npm install react-native-ruler-date-picker
+# or
+pnpm add react-native-ruler-date-picker
+```
+
+### Peer Dependencies
+
+Ensure your project includes the required peer dependencies:
+
+```bash
+npm install react-native-reanimated react-native-gesture-handler
+```
+
+Optional (for haptic feedback):
+
+```bash
+npx expo install expo-haptics
+```
+
+---
+
+## Basic Usage
+
+```tsx
+import React, { useState } from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import { RulerDatePicker } from 'react-native-ruler-date-picker';
+
+export default function App() {
+  const [date, setDate] = useState(new Date());
+
+  return (
+    <View style={styles.container}>
+      <RulerDatePicker
+        selectedDate={date}
+        onSelectDate={(newDate, dateString) => {
+          setDate(newDate);
+          console.log('Selected:', dateString); // e.g., "2026-08-07"
+        }}
+        showResetToToday
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#0F172A',
+  },
+});
+```

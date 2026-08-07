@@ -1,0 +1,53 @@
+---
+title: API Reference
+description: Complete RulerDatePickerProps specification table and type definitions
+---
+
+# API Reference
+
+Below is the complete prop specification for `<RulerDatePicker />`.
+
+## Props Specification
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `selectedDate` | `Date \| string` | **Required** | Currently selected date object or `YYYY-MM-DD` string. |
+| `onSelectDate` | `(date: Date, dateString: string) => void` | **Required** | Callback fired when scrolling stops or selection changes. |
+| `minDate` | `Date` | `-365 days` | Minimum scrollable date boundary. |
+| `maxDate` | `Date` | `+365 days` | Maximum scrollable date boundary. |
+| `labelInterval` | `'daily' \| 'weekly' \| 'monthly' \| (date: Date) => boolean` | `'weekly'` | Controls which ticks render a date label. |
+| `highlightDays` | `number[]` | `undefined` | Days of week to highlight (0=Sun, 6=Sat). |
+| `tickSpacing` | `number` | `24` | Horizontal gap between tick centers in pixels. |
+| `tickHeight` | `number` | `12` | Height of small (unlabeled) ticks in pixels. |
+| `tickTallHeight` | `number` | `24` | Height of tall (labeled) ticks in pixels. |
+| `tickThickness` | `number` | `4` | Width of each tick bar in pixels. |
+| `tickColor` | `string` | Auto | Color of small ticks. |
+| `tickTallColor` | `string` | `tickColor` | Color of tall labeled ticks. |
+| `labelColor` | `string` | Auto | Color of tick date labels. |
+| `accentColor` | `string` | Auto | Color of today indicator dot and reset button. |
+| `indicatorColor` | `string` | Auto | Color of center target indicator bar. |
+| `backgroundColor` | `string` | `'transparent'` | Background color of component container. |
+| `height` | `number` | `120` | Total height of component container in pixels. |
+| `rulerHeight` | `number` | `60` | Height of ruler track area in pixels. |
+| `indicatorWidth` | `number` | `2` | Width of center indicator bar in pixels. |
+| `indicatorHeight` | `number` | `40` | Height of center indicator bar in pixels. |
+| `todayDotSize` | `number` | `6` | Diameter of today dot indicator in pixels. |
+| `labelFontSize` | `number` | `10` | Font size of tick labels in pixels. |
+| `bufferTicks` | `number` | `10` | Off-screen buffer ticks rendered on each side. |
+| `updateDebounceMs` | `number` | `100` | Debounce time in ms before invoking `onSelectDate`. |
+| `enableHaptics` | `boolean` | `true` | Enable or disable haptic feedback engine. |
+| `onHapticTrigger` | `(mode: 'tick' \| 'continuous') => void` | `undefined` | Custom haptic callback to override default `expo-haptics`. |
+| `fastSwipeTickThreshold` | `number` | `1` | Ticks crossed per frame to enter continuous haptic mode. |
+| `continuousHapticIntervalMs` | `number` | `20` | Pulse interval in ms during continuous haptics. |
+| `showResetToToday` | `boolean` | `false` | Renders a "Today" reset button when scrolled away. |
+| `renderHeader` | `(selectedDate: Date, isToday: boolean, resetToToday: () => void) => ReactNode` | `undefined` | Custom header renderer override. |
+
+---
+
+## Type Export
+
+Import types directly from the package:
+
+```ts
+import type { RulerDatePickerProps } from 'react-native-ruler-date-picker';
+```

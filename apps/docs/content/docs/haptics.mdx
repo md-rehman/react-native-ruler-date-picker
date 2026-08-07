@@ -1,0 +1,43 @@
+---
+title: Dual-Speed Haptics Engine
+description: Physics-linked haptic feedback tuning and custom handlers
+---
+
+# Dual-Speed Haptics Engine
+
+The ruler component features an intelligent haptics engine that adapts in real time to scroll velocity:
+
+1. **Slow Drag Mode**: Fires discrete tick impacts (`selectionAsync` on iOS / `ImpactFeedbackStyle.Light` on Android) as individual ticks cross the center target.
+2. **Fast Swipe Mode**: Switches seamlessly to a continuous haptic pulse interval when scroll velocity crosses `fastSwipeTickThreshold` (default: 1 tick/frame).
+
+## Custom Haptic Handler Integration
+
+If you use a custom native haptic library (e.g. `react-native-haptic-feedback`), pass `onHapticTrigger`:
+
+```tsx
+import RNReactNativeHapticFeedback from 'react-native-haptic-feedback';
+
+<RulerDatePicker
+  selectedDate={date}
+  onSelectDate={setDate}
+  onHapticTrigger={(mode) => {
+    if (mode === 'tick') {
+      RNReactNativeHapticFeedback.trigger('impactLight');
+    } else {
+      RNReactNativeHapticFeedback.trigger('selection');
+    }
+  }}
+/>
+```
+
+## Disabling Haptics
+
+Set `enableHaptics={false}` to silence all haptic feedback:
+
+```tsx
+<RulerDatePicker
+  selectedDate={date}
+  onSelectDate={setDate}
+  enableHaptics={false}
+/>
+```
