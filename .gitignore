@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+lib/
+dist/
+build/
+storybook-static/
+
+# Documentation / Internal planning docs
+docs/
+
+# Turborepo
+.turbo/
+
+# Expo
+.expo/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Metro
+.metro-health-check*
+
+# Next.js (docs)
+.next/
+out/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Testing
+coverage/
