@@ -279,9 +279,12 @@ export function RulerDatePicker(props: RulerDatePickerProps) {
       );
     });
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
-  }));
+  const animatedStyle = useAnimatedStyle(
+    () => ({
+      transform: [{ translateX: translateX.value }],
+    }),
+    [translateX]
+  );
 
   // ── Header ──────────────────────────────────────────────────────────────
   const displayDate = new Date(displayDateStr);
