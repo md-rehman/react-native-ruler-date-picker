@@ -1,0 +1,95 @@
+{
+  "name": "react-native-ruler-date-picker",
+  "version": "0.1.0",
+  "description": "A performant, customizable ruler-style date picker for React Native — 60 FPS Reanimated 3 physics, dual-speed haptic feedback, and windowed tick rendering.",
+  "main": "lib/commonjs/index.js",
+  "module": "lib/module/index.js",
+  "types": "lib/typescript/index.d.ts",
+  "react-native": "src/index.ts",
+  "source": "src/index.ts",
+  "files": [
+    "src",
+    "lib",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__",
+    "android",
+    "ios",
+    "cpp",
+    "*.podspec",
+    "!ios/build",
+    "!android/build",
+    "!android/gradle",
+    "!android/gradlew",
+    "!android/gradlew.bat"
+  ],
+  "scripts": {
+    "build": "bob build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "clean": "rm -rf lib"
+  },
+  "keywords": [
+    "react-native",
+    "date-picker",
+    "ruler",
+    "scroll-picker",
+    "reanimated",
+    "haptics",
+    "ios",
+    "android",
+    "gesture-handler"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/md-rehman/react-native-ruler-date-picker.git",
+    "directory": "packages/react-native-ruler-date-picker"
+  },
+  "author": "Rehman <md.rehman.dev@gmail.com> (https://md-rehman.dev)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/md-rehman/react-native-ruler-date-picker/issues"
+  },
+  "homepage": "https://github.com/md-rehman/react-native-ruler-date-picker#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-native": ">=0.72.0",
+    "react-native-reanimated": ">=3.0.0",
+    "react-native-gesture-handler": ">=2.0.0"
+  },
+  "peerDependenciesMeta": {
+    "expo-haptics": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "react": "^19.0.0",
+    "react-native": "^0.76.0",
+    "react-native-reanimated": "^3.16.0",
+    "react-native-gesture-handler": "^2.20.0",
+    "expo-haptics": "^14.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-native": "^0.72.0",
+    "react-native-builder-bob": "^0.35.0",
+    "typescript": "^5.4.0",
+    "eslint": "^8.57.0"
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
+  }
+}
