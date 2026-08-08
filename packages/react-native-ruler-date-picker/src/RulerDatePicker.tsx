@@ -175,8 +175,12 @@ export function RulerDatePicker(props: RulerDatePickerProps) {
       // Update display date
       const d = dayOffsetToDate(index, todayTime);
       const dateStr = formatDateString(d);
-      setDisplayDateStr(dateStr);
-      setWindowCenter(index);
+      setWindowCenter((prevCenter) => {
+        if (Math.abs(index - prevCenter) >= 5) {
+          return index;
+        }
+        return prevCenter;
+      });
 
       // Debounce the heavy onSelectDate callback
       if (debounceTimerRef.current) {
