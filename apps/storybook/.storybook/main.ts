@@ -64,8 +64,15 @@ const config: StorybookConfig = {
       name: 'transform-jsx-in-node-modules',
       transform(code, id) {
         const cleanId = id.split('?')[0];
-        if (cleanId.includes('react-native-reanimated') && (cleanId.endsWith('.js') || cleanId.endsWith('.ts') || cleanId.endsWith('.jsx') || cleanId.endsWith('.tsx'))) {
-          const result = transformSync(code, { loader: 'jsx', jsx: 'automatic' });
+        if (
+          (cleanId.includes('react-native-reanimated') ||
+            cleanId.includes('react-native-ruler-date-picker')) &&
+          (cleanId.endsWith('.js') ||
+            cleanId.endsWith('.ts') ||
+            cleanId.endsWith('.jsx') ||
+            cleanId.endsWith('.tsx'))
+        ) {
+          const result = transformSync(code, { loader: 'tsx', jsx: 'automatic' });
           return { code: result.code, map: result.map };
         }
       },

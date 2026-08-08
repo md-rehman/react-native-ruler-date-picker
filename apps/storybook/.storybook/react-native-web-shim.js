@@ -4,9 +4,22 @@ export * from 'react-native-web';
 
 export const findNodeHandle = (component) => {
   if (!component) return null;
+  if (typeof HTMLElement !== 'undefined' && component instanceof HTMLElement) {
+    return component;
+  }
+  if (component._touchableNode) return component._touchableNode;
+  if (component._node) return component._node;
+  if (typeof component.getAnimatableRef === 'function') {
+    const animatable = component.getAnimatableRef();
+    if (animatable) return findNodeHandle(animatable);
+  }
+  if (component._component) {
+    return findNodeHandle(component._component);
+  }
   try {
     if (typeof RNWeb.findNodeHandle === 'function') {
-      return RNWeb.findNodeHandle(component);
+      const node = RNWeb.findNodeHandle(component);
+      if (node) return node;
     }
   } catch {
     // Fallback for web gesture handlers
