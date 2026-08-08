@@ -53,3 +53,8 @@ pnpm-debug.log*
 
 # Testing
 coverage/
+
+# AI Agent
+.agents/
+
+
