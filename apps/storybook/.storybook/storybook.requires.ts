@@ -11,8 +11,8 @@ req.keys = () => ['./RulerDatePicker.stories'];
 const view = start({
   annotations: [
     require('@storybook/react-native/preview'),
-    require('@storybook/addon-ondevice-controls/preview'),
-    require('@storybook/addon-ondevice-actions/preview'),
+    require('@storybook/addon-ondevice-controls/register'),
+    require('@storybook/addon-ondevice-actions/register'),
   ],
   storyEntries: [
     {
