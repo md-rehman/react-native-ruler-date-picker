@@ -31,13 +31,7 @@ Thank you for considering contributing to `react-native-ruler-date-picker`!
    pnpm start
    ```
 
-6. **Run Storybook**:
-   ```bash
-   cd apps/storybook
-   pnpm start
-   ```
-
-7. **Run Kitchensink Showcase**:
+6. **Run Kitchensink Showcase**:
    ```bash
    cd apps/kitchensink
    pnpm start
@@ -46,5 +40,5 @@ Thank you for considering contributing to `react-native-ruler-date-picker`!
 ## Pull Request Guidelines
 
 - Ensure `pnpm build` and `pnpm typecheck` pass cleanly before submitting your PR.
-- Add relevant Storybook stories in `apps/storybook` for any new component props or features.
+- Test new component props and customization options in `apps/kitchensink`.
 - Keep component code focused, memoized, and performant.
