@@ -4,5 +4,6 @@
     "outDir": "./lib/typescript",
     "rootDir": "src"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["**/__tests__/**", "**/__mocks__/**"]
 }
