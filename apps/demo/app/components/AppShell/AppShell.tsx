@@ -16,12 +16,26 @@ export default function AppShell() {
   const pickerState = usePickerProps();
 
   const categories = ['Selection', 'Dimensions', 'Colors', 'Features'] as const;
+  type Category = typeof categories[number];
+  
+  const [visibleModals, setVisibleModals] = useState<Record<Category, boolean>>({
+    Selection: true,
+    Dimensions: true,
+    Colors: true,
+    Features: true
+  });
+
+  const toggleModal = (category: Category) => {
+    setVisibleModals(prev => ({ ...prev, [category]: !prev[category] }));
+  };
 
   return (
     <div className={styles.shell}>
       <TopBar 
         activeDevice={activeDevice} 
         onDeviceChange={setActiveDevice}
+        visibleModals={visibleModals}
+        onToggleModal={toggleModal}
       />
       
       <div className={styles.main}>
@@ -44,6 +58,8 @@ export default function AppShell() {
         </FloatingModal>
 
         {categories.map((category) => {
+          if (!visibleModals[category]) return null;
+          
           const categoryProps = PROP_DEFINITIONS.filter(p => p.category === category);
           
           return (

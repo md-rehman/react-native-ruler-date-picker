@@ -1,16 +1,21 @@
 import React from 'react';
 import DeviceSelector, { DeviceType } from '../DeviceSelector/DeviceSelector';
+import ModalToggle, { ModalCategory } from '../ModalToggle/ModalToggle';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import styles from './TopBar.module.css';
 
 interface TopBarProps {
   activeDevice: DeviceType;
   onDeviceChange: (device: DeviceType) => void;
+  visibleModals: Record<ModalCategory, boolean>;
+  onToggleModal: (category: ModalCategory) => void;
 }
 
 export default function TopBar({ 
   activeDevice, 
-  onDeviceChange
+  onDeviceChange,
+  visibleModals,
+  onToggleModal
 }: TopBarProps) {
   return (
     <header className={styles.topbar}>
@@ -21,6 +26,7 @@ export default function TopBar({
       </div>
 
       <div className={styles.right}>
+        <ModalToggle visibleModals={visibleModals} onToggle={onToggleModal} />
         <ThemeToggle />
       </div>
     </header>
