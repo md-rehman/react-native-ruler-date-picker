@@ -11,8 +11,6 @@
   display: flex;
   flex: 1;
   position: relative;
-  margin-top: var(--topbar-height);
-  height: calc(100vh - var(--topbar-height));
   overflow: hidden;
 }
 

@@ -9,6 +9,7 @@
   justify-content: space-between;
   padding: 0 var(--spacing-md);
   z-index: 100;
+  pointer-events: none;
 }
 
 .left, .right {
@@ -20,12 +21,14 @@
 
 .right {
   justify-content: flex-end;
+  pointer-events: auto;
 }
 
 .center {
   display: flex;
   justify-content: center;
   flex: 2;
+  pointer-events: auto;
 }
 
 .title {

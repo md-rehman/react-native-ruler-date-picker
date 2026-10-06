@@ -13,10 +13,8 @@ export default function TopBar({
   onDeviceChange
 }: TopBarProps) {
   return (
-    <header className={`${styles.topbar} glass`}>
-      <div className={styles.left}>
-        <span className={styles.title}>Demo</span>
-      </div>
+    <header className={styles.topbar}>
+      <div className={styles.left}></div>
       
       <div className={styles.center}>
         <DeviceSelector activeDevice={activeDevice} onChange={onDeviceChange} />
