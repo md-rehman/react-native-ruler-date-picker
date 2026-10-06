@@ -53,12 +53,35 @@ export default function AppShell() {
               title={category}
               defaultPosition={() => {
                 const w = window.innerWidth;
+                const h = window.innerHeight;
+                
+                // Approximate heights of modals
+                const selectionH = 200;
+                const dimensionsH = 410;
+                const colorsH = 480;
+                const featuresH = 200;
+                const gap = 24;
+                const margin = 60;
+                
+                const col1X = w - 340;
+                const col2X = w - 680;
+
                 switch (category) {
-                  case 'Features': return { x: w - 680, y: 60 };
-                  case 'Selection': return { x: w - 340, y: 60 };
-                  case 'Dimensions': return { x: w - 340, y: 220 };
-                  case 'Colors': return { x: w - 340, y: 560 };
-                  default: return { x: w - 340, y: 120 };
+                  case 'Selection': 
+                    return { x: col1X, y: margin };
+                  case 'Dimensions': 
+                    return { x: col1X, y: margin + selectionH + gap };
+                  case 'Colors': 
+                    return { x: col1X, y: margin + selectionH + gap + dimensionsH + gap };
+                  case 'Features': {
+                     const totalH = margin + selectionH + gap + dimensionsH + gap + colorsH + gap + featuresH;
+                     if (totalH > h) {
+                       return { x: col2X, y: margin };
+                     } else {
+                       return { x: col1X, y: margin + selectionH + gap + dimensionsH + gap + colorsH + gap };
+                     }
+                  }
+                  default: return { x: col1X, y: margin };
                 }
               }}
               defaultDocked={typeof window !== 'undefined' && window.innerWidth < 1024 ? 'right' : 'none'}
