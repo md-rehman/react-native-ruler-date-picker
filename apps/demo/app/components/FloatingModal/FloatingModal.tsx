@@ -17,9 +17,11 @@ export default function FloatingModal({ title, children, defaultPosition = { x: 
   const [isDragging, setIsDragging] = useState(false);
   const [docked, setDocked] = useState<DockState>(defaultDocked);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [snapPreview, setSnapPreview] = useState<'none' | 'left' | 'right'>('none');
   
   const dragRef = useRef<{ startX: number; startY: number; initialX: number; initialY: number } | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+  const snapThreshold = 80;
 
   // Prevent hydration mismatch for defaultDocked state
   const [mounted, setMounted] = useState(false);
@@ -45,10 +47,19 @@ export default function FloatingModal({ title, children, defaultPosition = { x: 
     const dx = e.clientX - dragRef.current.startX;
     const dy = e.clientY - dragRef.current.startY;
     
-    setPosition({
-      x: dragRef.current.initialX + dx,
-      y: dragRef.current.initialY + dy
-    });
+    const newX = dragRef.current.initialX + dx;
+    const newY = dragRef.current.initialY + dy;
+    
+    setPosition({ x: newX, y: newY });
+
+    const width = modalRef.current?.offsetWidth || 320;
+    if (newX < snapThreshold) {
+      setSnapPreview('left');
+    } else if (window.innerWidth - (newX + width) < snapThreshold) {
+      setSnapPreview('right');
+    } else {
+      setSnapPreview('none');
+    }
   };
 
   const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -57,22 +68,18 @@ export default function FloatingModal({ title, children, defaultPosition = { x: 
     (e.currentTarget as HTMLDivElement).releasePointerCapture(e.pointerId);
     dragRef.current = null;
 
-    const rect = modalRef.current?.getBoundingClientRect();
-    if (rect) {
-      const snapThreshold = 80;
-      if (rect.left < snapThreshold) {
-        setDocked('left');
-      } else if (window.innerWidth - rect.right < snapThreshold) {
-        setDocked('right');
-      }
+    if (snapPreview !== 'none') {
+      setDocked(snapPreview);
     }
+    setSnapPreview('none');
   };
 
   const undock = () => {
     if (docked === 'left') {
       setPosition((prev) => ({ ...prev, x: 20 }));
     } else if (docked === 'right') {
-      const width = modalRef.current?.offsetWidth || 300;
+      // modalRef is not rendered, so offsetWidth is not available. Default to CSS width 320px.
+      const width = 320;
       setPosition((prev) => ({ ...prev, x: window.innerWidth - width - 20 }));
     }
     setDocked('none');
@@ -96,11 +103,15 @@ export default function FloatingModal({ title, children, defaultPosition = { x: 
   }
 
   return (
-    <div 
-      ref={modalRef}
-      className={`${styles.modal} glass ${isDragging ? styles.dragging : ''}`}
-      style={{ left: position.x, top: position.y }}
-    >
+    <>
+      {snapPreview !== 'none' && (
+        <div className={`${styles.snapPreview} ${styles[`snapPreview-${snapPreview}`]}`} />
+      )}
+      <div 
+        ref={modalRef}
+        className={`${styles.modal} glass ${isDragging ? styles.dragging : ''}`}
+        style={{ left: position.x, top: position.y }}
+      >
       <div 
         className={styles.header} 
         onPointerDown={onPointerDown}
@@ -123,5 +134,6 @@ export default function FloatingModal({ title, children, defaultPosition = { x: 
         </div>
       )}
     </div>
+    </>
   );
 }

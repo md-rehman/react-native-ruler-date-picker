@@ -120,3 +120,31 @@
   border-right: none;
   border-radius: 12px 0 0 12px;
 }
+
+/* Snap Preview Shine */
+.snapPreview {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  z-index: 999;
+  pointer-events: none;
+  animation: shineFadeIn 0.2s ease-out forwards;
+}
+
+.snapPreview-left {
+  left: 0;
+  background: linear-gradient(to right, rgba(255,255,255,0.1), transparent);
+  border-left: 2px solid var(--color-primary);
+}
+
+.snapPreview-right {
+  right: 0;
+  background: linear-gradient(to left, rgba(255,255,255,0.1), transparent);
+  border-right: 2px solid var(--color-primary);
+}
+
+@keyframes shineFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
