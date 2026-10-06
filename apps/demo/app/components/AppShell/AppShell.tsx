@@ -9,6 +9,7 @@ import PropControl from '../PropControl/PropControl';
 import { DeviceType } from '../DeviceSelector/DeviceSelector';
 import { usePickerProps } from '../../../hooks/usePickerProps';
 import { PROP_DEFINITIONS } from '../../../data/propDefinitions';
+import { SelectionIcon, DimensionsIcon, ColorsIcon, FeaturesIcon } from '../ModalToggle/ModalToggle';
 import styles from './AppShell.module.css';
 
 export default function AppShell() {
@@ -62,11 +63,18 @@ export default function AppShell() {
           
           const categoryProps = PROP_DEFINITIONS.filter(p => p.category === category);
           
+          let IconComponent = null;
+          if (category === 'Selection') IconComponent = <SelectionIcon />;
+          else if (category === 'Dimensions') IconComponent = <DimensionsIcon />;
+          else if (category === 'Colors') IconComponent = <ColorsIcon />;
+          else if (category === 'Features') IconComponent = <FeaturesIcon />;
+          
           return (
             <FloatingModal
               key={category}
               id={category.toLowerCase()}
               title={category}
+              icon={IconComponent}
               defaultPosition={() => {
                 const w = window.innerWidth;
                 const h = window.innerHeight;
