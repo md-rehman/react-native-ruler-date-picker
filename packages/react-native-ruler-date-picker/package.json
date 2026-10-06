@@ -1,7 +1,7 @@
 {
   "name": "react-native-ruler-date-picker",
   "version": "0.1.0",
-  "description": "A performant, customizable ruler-style date picker for React Native — 60 FPS Reanimated 3 physics, dual-speed haptic feedback, and windowed tick rendering.",
+  "description": "A performant, customizable horizontal ruler date picker & scroll wheel for React Native & Expo — 60 FPS Reanimated 3 physics, dual-speed haptic feedback, and windowed tick rendering.",
   "type": "commonjs",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
@@ -39,14 +39,22 @@
   },
   "keywords": [
     "react-native",
+    "react-native-date-picker",
     "date-picker",
     "ruler",
+    "ruler-date-picker",
     "scroll-picker",
+    "wheel-picker",
+    "horizontal-date-picker",
+    "timeline-picker",
+    "expo",
+    "expo-date-picker",
     "reanimated",
     "haptics",
+    "gesture-handler",
+    "ui-components",
     "ios",
-    "android",
-    "gesture-handler"
+    "android"
   ],
   "repository": {
     "type": "git",
