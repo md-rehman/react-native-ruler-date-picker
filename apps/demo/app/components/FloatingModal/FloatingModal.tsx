@@ -105,7 +105,10 @@ export default function FloatingModal({ title, children, defaultPosition = { x: 
   return (
     <>
       {snapPreview !== 'none' && (
-        <div className={`${styles.snapPreview} ${styles[`snapPreview-${snapPreview}`]}`} />
+        <div 
+          className={`${styles.snapPreview} ${styles[`snapPreview-${snapPreview}`]}`}
+          style={{ '--shine-y': `${position.y + 150}px` } as React.CSSProperties}
+        />
       )}
       <div 
         ref={modalRef}
