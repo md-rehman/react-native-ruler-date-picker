@@ -7,6 +7,8 @@ import RightNav from '../RightNav/RightNav';
 import CentralView from '../CentralView/CentralView';
 import { DeviceType } from '../DeviceSelector/DeviceSelector';
 import { usePickerProps } from '../../../hooks/usePickerProps';
+import { PROP_DEFINITIONS } from '../../../data/propDefinitions';
+import FloatingModal from '../FloatingModal/FloatingModal';
 import styles from './AppShell.module.css';
 
 export default function AppShell() {
@@ -52,6 +54,14 @@ export default function AppShell() {
           onClose={() => window.innerWidth < 1024 && setRightNavOpen(false)}
           pickerProps={pickerState.props}
           updateProp={pickerState.updateProp}
+        />
+        
+        <FloatingModal
+          title="Colors"
+          propsList={PROP_DEFINITIONS.filter(p => p.category.toLowerCase() === 'colors')}
+          pickerProps={pickerState.props}
+          updateProp={pickerState.updateProp}
+          defaultPosition={{ x: 100, y: 150 }}
         />
       </div>
       

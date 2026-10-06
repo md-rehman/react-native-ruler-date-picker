@@ -54,8 +54,10 @@ function CollapsibleCategory({ category, props, pickerProps, updateProp }: any) 
 }
 
 export default function RightNav({ isOpen, onClose, pickerProps, updateProp }: RightNavProps) {
-  // Group properties by category
+  // Group properties by category and exclude 'Colors' which is now in a FloatingModal
   const groupedProps = PROP_DEFINITIONS.reduce((acc, prop) => {
+    if (prop.category.toLowerCase() === 'colors') return acc;
+    
     if (!acc[prop.category]) {
       acc[prop.category] = [];
     }
