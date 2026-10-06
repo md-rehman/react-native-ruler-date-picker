@@ -34,7 +34,7 @@ export default function AppShell() {
         <FloatingModal
           id="examples"
           title="Examples"
-          defaultPosition={() => ({ x: 20, y: 60 })}
+          defaultPosition={() => ({ x: 24, y: 80 })}
           defaultDocked={typeof window !== 'undefined' && window.innerWidth < 1024 ? 'left' : 'none'}
         >
           <ExamplesPanel 
@@ -61,27 +61,27 @@ export default function AppShell() {
                 const colorsH = 480;
                 const featuresH = 200;
                 const gap = 24;
-                const margin = 60;
+                const marginY = 80; // 56px TopBar + 24px margin
                 
-                const col1X = w - 340;
-                const col2X = w - 680;
+                const col1X = w - 344; // 320 width + 24 margin
+                const col2X = w - 688; // 344 + 320 width + 24 gap
 
                 switch (category) {
                   case 'Selection': 
-                    return { x: col1X, y: margin };
+                    return { x: col1X, y: marginY };
                   case 'Dimensions': 
-                    return { x: col1X, y: margin + selectionH + gap };
+                    return { x: col1X, y: marginY + selectionH + gap };
                   case 'Colors': 
-                    return { x: col1X, y: margin + selectionH + gap + dimensionsH + gap };
+                    return { x: col1X, y: marginY + selectionH + gap + dimensionsH + gap };
                   case 'Features': {
-                     const totalH = margin + selectionH + gap + dimensionsH + gap + colorsH + gap + featuresH;
+                     const totalH = marginY + selectionH + gap + dimensionsH + gap + colorsH + gap + featuresH;
                      if (totalH > h) {
-                       return { x: col2X, y: margin };
+                       return { x: col2X, y: marginY };
                      } else {
-                       return { x: col1X, y: margin + selectionH + gap + dimensionsH + gap + colorsH + gap };
+                       return { x: col1X, y: marginY + selectionH + gap + dimensionsH + gap + colorsH + gap };
                      }
                   }
-                  default: return { x: col1X, y: margin };
+                  default: return { x: col1X, y: marginY };
                 }
               }}
               defaultDocked={typeof window !== 'undefined' && window.innerWidth < 1024 ? 'right' : 'none'}

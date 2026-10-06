@@ -105,11 +105,11 @@ export default function FloatingModal({ id, title, children, defaultPosition, de
 
   const undock = () => {
     if (docked === 'left') {
-      setPosition((prev) => ({ ...prev, x: 20 }));
+      setPosition((prev) => ({ ...prev, x: 24 }));
     } else if (docked === 'right') {
       // modalRef is not rendered, so offsetWidth is not available. Default to CSS width 320px.
       const width = 320;
-      setPosition((prev) => ({ ...prev, x: window.innerWidth - width - 20 }));
+      setPosition((prev) => ({ ...prev, x: window.innerWidth - width - 24 }));
     }
     setDocked('none');
   };
