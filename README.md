@@ -1,6 +1,6 @@
 # react-native-ruler-date-picker
 
-A performant, customizable ruler-style date picker for React Native.
+A performant, customizable horizontal ruler date picker & scroll wheel for React Native and Expo. Powered by 60 FPS Reanimated 3 physics and dual-speed haptic feedback.
 
 <!-- TODO: Add hero GIF/video here -->
 
