@@ -1,7 +1,12 @@
 import React from 'react';
 import { DeviceType } from '../DeviceSelector/DeviceSelector';
 import DeviceMockup from '../DeviceMockup/DeviceMockup';
-import ComponentPreview from '../ComponentPreview/ComponentPreview';
+import dynamic from 'next/dynamic';
+
+const ComponentPreview = dynamic(
+  () => import('../ComponentPreview/ComponentPreview'),
+  { ssr: false }
+);
 import styles from './CentralView.module.css';
 
 interface CentralViewProps {
