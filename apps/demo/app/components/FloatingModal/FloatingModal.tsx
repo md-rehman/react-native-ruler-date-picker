@@ -1,34 +1,32 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styles from './FloatingModal.module.css';
-import { PropDefinition } from '../../../data/propDefinitions';
-import PropControl from '../PropControl/PropControl';
 
 interface FloatingModalProps {
   title: string;
-  propsList: PropDefinition[];
-  pickerProps: Record<string, any>;
-  updateProp: (name: string, value: any) => void;
+  children: React.ReactNode;
   defaultPosition?: { x: number, y: number };
+  defaultDocked?: 'none' | 'left' | 'right';
 }
 
 type DockState = 'none' | 'left' | 'right';
 
-export default function FloatingModal({ title, propsList, pickerProps, updateProp, defaultPosition = { x: 100, y: 100 } }: FloatingModalProps) {
+export default function FloatingModal({ title, children, defaultPosition = { x: 100, y: 100 }, defaultDocked = 'none' }: FloatingModalProps) {
   const [position, setPosition] = useState(defaultPosition);
   const [isDragging, setIsDragging] = useState(false);
-  const [docked, setDocked] = useState<DockState>('none');
+  const [docked, setDocked] = useState<DockState>(defaultDocked);
   const [isCollapsed, setIsCollapsed] = useState(false);
   
   const dragRef = useRef<{ startX: number; startY: number; initialX: number; initialY: number } | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
+  // Prevent hydration mismatch for defaultDocked state
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    // Only drag on left click
     if (e.button !== 0 || docked !== 'none') return;
-    
-    // Ignore clicks on buttons inside the header
     if ((e.target as HTMLElement).closest('button')) return;
     
     (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
@@ -59,7 +57,6 @@ export default function FloatingModal({ title, propsList, pickerProps, updatePro
     (e.currentTarget as HTMLDivElement).releasePointerCapture(e.pointerId);
     dragRef.current = null;
 
-    // Check for snapping to edges
     const rect = modalRef.current?.getBoundingClientRect();
     if (rect) {
       const snapThreshold = 80;
@@ -80,6 +77,8 @@ export default function FloatingModal({ title, propsList, pickerProps, updatePro
     }
     setDocked('none');
   };
+
+  if (!mounted) return null;
 
   if (docked !== 'none') {
     return (
@@ -120,16 +119,7 @@ export default function FloatingModal({ title, propsList, pickerProps, updatePro
       
       {!isCollapsed && (
         <div className={styles.content}>
-          <div className={styles.propsList}>
-            {propsList.map(prop => (
-              <PropControl
-                key={prop.name}
-                definition={prop}
-                value={pickerProps[prop.name]}
-                onChange={(val) => updateProp(prop.name, val)}
-              />
-            ))}
-          </div>
+          {children}
         </div>
       )}
     </div>

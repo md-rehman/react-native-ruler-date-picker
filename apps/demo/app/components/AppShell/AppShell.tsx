@@ -2,81 +2,71 @@
 
 import React, { useState, useEffect } from 'react';
 import TopBar from '../TopBar/TopBar';
-import LeftNav from '../LeftNav/LeftNav';
-import RightNav from '../RightNav/RightNav';
 import CentralView from '../CentralView/CentralView';
+import FloatingModal from '../FloatingModal/FloatingModal';
+import ExamplesPanel from '../ExamplesPanel/ExamplesPanel';
+import PropControl from '../PropControl/PropControl';
 import { DeviceType } from '../DeviceSelector/DeviceSelector';
 import { usePickerProps } from '../../../hooks/usePickerProps';
 import { PROP_DEFINITIONS } from '../../../data/propDefinitions';
-import FloatingModal from '../FloatingModal/FloatingModal';
 import styles from './AppShell.module.css';
 
 export default function AppShell() {
   const [activeDevice, setActiveDevice] = useState<DeviceType>('iphone');
-  const [leftNavOpen, setLeftNavOpen] = useState(true);
-  const [rightNavOpen, setRightNavOpen] = useState(true);
-  
   const pickerState = usePickerProps();
 
-  // Auto-collapse on mobile/tablet mount
-  useEffect(() => {
-    if (window.innerWidth < 1024) {
-      setLeftNavOpen(false);
-      setRightNavOpen(false);
-    }
-  }, []);
+  const categories = ['Selection', 'Dimensions', 'Colors', 'Features'] as const;
 
   return (
     <div className={styles.shell}>
       <TopBar 
         activeDevice={activeDevice} 
         onDeviceChange={setActiveDevice}
-        onToggleLeftNav={() => setLeftNavOpen(!leftNavOpen)}
-        onToggleRightNav={() => setRightNavOpen(!rightNavOpen)}
       />
       
       <div className={styles.main}>
-        <LeftNav 
-          isOpen={leftNavOpen} 
-          onClose={() => window.innerWidth < 1024 && setLeftNavOpen(false)}
-          activeExampleId={pickerState.activeExampleId}
-          onSelectExample={pickerState.loadPreset}
-        />
-        
         <CentralView 
           activeDevice={activeDevice}
           pickerProps={pickerState.props}
           updateProp={pickerState.updateProp}
         />
         
-        <RightNav 
-          isOpen={rightNavOpen}
-          onClose={() => window.innerWidth < 1024 && setRightNavOpen(false)}
-          pickerProps={pickerState.props}
-          updateProp={pickerState.updateProp}
-        />
-        
         <FloatingModal
-          title="Colors"
-          propsList={PROP_DEFINITIONS.filter(p => p.category.toLowerCase() === 'colors')}
-          pickerProps={pickerState.props}
-          updateProp={pickerState.updateProp}
-          defaultPosition={{ x: 100, y: 150 }}
-        />
+          title="Examples"
+          defaultPosition={{ x: 20, y: 120 }}
+          defaultDocked={window.innerWidth < 1024 ? 'left' : 'none'}
+        >
+          <ExamplesPanel 
+            activeExampleId={pickerState.activeExampleId}
+            onSelectExample={pickerState.loadPreset}
+          />
+        </FloatingModal>
+
+        {categories.map((category, index) => {
+          const categoryProps = PROP_DEFINITIONS.filter(p => p.category === category);
+          
+          return (
+            <FloatingModal
+              key={category}
+              title={category}
+              defaultPosition={{ x: window.innerWidth - 340, y: 120 + (index * 80) }}
+              defaultDocked={window.innerWidth < 1024 ? 'right' : 'none'}
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
+                {categoryProps.map(prop => (
+                  <PropControl
+                    key={prop.name}
+                    definition={prop}
+                    value={pickerState.props[prop.name]}
+                    onChange={(val) => pickerState.updateProp(prop.name, val)}
+                  />
+                ))}
+              </div>
+            </FloatingModal>
+          );
+        })}
       </div>
-      
-      {/* Overlay for mobile when nav is open */}
-      {(leftNavOpen || rightNavOpen) && (
-        <div 
-          className={styles.overlay} 
-          onClick={() => {
-            if (window.innerWidth < 1024) {
-              setLeftNavOpen(false);
-              setRightNavOpen(false);
-            }
-          }}
-        />
-      )}
     </div>
   );
 }
+
