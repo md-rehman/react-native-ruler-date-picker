@@ -4,16 +4,17 @@ import React, { useState, useRef, useEffect } from 'react';
 import styles from './FloatingModal.module.css';
 
 interface FloatingModalProps {
+  id?: string;
   title: string;
   children: React.ReactNode;
-  defaultPosition?: { x: number, y: number };
+  defaultPosition?: { x: number, y: number } | (() => { x: number, y: number });
   defaultDocked?: 'none' | 'left' | 'right';
 }
 
 type DockState = 'none' | 'left' | 'right';
 
-export default function FloatingModal({ title, children, defaultPosition = { x: 100, y: 100 }, defaultDocked = 'none' }: FloatingModalProps) {
-  const [position, setPosition] = useState(defaultPosition);
+export default function FloatingModal({ id, title, children, defaultPosition, defaultDocked = 'none' }: FloatingModalProps) {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [docked, setDocked] = useState<DockState>(defaultDocked);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -23,9 +24,37 @@ export default function FloatingModal({ title, children, defaultPosition = { x: 
   const modalRef = useRef<HTMLDivElement>(null);
   const snapThreshold = 80;
 
-  // Prevent hydration mismatch for defaultDocked state
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  
+  useEffect(() => {
+    let initialPos = { x: 100, y: 100 };
+    if (typeof defaultPosition === 'function') {
+      initialPos = defaultPosition();
+    } else if (defaultPosition) {
+      initialPos = defaultPosition;
+    }
+
+    if (id) {
+      const stored = localStorage.getItem(`modal-${id}`);
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (parsed.position) initialPos = parsed.position;
+          if (parsed.docked) setDocked(parsed.docked);
+          if (parsed.isCollapsed !== undefined) setIsCollapsed(parsed.isCollapsed);
+        } catch (e) {}
+      }
+    }
+    
+    setPosition(initialPos);
+    setMounted(true);
+  }, [id]);
+
+  useEffect(() => {
+    if (mounted && id) {
+      localStorage.setItem(`modal-${id}`, JSON.stringify({ position, docked, isCollapsed }));
+    }
+  }, [position, docked, isCollapsed, mounted, id]);
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0 || docked !== 'none') return;

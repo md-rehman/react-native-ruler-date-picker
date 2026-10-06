@@ -32,9 +32,10 @@ export default function AppShell() {
         />
         
         <FloatingModal
+          id="examples"
           title="Examples"
-          defaultPosition={{ x: 20, y: 120 }}
-          defaultDocked={window.innerWidth < 1024 ? 'left' : 'none'}
+          defaultPosition={() => ({ x: 20, y: 60 })}
+          defaultDocked={typeof window !== 'undefined' && window.innerWidth < 1024 ? 'left' : 'none'}
         >
           <ExamplesPanel 
             activeExampleId={pickerState.activeExampleId}
@@ -42,15 +43,25 @@ export default function AppShell() {
           />
         </FloatingModal>
 
-        {categories.map((category, index) => {
+        {categories.map((category) => {
           const categoryProps = PROP_DEFINITIONS.filter(p => p.category === category);
           
           return (
             <FloatingModal
               key={category}
+              id={category.toLowerCase()}
               title={category}
-              defaultPosition={{ x: window.innerWidth - 340, y: 120 + (index * 80) }}
-              defaultDocked={window.innerWidth < 1024 ? 'right' : 'none'}
+              defaultPosition={() => {
+                const w = window.innerWidth;
+                switch (category) {
+                  case 'Features': return { x: w - 680, y: 60 };
+                  case 'Selection': return { x: w - 340, y: 60 };
+                  case 'Dimensions': return { x: w - 340, y: 220 };
+                  case 'Colors': return { x: w - 340, y: 560 };
+                  default: return { x: w - 340, y: 120 };
+                }
+              }}
+              defaultDocked={typeof window !== 'undefined' && window.innerWidth < 1024 ? 'right' : 'none'}
             >
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
                 {categoryProps.map(prop => (
