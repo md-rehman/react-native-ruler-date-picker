@@ -32,6 +32,12 @@
   cursor: grabbing;
 }
 
+.headerCollapsed {
+  border-bottom: none;
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+
 .titleWrapper {
   display: flex;
   align-items: center;

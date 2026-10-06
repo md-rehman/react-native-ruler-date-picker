@@ -17,10 +17,10 @@ export const SelectionIcon = () => (
 
 export const DimensionsIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21.3 15.3l-7.6-7.6a2 2 0 0 0-2.8 0l-8.6 8.6a2 2 0 0 0 0 2.8l7.6 7.6a2 2 0 0 0 2.8 0l8.6-8.6a2 2 0 0 0 0-2.8z"></path>
-    <path d="M14 6.5l3.5 3.5"></path>
-    <path d="M10 10.5l3.5 3.5"></path>
-    <path d="M6 14.5l3.5 3.5"></path>
+    <path d="m21 21-6-6m6 6v-4.8m0 4.8h-4.8"></path>
+    <path d="M3 16.2V21m0 0h4.8M3 21l6-6"></path>
+    <path d="M21 7.8V3m0 0h-4.8M21 3l-6 6"></path>
+    <path d="M3 7.8V3m0 0h4.8M3 3l6 6"></path>
   </svg>
 );
 

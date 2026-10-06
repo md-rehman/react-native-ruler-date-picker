@@ -146,7 +146,7 @@ export default function FloatingModal({ id, title, icon, children, defaultPositi
         style={{ left: position.x, top: position.y }}
       >
       <div 
-        className={styles.header} 
+        className={`${styles.header} ${isCollapsed ? styles.headerCollapsed : ''}`} 
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
