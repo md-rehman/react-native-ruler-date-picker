@@ -16,11 +16,24 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Check system preference on mount
+    // Check localStorage first
+    const storedTheme = localStorage.getItem('theme-preference') as Theme;
     const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initialTheme = isDark ? 'dark' : 'light';
+    const initialTheme = storedTheme || (isDark ? 'dark' : 'light');
+    
     setTheme(initialTheme);
     document.documentElement.setAttribute('data-theme', initialTheme);
+
+    // Initialize glass controls from localStorage
+    const storedAlpha = localStorage.getItem('glass-alpha');
+    const storedBlur = localStorage.getItem('glass-blur');
+    if (storedAlpha) {
+      document.documentElement.style.setProperty('--glass-bg-alpha', storedAlpha);
+    }
+    if (storedBlur) {
+      document.documentElement.style.setProperty('--glass-blur', storedBlur);
+    }
+    
     setMounted(true);
   }, []);
 
@@ -28,6 +41,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setTheme((prev) => {
       const newTheme = prev === 'light' ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme-preference', newTheme);
       return newTheme;
     });
   };

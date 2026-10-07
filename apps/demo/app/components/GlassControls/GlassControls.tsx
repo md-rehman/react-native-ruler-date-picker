@@ -45,7 +45,9 @@ export default function GlassControls() {
       if (next > 100) {
         next = 0;
       }
-      document.documentElement.style.setProperty('--glass-bg-alpha', String(next / 100));
+      const val = String(next / 100);
+      document.documentElement.style.setProperty('--glass-bg-alpha', val);
+      localStorage.setItem('glass-alpha', val);
       return next;
     });
   };
@@ -56,7 +58,9 @@ export default function GlassControls() {
       if (next > 20) {
         next = 0;
       }
-      document.documentElement.style.setProperty('--glass-blur', `${next}px`);
+      const val = `${next}px`;
+      document.documentElement.style.setProperty('--glass-blur', val);
+      localStorage.setItem('glass-blur', val);
       return next;
     });
   };
@@ -66,6 +70,8 @@ export default function GlassControls() {
     setBlur(5);
     document.documentElement.style.setProperty('--glass-bg-alpha', '0.25');
     document.documentElement.style.setProperty('--glass-blur', '5px');
+    localStorage.removeItem('glass-alpha');
+    localStorage.removeItem('glass-blur');
   };
 
   return (
