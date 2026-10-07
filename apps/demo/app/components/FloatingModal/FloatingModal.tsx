@@ -139,9 +139,10 @@ export default function FloatingModal({ id, title, icon, children, defaultPositi
         style={{ top: Math.max(80, position.y) }}
         title="Restore Modal"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg className={styles.dockIcon} xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           {docked === 'left' ? <polyline points="9 18 15 12 9 6"></polyline> : <polyline points="15 18 9 12 15 6"></polyline>}
         </svg>
+        <span className={styles.dockTitle}>{title}</span>
       </button>
     );
   }

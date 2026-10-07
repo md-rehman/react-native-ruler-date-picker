@@ -108,19 +108,36 @@
 .dockTab {
   position: fixed;
   z-index: 900;
-  width: 32px;
   height: 64px;
+  max-width: 32px;
+  width: max-content;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 0 5px;
+  overflow: hidden;
   color: var(--color-text-secondary);
   cursor: pointer;
   box-shadow: var(--glass-shadow);
-  transition: background-color var(--transition-fast), color var(--transition-fast);
+  transition: all var(--transition-normal);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+}
+
+.dockIcon {
+  flex-shrink: 0;
+}
+
+.dockTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
 }
 
 .dockTab:hover {
@@ -128,16 +145,33 @@
   color: var(--color-text-primary);
 }
 
+.dockTab:hover .dockTitle {
+  opacity: 1;
+  transition-delay: 0.1s;
+}
+
 .dockTab.left {
   left: 0;
   border-left: none;
   border-radius: 0 12px 12px 0;
+  flex-direction: row-reverse;
+}
+
+.dockTab.left:hover {
+  max-width: 200px;
+  padding: 0 12px 0 16px;
 }
 
 .dockTab.right {
   right: 0;
   border-right: none;
   border-radius: 12px 0 0 12px;
+  flex-direction: row;
+}
+
+.dockTab.right:hover {
+  max-width: 200px;
+  padding: 0 16px 0 12px;
 }
 
 /* Snap Preview Shine */
@@ -145,26 +179,26 @@
   position: fixed;
   top: 0;
   bottom: 0;
-  width: 100px;
+  width: 150px;
   z-index: 999;
   pointer-events: none;
-  animation: shineFadeIn 0.2s ease-out forwards;
+  animation: shineFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .snapPreview-left {
   left: 0;
-  background: radial-gradient(circle 300px at 0% var(--shine-y, 50%), rgba(255,255,255,0.15), transparent);
-  border-left: 2px solid var(--color-primary);
-  -webkit-mask-image: radial-gradient(circle 350px at 0% var(--shine-y, 50%), black 10%, transparent 100%);
-  mask-image: radial-gradient(circle 350px at 0% var(--shine-y, 50%), black 10%, transparent 100%);
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
+  border-left: 3px solid var(--color-accent);
+  -webkit-mask-image: radial-gradient(circle 400px at 0% var(--shine-y, 50%), black 0%, transparent 100%);
+  mask-image: radial-gradient(circle 400px at 0% var(--shine-y, 50%), black 0%, transparent 100%);
 }
 
 .snapPreview-right {
   right: 0;
-  background: radial-gradient(circle 300px at 100% var(--shine-y, 50%), rgba(255,255,255,0.15), transparent);
-  border-right: 2px solid var(--color-primary);
-  -webkit-mask-image: radial-gradient(circle 350px at 100% var(--shine-y, 50%), black 10%, transparent 100%);
-  mask-image: radial-gradient(circle 350px at 100% var(--shine-y, 50%), black 10%, transparent 100%);
+  background: linear-gradient(to left, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
+  border-right: 3px solid var(--color-accent);
+  -webkit-mask-image: radial-gradient(circle 400px at 100% var(--shine-y, 50%), black 0%, transparent 100%);
+  mask-image: radial-gradient(circle 400px at 100% var(--shine-y, 50%), black 0%, transparent 100%);
 }
 
 @keyframes shineFadeIn {
