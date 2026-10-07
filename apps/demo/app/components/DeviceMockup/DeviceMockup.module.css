@@ -1,7 +1,7 @@
 .device {
   position: relative;
   background-color: #000;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5), 0 10px 40px rgba(0, 0, 0, 0.3);
   transition: all var(--transition-slow);
   overflow: hidden;
   margin: 0 auto;

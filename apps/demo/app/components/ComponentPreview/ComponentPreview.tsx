@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { RulerDatePicker } from 'react-native-ruler-date-picker';
@@ -15,6 +15,11 @@ interface ComponentPreviewProps {
 export default function ComponentPreview({ props, updateProp }: ComponentPreviewProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [dateStr, setDateStr] = useState<string>('');
+
+  useEffect(() => {
+    // Initialize the property pane value on mount
+    updateProp('selectedDate', selectedDate.toDateString());
+  }, []);
 
   return (
     <div className={styles.wrapper}>
@@ -34,6 +39,7 @@ export default function ComponentPreview({ props, updateProp }: ComponentPreview
               onSelectDate={(date, str) => {
                 setSelectedDate(date);
                 setDateStr(str);
+                updateProp('selectedDate', str);
               }}
             />
           </View>
