@@ -10,13 +10,15 @@ interface TopBarProps {
   onDeviceChange: (device: DeviceType) => void;
   visibleModals: Record<ModalCategory, boolean>;
   onToggleModal: (category: ModalCategory) => void;
+  onResetModals: () => void;
 }
 
 export default function TopBar({ 
   activeDevice, 
   onDeviceChange,
   visibleModals,
-  onToggleModal
+  onToggleModal,
+  onResetModals
 }: TopBarProps) {
   return (
     <header className={styles.topbar}>
@@ -27,7 +29,7 @@ export default function TopBar({
       </div>
 
       <div className={styles.right}>
-        <ModalToggle visibleModals={visibleModals} onToggle={onToggleModal} />
+        <ModalToggle visibleModals={visibleModals} onToggle={onToggleModal} onReset={onResetModals} />
         <GlassControls />
         <ThemeToggle />
       </div>

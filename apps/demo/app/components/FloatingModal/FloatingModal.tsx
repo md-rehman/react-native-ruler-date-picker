@@ -57,6 +57,20 @@ export default function FloatingModal({ id, title, icon, children, defaultPositi
     }
   }, [position, docked, isCollapsed, mounted, id]);
 
+  useEffect(() => {
+    const handleReset = () => {
+      if (id) localStorage.removeItem(`modal-${id}`);
+      let initialPos = { x: 100, y: 100 };
+      if (typeof defaultPosition === 'function') initialPos = defaultPosition();
+      else if (defaultPosition) initialPos = defaultPosition;
+      setPosition(initialPos);
+      setDocked(defaultDocked);
+      setIsCollapsed(false);
+    };
+    window.addEventListener('resetModals', handleReset);
+    return () => window.removeEventListener('resetModals', handleReset);
+  }, [id, defaultPosition, defaultDocked]);
+
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0 || docked !== 'none') return;
     if ((e.target as HTMLElement).closest('button')) return;

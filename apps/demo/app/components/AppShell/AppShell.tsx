@@ -30,6 +30,16 @@ export default function AppShell() {
     setVisibleModals(prev => ({ ...prev, [category]: !prev[category] }));
   };
 
+  const handleResetModals = () => {
+    setVisibleModals({
+      Selection: true,
+      Dimensions: true,
+      Colors: true,
+      Features: true
+    });
+    window.dispatchEvent(new Event('resetModals'));
+  };
+
   return (
     <div className={styles.shell}>
       <TopBar 
@@ -37,6 +47,7 @@ export default function AppShell() {
         onDeviceChange={setActiveDevice}
         visibleModals={visibleModals}
         onToggleModal={toggleModal}
+        onResetModals={handleResetModals}
       />
       
       <div className={styles.main}>
