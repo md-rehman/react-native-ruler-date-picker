@@ -2,7 +2,7 @@ import React from 'react';
 import DeviceSelector, { DeviceType } from '../DeviceSelector/DeviceSelector';
 import ModalToggle, { ModalCategory } from '../ModalToggle/ModalToggle';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
-import AlphaToggle from '../AlphaToggle/AlphaToggle';
+import GlassControls from '../GlassControls/GlassControls';
 import styles from './TopBar.module.css';
 
 interface TopBarProps {
@@ -28,7 +28,7 @@ export default function TopBar({
 
       <div className={styles.right}>
         <ModalToggle visibleModals={visibleModals} onToggle={onToggleModal} />
-        <AlphaToggle />
+        <GlassControls />
         <ThemeToggle />
       </div>
     </header>
