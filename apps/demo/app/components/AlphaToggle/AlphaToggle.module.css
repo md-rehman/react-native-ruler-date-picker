@@ -1,0 +1,29 @@
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), 0 20px 40px rgba(0,0,0,0.4);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.toggle:hover {
+  background-color: var(--color-surface-hover);
+  transform: scale(1.05);
+}
+
+.toggle:active {
+  transform: scale(0.95);
+}
+
+.number {
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+}

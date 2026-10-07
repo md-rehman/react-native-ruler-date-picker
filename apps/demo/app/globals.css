@@ -19,7 +19,9 @@
   --color-border:         #E5E5EA;
 
   /* ── Glass Effect ── */
-  --glass-bg:             rgba(255, 255, 255, 0.45);
+  --glass-bg-rgb:         255, 255, 255;
+  --glass-bg-alpha:       0.10;
+  --glass-bg:             rgba(var(--glass-bg-rgb), var(--glass-bg-alpha));
   --glass-border:         rgba(255, 255, 255, 0.25);
   --glass-blur:           20px;
   --glass-shadow:         0 8px 32px rgba(0, 0, 0, 0.08);
@@ -57,7 +59,9 @@
   --color-accent:         #0A84FF;
   --color-accent-hover:   #409CFF;
   --color-border:         #38383A;
-  --glass-bg:             rgba(44, 44, 46, 0.55);
+  --glass-bg-rgb:         44, 44, 46;
+  --glass-bg-alpha:       0.10;
+  --glass-bg:             rgba(var(--glass-bg-rgb), var(--glass-bg-alpha));
   --glass-border:         rgba(255, 255, 255, 0.08);
   --glass-shadow:         0 8px 32px rgba(0, 0, 0, 0.3);
 }
