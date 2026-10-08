@@ -20,6 +20,7 @@ interface FloatingModalProps {
   id: string;
   title: string;
   icon?: React.ReactNode;
+  headerRight?: React.ReactNode;
   children: React.ReactNode;
   defaultPosition?: { x: number; y: number };
   defaultDocked?: DockState;
@@ -30,6 +31,7 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
   id,
   title,
   icon,
+  headerRight,
   children,
   defaultPosition = { x: 20, y: 80 },
   defaultDocked = 'none',
@@ -210,6 +212,7 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
                 {title}
               </Text>
             </View>
+            {headerRight && <View style={styles.headerRightContainer}>{headerRight}</View>}
             <TouchableOpacity onPress={toggleCollapse} style={styles.chevronBtn} hitSlop={10}>
               <Svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                 <Polyline
@@ -253,7 +256,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-    marginRight: SPACING.sm,
+    marginRight: SPACING.xs,
   },
   iconContainer: {
     marginRight: SPACING.xs + 2,
@@ -262,6 +265,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     letterSpacing: -0.2,
+  },
+  headerRightContainer: {
+    marginRight: SPACING.xs + 2,
   },
   chevronBtn: {
     padding: 4,

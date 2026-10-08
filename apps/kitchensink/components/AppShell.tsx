@@ -9,6 +9,7 @@ import { ComponentPreview } from './ComponentPreview';
 import { TopBar } from './TopBar';
 import { FloatingModal } from './FloatingModal';
 import { ExamplesPanel } from './ExamplesPanel';
+import { GlassControls } from './GlassControls';
 import { PropControl } from './PropControl/PropControl';
 import {
   SelectionIcon,
@@ -21,9 +22,9 @@ export const AppShell: React.FC = () => {
   const { colors } = useTheme();
   const { props: pickerProps, activeExampleId, loadPreset, updateProp } = usePickerProps();
 
-  const [showExamples, setShowExamples] = useState(true);
+  const [showExamples, setShowExamples] = useState(false);
   const [visibleModals, setVisibleModals] = useState<Record<Category, boolean>>({
-    Selection: true,
+    Selection: false,
     Dimensions: false,
     Colors: false,
     Features: false,
@@ -45,9 +46,9 @@ export const AppShell: React.FC = () => {
     const modalIds = ['examples', 'selection', 'dimensions', 'colors', 'features'];
     modalIds.forEach((id) => AsyncStorage.removeItem(`modal-${id}`));
 
-    setShowExamples(true);
+    setShowExamples(false);
     setVisibleModals({
-      Selection: true,
+      Selection: false,
       Dimensions: false,
       Colors: false,
       Features: false,
@@ -71,19 +72,17 @@ export const AppShell: React.FC = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.bg }]}>
-      {/* Subtle grid background pattern */}
-      <GridBackground />
-
+    <View style={styles.container}>
       {/* Main centered component preview */}
       <ComponentPreview pickerProps={pickerProps} />
 
-      {/* Examples Modal (Docked Left) */}
+      {/* Examples Modal (Floating, default open state, GlassControls in header) */}
       <FloatingModal
         id="examples"
-        title="Examples"
-        defaultDocked="left"
-        defaultPosition={{ x: 20, y: 80 }}
+        title="Presets"
+        defaultDocked="none"
+        defaultPosition={{ x: 20, y: 70 }}
+        headerRight={<GlassControls />}
         visible={showExamples}
       >
         <ExamplesPanel
@@ -97,8 +96,8 @@ export const AppShell: React.FC = () => {
         id="selection"
         title="Selection"
         icon={<SelectionIcon color={colors.accent} />}
-        defaultDocked="right"
-        defaultPosition={{ x: 240, y: 80 }}
+        defaultDocked="none"
+        defaultPosition={{ x: 40, y: 90 }}
         visible={visibleModals.Selection}
       >
         {renderCategoryContent('Selection')}
@@ -109,8 +108,8 @@ export const AppShell: React.FC = () => {
         id="dimensions"
         title="Dimensions"
         icon={<DimensionsIcon color={colors.accent} />}
-        defaultDocked="right"
-        defaultPosition={{ x: 240, y: 140 }}
+        defaultDocked="none"
+        defaultPosition={{ x: 50, y: 130 }}
         visible={visibleModals.Dimensions}
       >
         {renderCategoryContent('Dimensions')}
@@ -121,8 +120,8 @@ export const AppShell: React.FC = () => {
         id="colors"
         title="Colors"
         icon={<ColorsIcon color={colors.accent} />}
-        defaultDocked="right"
-        defaultPosition={{ x: 240, y: 200 }}
+        defaultDocked="none"
+        defaultPosition={{ x: 60, y: 170 }}
         visible={visibleModals.Colors}
       >
         {renderCategoryContent('Colors')}
@@ -133,14 +132,14 @@ export const AppShell: React.FC = () => {
         id="features"
         title="Features"
         icon={<FeaturesIcon color={colors.accent} />}
-        defaultDocked="right"
-        defaultPosition={{ x: 240, y: 260 }}
+        defaultDocked="none"
+        defaultPosition={{ x: 70, y: 210 }}
         visible={visibleModals.Features}
       >
         {renderCategoryContent('Features')}
       </FloatingModal>
 
-      {/* Fixed top header bar */}
+      {/* Floating Header Controls */}
       <TopBar
         showExamples={showExamples}
         onToggleExamples={handleToggleExamples}
