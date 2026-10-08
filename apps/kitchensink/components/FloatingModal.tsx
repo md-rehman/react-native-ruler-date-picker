@@ -204,8 +204,11 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
           },
         ]}
       >
-        <GlassView style={styles.glassContainer}>
-          <View style={styles.header} {...panResponder.panHandlers}>
+        <GlassView style={[styles.glassContainer, isCollapsed && styles.collapsedGlassContainer]}>
+          <View
+            style={[styles.header, isCollapsed && styles.collapsedHeader]}
+            {...panResponder.panHandlers}
+          >
             <View style={styles.titleWrapper}>
               {icon && <View style={styles.iconContainer}>{icon}</View>}
               <Text style={[styles.title, { color: colors.textPrimary }]} numberOfLines={1}>
@@ -243,6 +246,9 @@ const styles = StyleSheet.create({
   glassContainer: {
     paddingBottom: SPACING.sm,
   },
+  collapsedGlassContainer: {
+    paddingBottom: 0,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -251,6 +257,9 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.sm + 2,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'rgba(255,255,255,0.1)',
+  },
+  collapsedHeader: {
+    borderBottomWidth: 0,
   },
   titleWrapper: {
     flexDirection: 'row',
