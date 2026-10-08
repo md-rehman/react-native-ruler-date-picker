@@ -1,18 +1,22 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView } from 'react-native';
+import { StyleSheet, View, SafeAreaView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { AppShell } from './components/AppShell';
+import { GridBackground } from './components/GridBackground';
 
 function MainApp() {
-  const { theme } = useTheme();
+  const { theme, colors } = useTheme();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
-      <AppShell />
-    </SafeAreaView>
+    <View style={[styles.root, { backgroundColor: colors.bg }]}>
+      <GridBackground />
+      <SafeAreaView style={styles.container}>
+        <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
+        <AppShell />
+      </SafeAreaView>
+    </View>
   );
 }
 
@@ -32,5 +36,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
 });
