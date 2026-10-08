@@ -54,11 +54,6 @@ const styles = StyleSheet.create({
     borderRadius: RADII.md,
     padding: 2,
     gap: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 6,
   },
   btn: {
     paddingHorizontal: SPACING.xs + 3,
