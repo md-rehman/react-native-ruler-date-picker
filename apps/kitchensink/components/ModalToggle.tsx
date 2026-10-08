@@ -125,7 +125,7 @@ export const ModalToggle: React.FC<ModalToggleProps> = ({
   ];
 
   return (
-    <View style={[styles.container, { borderColor: colors.glassBorderColor }]}>
+    <View style={[styles.container, { borderColor: colors.glassBorderColor, backgroundColor: colors.surface }]}>
       {categories.map(({ key, renderIcon }) => {
         const isActive = visibleModals[key];
         const iconColor = isActive ? colors.accent : colors.textSecondary;
@@ -158,6 +158,11 @@ const styles = StyleSheet.create({
     borderRadius: RADII.md,
     padding: 2,
     gap: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 6,
   },
   btn: {
     padding: SPACING.xs + 2,

@@ -11,7 +11,13 @@ export const ThemeToggle: React.FC = () => {
     <TouchableOpacity
       onPress={toggleTheme}
       activeOpacity={0.7}
-      style={[styles.btn, { borderColor: colors.glassBorderColor }]}
+      style={[
+        styles.btn,
+        {
+          borderColor: colors.glassBorderColor,
+          backgroundColor: colors.surface,
+        },
+      ]}
     >
       {theme === 'light' ? (
         <Svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -47,5 +53,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 6,
   },
 });

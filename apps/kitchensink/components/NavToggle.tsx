@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
 import { useTheme } from '../context/ThemeContext';
 import { RADII, SPACING } from '../theme/tokens';
@@ -20,7 +20,7 @@ export const NavToggle: React.FC<NavToggleProps> = ({ active, onToggle }) => {
         styles.button,
         {
           borderColor: colors.glassBorderColor,
-          backgroundColor: active ? colors.activeBg : 'transparent',
+          backgroundColor: active ? colors.activeBg : colors.surface,
         },
       ]}
     >
@@ -64,5 +64,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 6,
   },
 });
