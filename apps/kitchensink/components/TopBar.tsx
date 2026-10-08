@@ -23,15 +23,17 @@ export const TopBar: React.FC<TopBarProps> = ({
 }) => {
   return (
     <View style={styles.fixedWrapper} pointerEvents="box-none">
-      <View style={styles.leftSection}>
+      <View style={styles.leftSection} pointerEvents="box-none">
         <NavToggle active={showExamples} onToggle={onToggleExamples} />
       </View>
-      <View style={styles.rightSection}>
+      <View style={styles.centerSection} pointerEvents="box-none">
         <ModalToggle
           visibleModals={visibleModals}
           onToggle={onToggleModal}
           onReset={onResetModals}
         />
+      </View>
+      <View style={styles.rightSection} pointerEvents="box-none">
         <ThemeToggle />
       </View>
     </View>
@@ -50,12 +52,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   leftSection: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  centerSection: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   rightSection: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: SPACING.xs + 2,
+    justifyContent: 'flex-end',
   },
 });
