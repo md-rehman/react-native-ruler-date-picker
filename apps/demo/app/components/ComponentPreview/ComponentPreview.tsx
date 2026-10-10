@@ -20,12 +20,11 @@ export default function ComponentPreview({ props, updateProp }: ComponentPreview
     // Initialize the property pane value on mount
     updateProp('selectedDate', selectedDate.toDateString());
   }, []);
-
   return (
     <div className={styles.wrapper}>
       <GestureHandlerRootView style={rnStyles.root}>
         <View style={[rnStyles.container, { backgroundColor: props.backgroundColor || 'transparent' }]}>
-          
+
           <View style={rnStyles.header}>
             <Text style={[rnStyles.title, { color: props.labelColor }]}>
               {dateStr || 'Select a date'}
@@ -43,7 +42,7 @@ export default function ComponentPreview({ props, updateProp }: ComponentPreview
               }}
             />
           </View>
-          
+
         </View>
       </GestureHandlerRootView>
     </div>
