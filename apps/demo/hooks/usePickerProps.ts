@@ -17,7 +17,9 @@ export function usePickerProps() {
       ...prev,
       [name]: value,
     }));
-    setActiveExampleId('custom');
+    if (name !== 'selectedDate') {
+      setActiveExampleId('custom');
+    }
   }, []);
 
   return {

@@ -23,12 +23,12 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     description: 'The currently selected date.',
   },
   {
-    name: 'labelInterval',
+    name: 'ticks',
     type: 'enum',
-    label: 'Label Interval',
+    label: 'Tick Preset',
     category: 'Selection',
-    defaultValue: 'weekly',
-    options: ['daily', 'weekly', 'monthly'],
+    defaultValue: 'calendar',
+    options: ['calendar', 'metric', 'minimal'],
   },
 
   // Dimensions
