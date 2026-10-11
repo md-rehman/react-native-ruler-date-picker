@@ -11,6 +11,7 @@ interface TopBarProps {
   visibleModals: Record<ModalCategory, boolean>;
   onToggleModal: (category: ModalCategory) => void;
   onResetModals: () => void;
+  onOpenCodeModal: () => void;
 }
 
 export default function TopBar({ 
@@ -18,7 +19,8 @@ export default function TopBar({
   onDeviceChange,
   visibleModals,
   onToggleModal,
-  onResetModals
+  onResetModals,
+  onOpenCodeModal
 }: TopBarProps) {
   return (
     <header className={styles.topbar}>
@@ -29,6 +31,18 @@ export default function TopBar({
       </div>
 
       <div className={styles.right}>
+        <button 
+          className={styles.codeButton}
+          onClick={onOpenCodeModal}
+          title="View & Copy Example Code"
+          aria-label="View Code"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+          <span>Code</span>
+        </button>
         <ModalToggle visibleModals={visibleModals} onToggle={onToggleModal} onReset={onResetModals} />
         <GlassControls />
         <ThemeToggle />

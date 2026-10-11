@@ -6,6 +6,7 @@ import CentralView from '../CentralView/CentralView';
 import FloatingModal from '../FloatingModal/FloatingModal';
 import ExamplesPanel from '../ExamplesPanel/ExamplesPanel';
 import PropControl from '../PropControl/PropControl';
+import CodeModal from '../CodeModal/CodeModal';
 import { DeviceType } from '../DeviceSelector/DeviceSelector';
 import { usePickerProps } from '../../../hooks/usePickerProps';
 import { PROP_DEFINITIONS } from '../../../data/propDefinitions';
@@ -14,7 +15,14 @@ import styles from './AppShell.module.css';
 
 export default function AppShell() {
   const [activeDevice, setActiveDevice] = useState<DeviceType>('iphone');
+  const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
+  const [codeModalPresetId, setCodeModalPresetId] = useState<string>('default');
   const pickerState = usePickerProps();
+
+  const handleOpenCodeModal = (presetId?: string) => {
+    setCodeModalPresetId(presetId || pickerState.activeExampleId || 'default');
+    setIsCodeModalOpen(true);
+  };
 
   const categories = ['Selection', 'Dimensions', 'Colors', 'Features'] as const;
   type Category = typeof categories[number];
@@ -48,6 +56,7 @@ export default function AppShell() {
         visibleModals={visibleModals}
         onToggleModal={toggleModal}
         onResetModals={handleResetModals}
+        onOpenCodeModal={() => handleOpenCodeModal()}
       />
       
       <div className={styles.main}>
@@ -66,6 +75,7 @@ export default function AppShell() {
           <ExamplesPanel 
             activeExampleId={pickerState.activeExampleId}
             onSelectExample={pickerState.loadPreset}
+            onOpenCodeModal={(presetId) => handleOpenCodeModal(presetId)}
           />
         </FloatingModal>
 
@@ -135,6 +145,13 @@ export default function AppShell() {
           );
         })}
       </div>
+
+      <CodeModal
+        isOpen={isCodeModalOpen}
+        onClose={() => setIsCodeModalOpen(false)}
+        activePresetId={codeModalPresetId}
+        currentProps={pickerState.props}
+      />
     </div>
   );
 }

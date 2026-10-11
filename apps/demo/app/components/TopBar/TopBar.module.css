@@ -59,3 +59,41 @@
     display: block;
   }
 }
+
+.codeButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), 0 20px 40px rgba(0,0,0,0.4);
+  font-size: 0.825rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.codeButton:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.codeButton:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+  .codeButton span {
+    display: none;
+  }
+  .codeButton {
+    width: 40px;
+    padding: 0;
+    justify-content: center;
+  }
+}
