@@ -25,16 +25,16 @@ Thank you for considering contributing to `react-native-ruler-date-picker`!
    pnpm build
    ```
 
-5. **Run the example app**:
-   ```bash
-   cd apps/example
-   pnpm start
-   ```
-
-6. **Run Kitchensink Showcase**:
+5. **Run Kitchensink Mobile Playground**:
    ```bash
    cd apps/kitchensink
    pnpm start
+   ```
+
+6. **Run Interactive Web Demo**:
+   ```bash
+   cd apps/demo
+   pnpm dev
    ```
 
 ## Pull Request Guidelines
