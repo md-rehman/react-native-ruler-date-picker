@@ -2,16 +2,14 @@
 
 A performant, customizable horizontal ruler date picker & scroll wheel for React Native and Expo. Powered by 60 FPS Reanimated 3 physics and dual-speed haptic feedback.
 
-<!-- TODO: Add hero GIF/video here -->
-
 ## ✨ Features
 
 - **60 FPS Physics** — Reanimated 3 decay animations with snap-to-tick alignment
 - **Dual-Speed Haptics** — Discrete ticks at slow scroll, continuous buzz at fast swipe
 - **Windowed Rendering** — Only renders visible ticks + buffer for memory efficiency
-- **Fully Customizable** — Every dimension, color, and behavior is configurable via props
-- **Graceful Haptics** — Works with `expo-haptics`, custom handlers, or silently without either
-- **Dark Mode Support** — Auto-detects system color scheme with manual override
+- **Multi-Tier Rule-Based Graduations** — Declarative tick rules (`ticks="calendar"` | `"metric"` | `"minimal"` or custom rules array)
+- **Compound Anatomy API** — Full layout flexibility with `Ruler.*` and `RulerRange.*`
+- **Dark Mode Support** — Auto-detects system color scheme with custom theme palette override
 
 ## 📦 Installation
 
@@ -40,6 +38,7 @@ npx expo install expo-haptics
 ## 🚀 Quick Start
 
 ```tsx
+import React, { useState } from 'react';
 import { RulerDatePicker } from 'react-native-ruler-date-picker';
 
 export default function App() {
@@ -47,11 +46,12 @@ export default function App() {
 
   return (
     <RulerDatePicker
-      selectedDate={date}
-      onSelectDate={(newDate, dateString) => {
+      value={date}
+      onChange={(newDate, dateString) => {
         setDate(newDate);
         console.log('Selected:', dateString); // "2026-08-07"
       }}
+      showResetToToday
     />
   );
 }
@@ -63,61 +63,46 @@ export default function App() {
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `selectedDate` | `Date \| string` | **required** | Currently selected date |
-| `onSelectDate` | `(date: Date, dateString: string) => void` | **required** | Called when date changes |
-| `minDate` | `Date` | -365 days | Minimum scrollable date |
-| `maxDate` | `Date` | +365 days | Maximum scrollable date |
-| `labelInterval` | `'daily' \| 'weekly' \| 'monthly' \| (date: Date) => boolean` | `'weekly'` | Which ticks show labels |
-| `highlightDays` | `number[]` | — | Days of week to highlight (0=Sun, 6=Sat) |
-| `tickSpacing` | `number` | `24` | Gap between ticks (px) |
-| `tickHeight` | `number` | `12` | Small tick height (px) |
-| `tickTallHeight` | `number` | `24` | Large/labeled tick height (px) |
-| `tickThickness` | `number` | `4` | Tick bar width (px) |
-| `tickColor` | `string` | auto | Small tick color |
-| `tickTallColor` | `string` | auto | Large tick color (falls back to `tickColor`) |
-| `labelColor` | `string` | auto | Label text color |
-| `accentColor` | `string` | auto | Today dot & reset button color |
-| `indicatorColor` | `string` | auto | Center indicator line color |
-| `backgroundColor` | `string` | `transparent` | Component background |
+| `value` | `Date \| string` | `undefined` | Currently selected date (controlled) |
+| `defaultValue` | `Date \| string` | `today` | Initial selected date (uncontrolled) |
+| `onChange` | `(date: Date, dateString: string) => void` | `undefined` | Called when selected date changes |
+| `minDate` | `Date \| string` | `-365 days` | Minimum selectable date boundary |
+| `maxDate` | `Date \| string` | `+365 days` | Maximum selectable date boundary |
+| `ticks` | `TickRule[] \| 'calendar' \| 'metric' \| 'minimal'` | `'calendar'` | Graduation rules or preset name |
+| `tickSpacing` | `number` | `24` | Gap between tick centers (px) |
+| `tickThickness` | `number` | `3` | Base thickness of tick bars (px) |
+| `theme` | `RulerTheme` | auto | Color theme object override |
 | `height` | `number` | `120` | Total component height (px) |
-| `rulerHeight` | `number` | `60` | Ruler track height (px) |
+| `rulerHeight` | `number` | `60` | Ruler track viewport height (px) |
 | `indicatorWidth` | `number` | `2` | Center indicator width (px) |
 | `indicatorHeight` | `number` | `40` | Center indicator height (px) |
-| `todayDotSize` | `number` | `6` | Today dot diameter (px) |
-| `labelFontSize` | `number` | `10` | Tick label font size (px) |
-| `bufferTicks` | `number` | `10` | Off-screen render buffer |
-| `updateDebounceMs` | `number` | `100` | Debounce for `onSelectDate` (ms) |
+| `indicatorColor` | `string` | `theme.indicatorColor` | Center indicator needle color override |
+| `renderIndicator` | `() => ReactNode` | `undefined` | Custom renderer for center indicator |
+| `showHeader` | `boolean` | `true` | Show default date/year header |
+| `showResetToToday` | `boolean` | `false` | Show "Today" reset button when scrolled away |
+| `renderHeader` | `(date, isToday, reset) => ReactNode` | `undefined` | Custom header renderer override |
+| `bufferTicks` | `number` | `10` | Off-screen render buffer on each side |
+| `debounceMs` | `number` | `100` | Debounce before firing `onChange` during scroll |
 | `enableHaptics` | `boolean` | `true` | Enable/disable haptic feedback |
-| `onHapticTrigger` | `(mode: 'tick' \| 'continuous') => void` | — | Custom haptic handler |
-| `fastSwipeTickThreshold` | `number` | `1` | Ticks/frame to trigger fast mode |
-| `continuousHapticIntervalMs` | `number` | `20` | Continuous haptic pulse interval (ms) |
-| `showResetToToday` | `boolean` | `false` | Show "Today" reset button |
-| `renderHeader` | `(date, isToday, resetFn) => ReactNode` | — | Custom header renderer |
+| `onHapticTrigger` | `(mode: 'tick' \| 'continuous') => void` | `undefined` | Custom haptic callback |
 
 ## 🎨 Theming
 
-Colors auto-detect the system color scheme. Override any color individually:
+Colors auto-detect system light/dark mode. Provide custom tokens using `theme`:
 
 ```tsx
 <RulerDatePicker
-  selectedDate={new Date()}
-  onSelectDate={handleSelect}
-  tickColor="#E5E7EB"
-  tickTallColor="#6366F1"
-  accentColor="#8B5CF6"
-  indicatorColor="#8B5CF6"
-  labelColor="#A1A1AA"
-  backgroundColor="#18181B"
+  value={date}
+  onChange={setDate}
+  theme={{
+    background: '#0F172A',
+    indicatorColor: '#38BDF8',
+    accentColor: '#38BDF8',
+    labelColor: '#F8FAFC',
+    defaultTickColor: '#334155',
+  }}
 />
 ```
-
-## 🤝 Contributing
-
-See the [ROADMAP](./ROADMAP.md) for planned features and development phases.
-
-1. Clone the repo
-2. Install dependencies: `pnpm install`
-3. Start the example app: `pnpm dev`
 
 ## 📄 License
 

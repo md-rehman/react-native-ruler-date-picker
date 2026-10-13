@@ -90,18 +90,10 @@ export const DEFAULT_MINIMAL_TICKS: TickRule[] = [
 ];
 
 /**
- * Resolves a tick configuration prop (preset string or rule array) into an array of TickRule objects,
- * with automatic fallback synthesis for legacy tickHeight / tickTallHeight props.
+ * Resolves a tick configuration prop (preset string or rule array) into an array of TickRule objects.
  */
 export function resolveTickRules(
-  ticks?: TickRule[] | 'calendar' | 'metric' | 'minimal',
-  legacyConfig?: {
-    tickHeight?: number;
-    tickTallHeight?: number;
-    tickColor?: string;
-    tickTallColor?: string;
-    labelInterval?: 'daily' | 'weekly' | 'monthly' | ((date: Date) => boolean);
-  }
+  ticks?: TickRule[] | 'calendar' | 'metric' | 'minimal'
 ): TickRule[] {
   if (Array.isArray(ticks)) {
     return ticks;
@@ -112,40 +104,5 @@ export function resolveTickRules(
   if (ticks === 'minimal') {
     return DEFAULT_MINIMAL_TICKS;
   }
-
-  // Synthesize rule array if legacy dimensions/colors are explicitly supplied
-  if (
-    legacyConfig &&
-    (legacyConfig.tickHeight !== undefined ||
-      legacyConfig.tickTallHeight !== undefined ||
-      legacyConfig.tickColor !== undefined ||
-      legacyConfig.tickTallColor !== undefined ||
-      legacyConfig.labelInterval !== undefined)
-  ) {
-    const shortHeight = legacyConfig.tickHeight ?? 12;
-    const tallHeight = legacyConfig.tickTallHeight ?? 24;
-    const shortColor = legacyConfig.tickColor;
-    const tallColor = legacyConfig.tickTallColor ?? legacyConfig.tickColor;
-    const rawInterval = legacyConfig.labelInterval ?? 'weekly';
-    const condition =
-      typeof rawInterval === 'function'
-        ? (ctx: import('./types').TickContext) => rawInterval(ctx.date)
-        : rawInterval;
-
-    return [
-      {
-        condition,
-        height: tallHeight,
-        color: tallColor,
-        label: true,
-      },
-      {
-        condition: 'daily',
-        height: shortHeight,
-        color: shortColor,
-      },
-    ];
-  }
-
   return DEFAULT_CALENDAR_TICKS;
 }

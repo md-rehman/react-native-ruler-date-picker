@@ -133,14 +133,10 @@ export interface RulerDatePickerProps {
   // ── Value & Selection ──
   /** Currently selected date (controlled). Accepts Date or YYYY-MM-DD string. */
   value?: Date | string;
-  /** Alias for value */
-  selectedDate?: Date | string;
   /** Initial selected date (uncontrolled). Accepts Date or YYYY-MM-DD string. */
   defaultValue?: Date | string;
   /** Called when user scrolls to a date */
   onChange?: (date: Date, dateString: string) => void;
-  /** Alias for onChange */
-  onSelectDate?: (date: Date, dateString: string) => void;
   /** Minimum selectable date */
   minDate?: Date | string;
   /** Maximum selectable date */
@@ -153,12 +149,6 @@ export interface RulerDatePickerProps {
   tickSpacing?: number;
   /** Default thickness of tick bars in pixels (default: 3) */
   tickThickness?: number;
-  /** Legacy tick height props for backward compatibility */
-  tickHeight?: number;
-  tickTallHeight?: number;
-  tickColor?: string;
-  tickTallColor?: string;
-  labelInterval?: 'daily' | 'weekly' | 'monthly' | ((date: Date) => boolean);
 
   // ── Indicator ──
   /** Width of the center indicator needle in pixels (default: 2) */
@@ -189,10 +179,6 @@ export interface RulerDatePickerProps {
   rulerHeight?: number;
   /** Color theme overrides or full palette */
   theme?: RulerTheme;
-  /** Legacy color props */
-  backgroundColor?: string;
-  accentColor?: string;
-  labelColor?: string;
   /** Container style */
   style?: StyleProp<ViewStyle>;
 

@@ -65,10 +65,8 @@ export function useRulerDatePicker(
 ): UseRulerDatePickerReturn {
   const {
     value,
-    selectedDate: propSelectedDate,
     defaultValue,
     onChange,
-    onSelectDate,
     minDate,
     maxDate,
     ticks = 'calendar',
@@ -77,15 +75,6 @@ export function useRulerDatePicker(
     height = DEFAULTS.height,
     rulerHeight = DEFAULTS.rulerHeight,
     theme: propTheme,
-    backgroundColor,
-    accentColor,
-    labelColor,
-    indicatorColor,
-    tickColor,
-    tickTallColor,
-    tickHeight,
-    tickTallHeight,
-    labelInterval,
     bufferTicks = DEFAULTS.bufferTicks,
     debounceMs = DEFAULTS.debounceMs,
     enableHaptics = DEFAULTS.enableHaptics,
@@ -95,26 +84,10 @@ export function useRulerDatePicker(
   } = props;
 
   // ── Resolved Theme ────────────────────────────────────────────────────────
-  const theme = useResolvedTheme(propTheme, {
-    backgroundColor,
-    accentColor,
-    labelColor,
-    indicatorColor,
-    tickColor,
-  });
+  const theme = useResolvedTheme(propTheme);
 
   // ── Resolved Rules ────────────────────────────────────────────────────────
-  const rules = useMemo(
-    () =>
-      resolveTickRules(ticks, {
-        tickHeight,
-        tickTallHeight,
-        tickColor,
-        tickTallColor,
-        labelInterval,
-      }),
-    [ticks, tickHeight, tickTallHeight, tickColor, tickTallColor, labelInterval]
-  );
+  const rules = useMemo(() => resolveTickRules(ticks), [ticks]);
 
   // ── Haptics ───────────────────────────────────────────────────────────────
   const { fireDiscreteHaptic, startContinuousHaptic, stopContinuousHaptic } =
@@ -139,7 +112,7 @@ export function useRulerDatePicker(
 
   // ── Initial Date Calculation ──────────────────────────────────────────────
   const initialDate = useMemo(() => {
-    return normalizeDate(value ?? propSelectedDate ?? defaultValue ?? new Date());
+    return normalizeDate(value ?? defaultValue ?? new Date());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -231,13 +204,11 @@ export function useRulerDatePicker(
       }
       debounceTimerRef.current = setTimeout(() => {
         onChange?.(d, dateStr);
-        onSelectDate?.(d, dateStr);
       }, debounceMs);
     },
     [
       todayTime,
       onChange,
-      onSelectDate,
       debounceMs,
       startContinuousHaptic,
       stopContinuousHaptic,
@@ -259,9 +230,8 @@ export function useRulerDatePicker(
       setWindowCenter(index);
 
       onChange?.(d, dateStr);
-      onSelectDate?.(d, dateStr);
     },
-    [todayTime, onChange, onSelectDate, stopContinuousHaptic, fireDiscreteHaptic]
+    [todayTime, onChange, stopContinuousHaptic, fireDiscreteHaptic]
   );
 
   // ── Animated Reaction ─────────────────────────────────────────────────────
@@ -365,15 +335,14 @@ export function useRulerDatePicker(
 
   // ── Sync with external controlled value ───────────────────────────────────
   useEffect(() => {
-    const controlledVal = value ?? propSelectedDate;
-    if (controlledVal !== undefined) {
-      const target = normalizeDate(controlledVal);
+    if (value !== undefined) {
+      const target = normalizeDate(value);
       const current = selectedDate;
       if (formatDateString(target) !== formatDateString(current)) {
         scrollToDate(target, true);
       }
     }
-  }, [value, propSelectedDate, selectedDate, scrollToDate]);
+  }, [value, selectedDate, scrollToDate]);
 
   const isTodaySelected = useMemo(() => {
     return selectedDateStr === formatDateString(new Date(todayTime));

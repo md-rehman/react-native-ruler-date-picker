@@ -65,34 +65,18 @@ export function computeDayRange(
 }
 
 /**
- * Resolves user-provided theme against the system color scheme defaults (Light/Dark),
- * with backward-compatible fallback to legacy flat color props.
+ * Resolves user-provided theme against the system color scheme defaults (Light/Dark).
  */
-export function useResolvedTheme(
-  theme?: RulerTheme,
-  legacyProps?: {
-    backgroundColor?: string;
-    indicatorColor?: string;
-    accentColor?: string;
-    labelColor?: string;
-    defaultTickColor?: string;
-    tickColor?: string;
-    rangeHighlightColor?: string;
-  }
-): ResolvedRulerTheme {
+export function useResolvedTheme(theme?: RulerTheme): ResolvedRulerTheme {
   const scheme = useColorScheme();
   const palette = scheme === 'dark' ? DARK_THEME : LIGHT_THEME;
 
   return {
-    background: theme?.background ?? legacyProps?.backgroundColor ?? palette.background,
-    indicatorColor: theme?.indicatorColor ?? legacyProps?.indicatorColor ?? palette.indicatorColor,
-    accentColor: theme?.accentColor ?? legacyProps?.accentColor ?? palette.accentColor,
-    labelColor: theme?.labelColor ?? legacyProps?.labelColor ?? palette.labelColor,
-    defaultTickColor:
-      theme?.defaultTickColor ??
-      legacyProps?.defaultTickColor ??
-      legacyProps?.tickColor ??
-      palette.defaultTickColor,
-    rangeHighlightColor: theme?.rangeHighlightColor ?? legacyProps?.rangeHighlightColor ?? palette.rangeHighlightColor,
+    background: theme?.background ?? palette.background,
+    indicatorColor: theme?.indicatorColor ?? palette.indicatorColor,
+    accentColor: theme?.accentColor ?? palette.accentColor,
+    labelColor: theme?.labelColor ?? palette.labelColor,
+    defaultTickColor: theme?.defaultTickColor ?? palette.defaultTickColor,
+    rangeHighlightColor: theme?.rangeHighlightColor ?? palette.rangeHighlightColor,
   };
 }
