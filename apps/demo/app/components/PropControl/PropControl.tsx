@@ -6,6 +6,8 @@ import EnumSelect from './EnumSelect';
 import BooleanToggle from './BooleanToggle';
 import styles from './PropControl.module.css';
 
+import TickRulesEditor from './TickRulesEditor';
+
 interface PropControlProps {
   definition: PropDefinition;
   value: any;
@@ -15,6 +17,27 @@ interface PropControlProps {
 export default function PropControl({ definition, value, onChange }: PropControlProps) {
   const renderControl = () => {
     switch (definition.type) {
+      case 'tick-rules':
+        return <TickRulesEditor value={value} onChange={onChange} />;
+      case 'text':
+        return (
+          <input
+            type="text"
+            className={styles.input}
+            value={value ?? ''}
+            placeholder={definition.defaultValue ? String(definition.defaultValue) : ''}
+            onChange={(e) => onChange(e.target.value)}
+          />
+        );
+      case 'date':
+        return (
+          <input
+            type="date"
+            className={styles.input}
+            value={value ?? ''}
+            onChange={(e) => onChange(e.target.value)}
+          />
+        );
       case 'color':
         return <ColorPicker value={value || ''} onChange={onChange} />;
       case 'number':
@@ -38,7 +61,7 @@ export default function PropControl({ definition, value, onChange }: PropControl
           />
         );
       case 'readonly':
-        return <div className={styles.readonlyValue}>{String(value)}</div>;
+        return <div className={styles.readonlyValue}>{value !== undefined && value !== null ? String(value) : 'None'}</div>;
       default:
         return null;
     }
