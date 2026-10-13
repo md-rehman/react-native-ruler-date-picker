@@ -31,9 +31,9 @@ Thank you for considering contributing to `react-native-ruler-date-picker`!
    pnpm start
    ```
 
-6. **Run Interactive Web Demo**:
+6. **Run Documentation & Web Playground**:
    ```bash
-   cd apps/demo
+   cd apps/docs
    pnpm dev
    ```
 

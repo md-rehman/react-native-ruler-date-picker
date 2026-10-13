@@ -3,7 +3,7 @@
 ## ✅ Phase 1: Workspace Bootstrapping (Complete)
 - pnpm + Turborepo monorepo setup
 - Core library package (`packages/react-native-ruler-date-picker`)
-- Interactive Web Demo app (`apps/demo`)
+- Documentation & Web Playground (`apps/docs`)
 - Kitchensink showcase app (`apps/kitchensink`)
 
 ## ✅ Phase 2: Core Refactoring & Extraction (Complete)
