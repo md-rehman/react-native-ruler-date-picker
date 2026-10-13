@@ -19,13 +19,13 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ pickerProps 
     year: 'numeric',
   });
 
-  const previewBg = pickerProps.backgroundColor || colors.bg;
+  const previewBg = pickerProps.theme?.background || colors.bg;
 
   return (
     <View style={styles.outerContainer} pointerEvents="box-none">
       <View style={[styles.card, { backgroundColor: previewBg, borderColor: colors.glassBorderColor }]}>
         <View style={styles.header}>
-          <Text style={[styles.dateText, { color: pickerProps.labelColor || colors.textPrimary }]}>
+          <Text style={[styles.dateText, { color: pickerProps.theme?.labelColor || colors.textPrimary }]}>
             {formattedDate}
           </Text>
         </View>
@@ -33,8 +33,8 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ pickerProps 
           <RulerDatePicker
             key={JSON.stringify(pickerProps)}
             {...pickerProps}
-            selectedDate={selectedDate}
-            onSelectDate={(d) => setSelectedDate(d)}
+            value={selectedDate}
+            onChange={(d) => setSelectedDate(d)}
           />
         </View>
       </View>

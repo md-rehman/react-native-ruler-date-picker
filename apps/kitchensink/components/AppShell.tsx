@@ -63,7 +63,7 @@ export const AppShell: React.FC = () => {
           <PropControl
             key={def.name}
             definition={def}
-            value={pickerProps[def.name]}
+            value={def.name.startsWith('theme.') ? pickerProps.theme?.[def.name.split('.')[1]] : pickerProps[def.name]}
             onChange={(val) => updateProp(def.name, val)}
           />
         ))}

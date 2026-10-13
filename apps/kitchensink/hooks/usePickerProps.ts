@@ -11,10 +11,22 @@ export function usePickerProps() {
   }, []);
 
   const updateProp = useCallback((name: string, value: any) => {
-    setProps((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setProps((prev) => {
+      if (name.startsWith('theme.')) {
+        const themeKey = name.split('.')[1];
+        return {
+          ...prev,
+          theme: {
+            ...prev.theme,
+            [themeKey]: value,
+          },
+        };
+      }
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
     setActiveExampleId('custom');
   }, []);
 
