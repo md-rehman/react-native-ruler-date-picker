@@ -55,8 +55,8 @@ export default function App() {
   return (
     <View style={styles.container}>
       <RulerDatePicker
-        selectedDate={date}
-        onSelectDate={(newDate, dateString) => {
+        value={date}
+        onChange={(newDate, dateString) => {
           setDate(newDate);
           console.log('Selected:', dateString); // e.g., "2026-08-07"
         }}

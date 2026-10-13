@@ -18,8 +18,8 @@ If you use a custom native haptic library (e.g. `react-native-haptic-feedback`),
 import RNReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 <RulerDatePicker
-  selectedDate={date}
-  onSelectDate={setDate}
+  value={date}
+  onChange={setDate}
   onHapticTrigger={(mode) => {
     if (mode === 'tick') {
       RNReactNativeHapticFeedback.trigger('impactLight');
@@ -36,8 +36,8 @@ Set `enableHaptics={false}` to silence all haptic feedback:
 
 ```tsx
 <RulerDatePicker
-  selectedDate={date}
-  onSelectDate={setDate}
+  value={date}
+  onChange={setDate}
   enableHaptics={false}
 />
 ```

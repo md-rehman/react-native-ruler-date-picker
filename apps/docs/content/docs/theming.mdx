@@ -7,20 +7,21 @@ description: Color schemes, independent tick styling, and layout tuning
 
 `<RulerDatePicker />` automatically detects system Light / Dark mode using `useColorScheme()`. You can override colors individually or supply a full custom theme palette.
 
-## Independent Tick Color Control
+## Theme Configuration
 
-Small ticks (`tickColor`) and tall labeled ticks (`tickTallColor`) can be styled independently for maximum contrast:
+Customize colors using the `theme` prop to style the background, indicator, accents, and tick bars:
 
 ```tsx
 <RulerDatePicker
-  selectedDate={date}
-  onSelectDate={setDate}
-  tickColor="#334155"      // Dark slate for minor ticks
-  tickTallColor="#06B6D4"  // Neon cyan for labeled major ticks
-  accentColor="#A855F7"    // Vibrant purple for today dot
-  indicatorColor="#EC4899" // Pink center line
-  labelColor="#94A3B8"
-  backgroundColor="#0F172A"
+  value={date}
+  onChange={setDate}
+  theme={{
+    background: '#0F172A',
+    indicatorColor: '#EC4899', // Pink center line
+    accentColor: '#A855F7',    // Vibrant purple for today dot
+    labelColor: '#94A3B8',
+    defaultTickColor: '#334155',
+  }}
 />
 ```
 
@@ -30,8 +31,8 @@ Pass a `renderHeader` prop to completely replace the built-in date header:
 
 ```tsx
 <RulerDatePicker
-  selectedDate={date}
-  onSelectDate={setDate}
+  value={date}
+  onChange={setDate}
   renderHeader={(selectedDate, isToday, resetToToday) => (
     <View style={styles.customHeader}>
       <Text style={styles.headerTitle}>
