@@ -16,8 +16,8 @@ export default function App() {
 
         <View style={styles.pickerContainer}>
           <RulerDatePicker
-            selectedDate={selectedDate}
-            onSelectDate={(date, str) => {
+            value={selectedDate}
+            onChange={(date, str) => {
               setSelectedDate(date);
               setDateString(str);
             }}
