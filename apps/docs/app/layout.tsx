@@ -4,8 +4,8 @@ import "./globals.css";
 import "../styles/glass.css";
 
 export const metadata: Metadata = {
-  title: "Demo | react-native-ruler-date-picker",
-  description: "Interactive playground for react-native-ruler-date-picker",
+  title: "Docs | react-native-ruler-date-picker",
+  description: "Documentation and interactive playground for react-native-ruler-date-picker",
 };
 
 export default function RootLayout({
