@@ -3,18 +3,35 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './FloatingModal.module.css';
 
-interface FloatingModalProps {
+export type DockState = 'none' | 'left' | 'right';
+
+export interface FloatingModalProps {
   id?: string;
   title: string;
   icon?: React.ReactNode;
   children: React.ReactNode;
-  defaultPosition?: { x: number, y: number } | (() => { x: number, y: number });
+  position?: { x: number; y: number };
+  onPositionChange?: (pos: { x: number; y: number }, isManual: boolean) => void;
+  onDockChange?: (docked: DockState) => void;
+  onCollapseChange?: (collapsed: boolean) => void;
+  onHeightChange?: (height: number) => void;
+  defaultPosition?: { x: number; y: number } | (() => { x: number; y: number });
   defaultDocked?: 'none' | 'left' | 'right';
 }
 
-type DockState = 'none' | 'left' | 'right';
-
-export default function FloatingModal({ id, title, icon, children, defaultPosition, defaultDocked = 'none' }: FloatingModalProps) {
+export default function FloatingModal({ 
+  id, 
+  title, 
+  icon, 
+  children, 
+  position: controlledPosition,
+  onPositionChange,
+  onDockChange,
+  onCollapseChange,
+  onHeightChange,
+  defaultPosition, 
+  defaultDocked = 'none' 
+}: FloatingModalProps) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [docked, setDocked] = useState<DockState>(defaultDocked);
@@ -27,9 +44,12 @@ export default function FloatingModal({ id, title, icon, children, defaultPositi
 
   const [mounted, setMounted] = useState(false);
   
+  // Initialize state on mount
   useEffect(() => {
     let initialPos = { x: 100, y: 100 };
-    if (typeof defaultPosition === 'function') {
+    if (controlledPosition) {
+      initialPos = controlledPosition;
+    } else if (typeof defaultPosition === 'function') {
       initialPos = defaultPosition();
     } else if (defaultPosition) {
       initialPos = defaultPosition;
@@ -40,7 +60,9 @@ export default function FloatingModal({ id, title, icon, children, defaultPositi
       if (stored) {
         try {
           const parsed = JSON.parse(stored);
-          if (parsed.position) initialPos = parsed.position;
+          if (!controlledPosition && parsed.isManual && parsed.position) {
+            initialPos = parsed.position;
+          }
           if (parsed.docked) setDocked(parsed.docked);
           if (parsed.isCollapsed !== undefined) setIsCollapsed(parsed.isCollapsed);
         } catch (e) {}
@@ -51,17 +73,37 @@ export default function FloatingModal({ id, title, icon, children, defaultPositi
     setMounted(true);
   }, [id]);
 
+  // Synchronize with parent-controlled position when not dragging
   useEffect(() => {
-    if (mounted && id) {
-      localStorage.setItem(`modal-${id}`, JSON.stringify({ position, docked, isCollapsed }));
+    if (controlledPosition && !isDragging) {
+      setPosition(controlledPosition);
     }
-  }, [position, docked, isCollapsed, mounted, id]);
+  }, [controlledPosition?.x, controlledPosition?.y, isDragging]);
 
+  // Measure rendered DOM height and inform parent
+  useEffect(() => {
+    if (!modalRef.current || !onHeightChange) return;
+    const updateHeight = () => {
+      if (modalRef.current) {
+        const h = modalRef.current.offsetHeight;
+        if (h > 0) onHeightChange(h);
+      }
+    };
+    updateHeight();
+    const observer = new ResizeObserver(() => {
+      updateHeight();
+    });
+    observer.observe(modalRef.current);
+    return () => observer.disconnect();
+  }, [onHeightChange, isCollapsed, docked]);
+
+  // Reset handler
   useEffect(() => {
     const handleReset = () => {
       if (id) localStorage.removeItem(`modal-${id}`);
       let initialPos = { x: 100, y: 100 };
-      if (typeof defaultPosition === 'function') initialPos = defaultPosition();
+      if (controlledPosition) initialPos = controlledPosition;
+      else if (typeof defaultPosition === 'function') initialPos = defaultPosition();
       else if (defaultPosition) initialPos = defaultPosition;
       setPosition(initialPos);
       setDocked(defaultDocked);
@@ -69,7 +111,7 @@ export default function FloatingModal({ id, title, icon, children, defaultPositi
     };
     window.addEventListener('resetModals', handleReset);
     return () => window.removeEventListener('resetModals', handleReset);
-  }, [id, defaultPosition, defaultDocked]);
+  }, [id, controlledPosition, defaultPosition, defaultDocked]);
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0 || docked !== 'none') return;
@@ -110,23 +152,72 @@ export default function FloatingModal({ id, title, icon, children, defaultPositi
     if (!isDragging) return;
     setIsDragging(false);
     (e.currentTarget as HTMLDivElement).releasePointerCapture(e.pointerId);
+    let finalPos = position;
+    if (dragRef.current) {
+      const dx = e.clientX - dragRef.current.startX;
+      const dy = e.clientY - dragRef.current.startY;
+      finalPos = {
+        x: dragRef.current.initialX + dx,
+        y: dragRef.current.initialY + dy,
+      };
+      setPosition(finalPos);
+    }
     dragRef.current = null;
 
+    const newDocked = snapPreview !== 'none' ? snapPreview : 'none';
     if (snapPreview !== 'none') {
       setDocked(snapPreview);
+      onDockChange?.(snapPreview);
     }
     setSnapPreview('none');
+
+    // Requirement 4: Save manual position to localStorage
+    if (id) {
+      localStorage.setItem(`modal-${id}`, JSON.stringify({
+        position: finalPos,
+        docked: newDocked,
+        isCollapsed,
+        isManual: true,
+      }));
+    }
+    onPositionChange?.(finalPos, true);
   };
 
   const undock = () => {
+    let newX = position.x;
     if (docked === 'left') {
-      setPosition((prev) => ({ ...prev, x: 24 }));
+      newX = 24;
     } else if (docked === 'right') {
-      // modalRef is not rendered, so offsetWidth is not available. Default to CSS width 320px.
       const width = 320;
-      setPosition((prev) => ({ ...prev, x: window.innerWidth - width - 24 }));
+      newX = window.innerWidth - width - 24;
     }
+    const newPos = { ...position, x: newX };
+    setPosition(newPos);
     setDocked('none');
+    onDockChange?.('none');
+    if (id) {
+      localStorage.setItem(`modal-${id}`, JSON.stringify({
+        position: newPos,
+        docked: 'none',
+        isCollapsed,
+        isManual: true,
+      }));
+    }
+    onPositionChange?.(newPos, true);
+  };
+
+  const handleToggleCollapse = () => {
+    const nextCollapsed = !isCollapsed;
+    setIsCollapsed(nextCollapsed);
+    onCollapseChange?.(nextCollapsed);
+    if (id) {
+      localStorage.setItem(`modal-${id}`, JSON.stringify({
+        position,
+        docked,
+        isCollapsed: nextCollapsed,
+        isManual: true,
+      }));
+    }
   };
 
   if (!mounted) return null;
@@ -171,7 +262,7 @@ export default function FloatingModal({ id, title, icon, children, defaultPositi
           <h3 className={styles.title}>{title}</h3>
         </div>
         <div className={styles.actions}>
-           <button onClick={() => setIsCollapsed(!isCollapsed)} className={styles.iconBtn}>
+           <button onClick={handleToggleCollapse} className={styles.iconBtn} title={isCollapsed ? "Expand" : "Collapse"}>
              <svg className={`${styles.chevron} ${isCollapsed ? styles.chevronClosed : ''}`} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="6 9 12 15 18 9"></polyline>
              </svg>

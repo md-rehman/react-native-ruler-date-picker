@@ -6,13 +6,15 @@
   flex-direction: column;
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-xl);
+  overflow: hidden;
   box-shadow: var(--glass-shadow), 0 20px 40px rgba(0,0,0,0.4);
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, left 0.25s cubic-bezier(0.16, 1, 0.3, 1), top 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .modal.dragging {
   opacity: 0.8;
   cursor: grabbing;
+  transition: none !important;
 }
 
 .header {
@@ -94,8 +96,29 @@
 
 .content {
   padding: var(--spacing-md);
-  max-height: 60vh;
+  padding-bottom: var(--spacing-lg);
+  max-height: calc(100vh - 150px);
   overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
 }
 
 .propsList {
