@@ -13,6 +13,7 @@ export function generateCodeSnippet({
 }: GenerateCodeOptions): string {
   const {
     selectedDate: _ignoredDate,
+    value: _ignoredValue,
     ...cleanProps
   } = props;
 
@@ -22,22 +23,39 @@ export function generateCodeSnippet({
   propLines.push('      value={selectedDate}');
   propLines.push('      onChange={(date) => setSelectedDate(date)}');
 
+  // Boundaries (minDate / maxDate)
+  if (cleanProps.minDate) {
+    propLines.push(`      minDate="${cleanProps.minDate}"`);
+  }
+  if (cleanProps.maxDate) {
+    propLines.push(`      maxDate="${cleanProps.maxDate}"`);
+  }
+
   // 1. Ticks configuration
   if (cleanProps.ticks) {
     if (typeof cleanProps.ticks === 'string') {
       propLines.push(`      ticks="${cleanProps.ticks}"`);
     } else if (Array.isArray(cleanProps.ticks)) {
-      const formattedRules = JSON.stringify(cleanProps.ticks, null, 2)
-        .split('\n')
-        .map((line, idx) => (idx === 0 ? line : `      ${line}`))
+      const formattedRules = cleanProps.ticks
+        .map((rule: any) => {
+          const parts: string[] = [];
+          if (rule.condition) {
+            if (typeof rule.condition === 'string') {
+              parts.push(`condition: '${rule.condition}'`);
+            } else {
+              parts.push(`condition: ${JSON.stringify(rule.condition)}`);
+            }
+          }
+          parts.push(`height: ${rule.height}`);
+          if (rule.width !== undefined) parts.push(`width: ${rule.width}`);
+          if (rule.color) parts.push(`color: '${rule.color}'`);
+          if (rule.label) parts.push(`label: true`);
+          if (rule.dot) parts.push(`dot: true`);
+          return `        { ${parts.join(', ')} },`;
+        })
         .join('\n');
-      propLines.push(`      ticks={${formattedRules}}`);
+      propLines.push(`      ticks={[\n${formattedRules}\n      ]}`);
     }
-  } else if (
-    cleanProps.labelInterval &&
-    cleanProps.labelInterval !== 'weekly'
-  ) {
-    propLines.push(`      ticks="calendar"`);
   }
 
   // 2. Dimensions
@@ -50,15 +68,25 @@ export function generateCodeSnippet({
   if (cleanProps.height !== undefined) {
     propLines.push(`      height={${cleanProps.height}}`);
   }
+  if (cleanProps.rulerHeight !== undefined) {
+    propLines.push(`      rulerHeight={${cleanProps.rulerHeight}}`);
+  }
+  if (cleanProps.indicatorWidth !== undefined) {
+    propLines.push(`      indicatorWidth={${cleanProps.indicatorWidth}}`);
+  }
+  if (cleanProps.indicatorHeight !== undefined) {
+    propLines.push(`      indicatorHeight={${cleanProps.indicatorHeight}}`);
+  }
 
   // 3. Theme Object (v0.2.0 standardized theme token grouping)
   if (cleanProps.theme && typeof cleanProps.theme === 'object') {
     const themeLines = Object.entries(cleanProps.theme)
+      .filter(([_, v]) => v !== undefined && v !== '')
       .map(([k, v]) => `        ${k}: '${v}',`)
       .join('\n');
     propLines.push(`      theme={{\n${themeLines}\n      }}`);
   } else {
-    // Group flat color props into the standardized theme object
+    // Group flat color props into the standardized theme object if theme not present
     const themeEntries: [string, string][] = [];
     if (cleanProps.backgroundColor) themeEntries.push(['background', cleanProps.backgroundColor]);
     if (cleanProps.indicatorColor) themeEntries.push(['indicatorColor', cleanProps.indicatorColor]);
@@ -74,12 +102,27 @@ export function generateCodeSnippet({
     }
   }
 
-  // 4. Feature Flags
-  if (cleanProps.enableHaptics !== undefined) {
-    propLines.push(`      enableHaptics={${cleanProps.enableHaptics}}`);
+  // 4. Feature Flags & Haptics
+  if (cleanProps.showHeader !== undefined && !cleanProps.showHeader) {
+    propLines.push(`      showHeader={false}`);
   }
-  if (cleanProps.showResetToToday !== undefined) {
-    propLines.push(`      showResetToToday={${cleanProps.showResetToToday}}`);
+  if (cleanProps.showResetToToday !== undefined && cleanProps.showResetToToday) {
+    propLines.push(`      showResetToToday={true}`);
+  }
+  if (cleanProps.enableHaptics !== undefined && !cleanProps.enableHaptics) {
+    propLines.push(`      enableHaptics={false}`);
+  }
+  if (cleanProps.debounceMs !== undefined && cleanProps.debounceMs !== 100) {
+    propLines.push(`      debounceMs={${cleanProps.debounceMs}}`);
+  }
+  if (cleanProps.bufferTicks !== undefined && cleanProps.bufferTicks !== 10) {
+    propLines.push(`      bufferTicks={${cleanProps.bufferTicks}}`);
+  }
+  if (cleanProps.fastSwipeTickThreshold !== undefined && cleanProps.fastSwipeTickThreshold !== 1) {
+    propLines.push(`      fastSwipeTickThreshold={${cleanProps.fastSwipeTickThreshold}}`);
+  }
+  if (cleanProps.continuousHapticIntervalMs !== undefined && cleanProps.continuousHapticIntervalMs !== 20) {
+    propLines.push(`      continuousHapticIntervalMs={${cleanProps.continuousHapticIntervalMs}}`);
   }
 
   const jsxSnippet = [
@@ -101,7 +144,7 @@ export function generateCodeSnippet({
     .concat('Picker')
     .replace(/^([a-z])/, (m) => m.toUpperCase());
 
-  const bgColor = cleanProps.backgroundColor || '#0F172A';
+  const bgColor = cleanProps.theme?.background || cleanProps.backgroundColor || '#0F172A';
 
   return `import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';

@@ -17,16 +17,31 @@ export default function ComponentPreview({ props, updateProp }: ComponentPreview
   const [dateStr, setDateStr] = useState<string>('');
 
   useEffect(() => {
-    // Initialize the property pane value on mount
-    updateProp('selectedDate', selectedDate.toDateString());
+    const initialIso = selectedDate.toISOString().split('T')[0];
+    setDateStr(initialIso);
+    if (!props.value) {
+      updateProp('value', initialIso);
+      updateProp('selectedDate', initialIso);
+    }
   }, []);
+
+  useEffect(() => {
+    if (props.value && typeof props.value === 'string' && props.value !== dateStr) {
+      const parsed = new Date(props.value);
+      if (!isNaN(parsed.getTime())) {
+        setSelectedDate(parsed);
+        setDateStr(props.value);
+      }
+    }
+  }, [props.value]);
+
   return (
     <div className={styles.wrapper}>
       <GestureHandlerRootView style={rnStyles.root}>
-        <View style={[rnStyles.container, { backgroundColor: props.backgroundColor || 'transparent' }]}>
+        <View style={[rnStyles.container, { backgroundColor: props.theme?.background || props.backgroundColor || 'transparent' }]}>
 
           <View style={rnStyles.header}>
-            <Text style={[rnStyles.title, { color: props.labelColor }]}>
+            <Text style={[rnStyles.title, { color: props.theme?.labelColor || props.labelColor || '#94A3B8' }]}>
               {dateStr || 'Select a date'}
             </Text>
           </View>
@@ -34,10 +49,11 @@ export default function ComponentPreview({ props, updateProp }: ComponentPreview
           <View style={rnStyles.pickerContainer}>
             <RulerDatePicker
               {...props}
-              selectedDate={selectedDate}
-              onSelectDate={(date, str) => {
+              value={selectedDate}
+              onChange={(date, str) => {
                 setSelectedDate(date);
                 setDateStr(str);
+                updateProp('value', str);
                 updateProp('selectedDate', str);
               }}
             />

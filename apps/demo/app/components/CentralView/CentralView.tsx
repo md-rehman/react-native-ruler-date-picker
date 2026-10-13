@@ -3,7 +3,7 @@ import { DeviceType } from '../DeviceSelector/DeviceSelector';
 import DeviceMockup from '../DeviceMockup/DeviceMockup';
 import dynamic from 'next/dynamic';
 
-const ComponentPreview = dynamic(
+const ComponentPreview: any = dynamic(
   () => import('../ComponentPreview/ComponentPreview'),
   { ssr: false }
 );
