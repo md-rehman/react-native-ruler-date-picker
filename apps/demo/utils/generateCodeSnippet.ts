@@ -12,7 +12,6 @@ export function generateCodeSnippet({
   mode = 'full',
 }: GenerateCodeOptions): string {
   const {
-    selectedDate: _ignoredDate,
     value: _ignoredValue,
     ...cleanProps
   } = props;
@@ -85,21 +84,6 @@ export function generateCodeSnippet({
       .map(([k, v]) => `        ${k}: '${v}',`)
       .join('\n');
     propLines.push(`      theme={{\n${themeLines}\n      }}`);
-  } else {
-    // Group flat color props into the standardized theme object if theme not present
-    const themeEntries: [string, string][] = [];
-    if (cleanProps.backgroundColor) themeEntries.push(['background', cleanProps.backgroundColor]);
-    if (cleanProps.indicatorColor) themeEntries.push(['indicatorColor', cleanProps.indicatorColor]);
-    if (cleanProps.accentColor) themeEntries.push(['accentColor', cleanProps.accentColor]);
-    if (cleanProps.labelColor) themeEntries.push(['labelColor', cleanProps.labelColor]);
-    if (cleanProps.tickColor) themeEntries.push(['defaultTickColor', cleanProps.tickColor]);
-
-    if (themeEntries.length > 0) {
-      const themeLines = themeEntries
-        .map(([k, v]) => `        ${k}: '${v}',`)
-        .join('\n');
-      propLines.push(`      theme={{\n${themeLines}\n      }}`);
-    }
   }
 
   // 4. Feature Flags & Haptics
@@ -144,7 +128,7 @@ export function generateCodeSnippet({
     .concat('Picker')
     .replace(/^([a-z])/, (m) => m.toUpperCase());
 
-  const bgColor = cleanProps.theme?.background || cleanProps.backgroundColor || '#0F172A';
+  const bgColor = cleanProps.theme?.background || '#0F172A';
 
   return `import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';

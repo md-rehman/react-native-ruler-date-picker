@@ -16,10 +16,7 @@ import styles from './AppShell.module.css';
 function getPropValue(props: Record<string, any>, name: string) {
   if (name.startsWith('theme.')) {
     const key = name.split('.')[1];
-    return props.theme?.[key] ?? (props as any)[key];
-  }
-  if (name === 'value') {
-    return props.value ?? props.selectedDate;
+    return props.theme?.[key];
   }
   return props[name];
 }

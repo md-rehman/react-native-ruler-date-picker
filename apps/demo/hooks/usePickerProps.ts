@@ -37,7 +37,7 @@ export function usePickerProps() {
         [name]: value,
       };
     });
-    if (name !== 'selectedDate' && name !== 'value') {
+    if (name !== 'value') {
       setActiveExampleId('custom');
     }
   }, []);

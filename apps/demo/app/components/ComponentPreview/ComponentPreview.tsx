@@ -21,7 +21,6 @@ export default function ComponentPreview({ props, updateProp }: ComponentPreview
     setDateStr(initialIso);
     if (!props.value) {
       updateProp('value', initialIso);
-      updateProp('selectedDate', initialIso);
     }
   }, []);
 
@@ -38,10 +37,10 @@ export default function ComponentPreview({ props, updateProp }: ComponentPreview
   return (
     <div className={styles.wrapper}>
       <GestureHandlerRootView style={rnStyles.root}>
-        <View style={[rnStyles.container, { backgroundColor: props.theme?.background || props.backgroundColor || 'transparent' }]}>
+        <View style={[rnStyles.container, { backgroundColor: props.theme?.background || 'transparent' }]}>
 
           <View style={rnStyles.header}>
-            <Text style={[rnStyles.title, { color: props.theme?.labelColor || props.labelColor || '#94A3B8' }]}>
+            <Text style={[rnStyles.title, { color: props.theme?.labelColor || '#94A3B8' }]}>
               {dateStr || 'Select a date'}
             </Text>
           </View>
@@ -54,7 +53,6 @@ export default function ComponentPreview({ props, updateProp }: ComponentPreview
                 setSelectedDate(date);
                 setDateStr(str);
                 updateProp('value', str);
-                updateProp('selectedDate', str);
               }}
             />
           </View>
