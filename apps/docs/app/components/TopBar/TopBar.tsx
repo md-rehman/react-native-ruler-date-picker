@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import DeviceSelector, { DeviceType } from '../DeviceSelector/DeviceSelector';
@@ -8,6 +8,7 @@ import ModalToggle, { ModalCategory } from '../ModalToggle/ModalToggle';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import GlassControls from '../GlassControls/GlassControls';
 import Logo from '../Logo/Logo';
+import SearchModal from '../SearchModal/SearchModal';
 import styles from './TopBar.module.css';
 
 interface TopBarProps {
@@ -32,12 +33,31 @@ export default function TopBar({
   const isDocs = pathname?.startsWith('/docs');
   const isHome = pathname === '/' || (!isPlayground && !isDocs);
 
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMac, setIsMac] = useState(true);
+
+  useEffect(() => {
+    setIsMac(/(Mac|iPhone|iPod|iPad)/i.test(navigator.platform || navigator.userAgent));
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
-    <header className={styles.topbar}>
-      <div className={styles.left}>
-        <Link href="/" className={styles.brandLink} title="Home" aria-label="Home">
-          <Logo size={32} />
-        </Link>
+    <>
+      <header className={styles.topbar}>
+        <div className={styles.left}>
+          <Link href="/" className={styles.brandLink} title="Home" aria-label="Home">
+            <Logo size={32} />
+          </Link>
 
         {isPlayground && (
           <Link href="/docs" className={styles.navButton} title="Documentation" aria-label="Docs">
@@ -83,6 +103,36 @@ export default function TopBar({
         </div>
       )}
 
+      {isDocs && (
+        <div className={styles.center}>
+          <button
+            id="topbar-search-btn"
+            className={styles.searchButton}
+            onClick={() => setIsSearchOpen(true)}
+            title={`Search documentation (${isMac ? '⌘K' : 'Ctrl K'})`}
+            aria-label="Search documentation"
+          >
+            <svg
+              className={styles.searchIcon}
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span className={styles.searchText}>Search documentation...</span>
+            <kbd className={styles.searchKbd}>{isMac ? '⌘K' : 'Ctrl K'}</kbd>
+          </button>
+        </div>
+      )}
+
       <div className={styles.right}>
         {isPlayground && onOpenCodeModal && (
           <button
@@ -117,5 +167,8 @@ export default function TopBar({
         </a>
       </div>
     </header>
+
+    <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+    </>
   );
 }
