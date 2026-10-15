@@ -35,12 +35,12 @@ export default function AppShell() {
   const categories = ['Selection', 'Dimensions', 'Colors', 'Features'] as const;
   type Category = typeof categories[number];
 
-  const PANEL_WIDTH = 320;
-  const HORIZONTAL_GAP = 16;
-  const VERTICAL_GAP = 16;
+  const PANEL_WIDTH = 280;
+  const HORIZONTAL_GAP = 12;
+  const VERTICAL_GAP = 12;
   const TOP_MARGIN = 80;
   const BOTTOM_MARGIN = 24;
-  const RIGHT_MARGIN = 24;
+  const RIGHT_MARGIN = 20;
 
   const [visibleModals, setVisibleModals] = useState<Record<Category, boolean>>({
     Selection: true,
@@ -54,10 +54,10 @@ export default function AppShell() {
 
   // Track DOM rendered heights of panels (with sensible defaults)
   const [panelHeights, setPanelHeights] = useState<Record<Category, number>>({
-    Selection: 380,
-    Dimensions: 320,
-    Colors: 340,
-    Features: 350,
+    Selection: 360,
+    Dimensions: 240,
+    Colors: 240,
+    Features: 270,
   });
 
   // User manually moved positions
@@ -217,6 +217,7 @@ export default function AppShell() {
         <FloatingModal
           id="examples"
           title="Examples"
+          width={300}
           defaultPosition={() => ({ x: 24, y: 80 })}
           defaultDocked={typeof window !== 'undefined' && window.innerWidth < 1024 ? 'left' : 'none'}
         >
@@ -247,12 +248,13 @@ export default function AppShell() {
               id={category.toLowerCase()}
               title={category}
               icon={IconComponent}
+              width={PANEL_WIDTH}
               position={currentPos}
               onPositionChange={(pos, isManual) => handlePositionChange(category, pos, isManual)}
               onHeightChange={(h) => handleHeightChange(category, h)}
               defaultDocked={typeof window !== 'undefined' && window.innerWidth < 1024 ? 'right' : 'none'}
             >
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 {categoryProps.map(prop => (
                   <PropControl
                     key={prop.name}

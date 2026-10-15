@@ -12,7 +12,7 @@ export default function EnumSelect({ value, onChange, options }: EnumSelectProps
     <select 
       value={value} 
       onChange={(e) => onChange(e.target.value)}
-      className={styles.input}
+      className={`${styles.input} ${styles.enumSelect}`}
     >
       {options.map(opt => (
         <option key={opt} value={opt}>{opt}</option>

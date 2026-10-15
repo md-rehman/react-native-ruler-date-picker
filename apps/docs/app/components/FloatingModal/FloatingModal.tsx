@@ -10,6 +10,7 @@ export interface FloatingModalProps {
   title: string;
   icon?: React.ReactNode;
   children: React.ReactNode;
+  width?: number | string;
   position?: { x: number; y: number };
   onPositionChange?: (pos: { x: number; y: number }, isManual: boolean) => void;
   onDockChange?: (docked: DockState) => void;
@@ -24,6 +25,7 @@ export default function FloatingModal({
   title, 
   icon, 
   children, 
+  width,
   position: controlledPosition,
   onPositionChange,
   onDockChange,
@@ -249,7 +251,7 @@ export default function FloatingModal({
       <div 
         ref={modalRef}
         className={`${styles.modal} glass ${isDragging ? styles.dragging : ''}`}
-        style={{ left: position.x, top: position.y }}
+        style={{ left: position.x, top: position.y, width: width ?? undefined }}
       >
       <div 
         className={`${styles.header} ${isCollapsed ? styles.headerCollapsed : ''}`} 

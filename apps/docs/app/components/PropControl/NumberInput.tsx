@@ -18,7 +18,7 @@ export default function NumberInput({ value, onChange, min, max, step }: NumberI
       min={min}
       max={max}
       step={step}
-      className={styles.input}
+      className={`${styles.input} ${styles.numberInput}`}
     />
   );
 }

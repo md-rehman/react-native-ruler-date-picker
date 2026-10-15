@@ -1,42 +1,69 @@
 .container {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 28px;
+}
+
+.containerFullWidth {
+  display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  align-items: stretch;
+  gap: 6px;
 }
 
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
 }
 
 .label {
-  font-size: 0.85rem;
+  font-size: 0.775rem;
   font-weight: 500;
   color: var(--color-text-secondary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tooltip {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
   background-color: var(--color-border);
   color: var(--color-text-secondary);
-  font-size: 10px;
+  font-size: 9px;
   cursor: help;
+  flex-shrink: 0;
 }
 
 .controlWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.controlWrapperFull {
   width: 100%;
+  display: block;
 }
 
 .readonlyValue {
-  font-family: monospace;
-  font-size: 0.85rem;
-  padding: 8px 12px;
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  height: 26px;
+  display: flex;
+  align-items: center;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
@@ -49,13 +76,15 @@
 /* Common input styles */
 .input {
   width: 100%;
-  padding: 8px 12px;
+  max-width: 110px;
+  padding: 4px 8px;
+  height: 26px;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   color: var(--color-text-primary);
   font-family: inherit;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   transition: border-color var(--transition-fast);
 }
 
@@ -64,23 +93,36 @@
   border-color: var(--color-accent);
 }
 
+.numberInput {
+  width: 72px;
+  text-align: right;
+  font-family: ui-monospace, monospace;
+}
+
+.enumSelect {
+  max-width: 115px;
+  padding: 2px 6px;
+  font-size: 0.775rem;
+}
+
 /* Color Picker specific */
 .colorPickerWrapper {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 6px;
 }
 
 .colorInput {
   -webkit-appearance: none;
   border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
   padding: 0;
   cursor: pointer;
   background: none;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .colorInput::-webkit-color-swatch-wrapper {
@@ -89,16 +131,21 @@
 
 .colorInput::-webkit-color-swatch {
   border: 1px solid var(--color-border);
-  border-radius: 50%;
+  border-radius: 6px;
 }
 
 .colorHex {
-  flex: 1;
+  width: 78px;
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  padding: 3px 6px;
+  height: 26px;
 }
 
 /* Boolean Toggle specific */
 .toggleLabel {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   cursor: pointer;
   position: relative;
@@ -112,10 +159,10 @@
 }
 
 .toggleTrack {
-  width: 44px;
-  height: 24px;
+  width: 34px;
+  height: 20px;
   background-color: var(--color-border);
-  border-radius: 12px;
+  border-radius: 10px;
   position: relative;
   transition: background-color var(--transition-fast);
 }
@@ -128,14 +175,14 @@
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   background-color: white;
   border-radius: 50%;
   transition: transform var(--transition-fast);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 
 .toggleInput:checked + .toggleTrack .toggleThumb {
-  transform: translateX(20px);
+  transform: translateX(14px);
 }
