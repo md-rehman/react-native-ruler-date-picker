@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Navbar from '../components/Navbar/Navbar';
+import TopBar from '../components/TopBar/TopBar';
 import Footer from '../components/Footer/Footer';
 import { PROP_DEFINITIONS } from '../../data/propDefinitions';
 import styles from './docs.module.css';
@@ -18,7 +18,7 @@ export default function DocsPage() {
 
   return (
     <div className={styles.container}>
-      <Navbar />
+      <TopBar />
 
       <div className={styles.layout}>
         {/* ── Sidebar ── */}

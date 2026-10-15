@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import Navbar from './components/Navbar/Navbar';
+import TopBar from './components/TopBar/TopBar';
 import Footer from './components/Footer/Footer';
 import styles from './page.module.css';
 
@@ -147,7 +147,7 @@ export default function HomePage() {
       <div className={styles.glowTop} />
       <div className={styles.glowAccent} />
 
-      <Navbar />
+      <TopBar />
 
       <main className={styles.mainContent}>
         {/* ── HERO SECTION ── */}

@@ -10,7 +10,7 @@
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
-  padding: 48px var(--spacing-lg);
+  padding: 80px var(--spacing-lg) 48px;
   display: grid;
   grid-template-columns: 240px 1fr;
   gap: 48px;
