@@ -1,8 +1,10 @@
 import React from 'react';
+import Link from 'next/link';
 import DeviceSelector, { DeviceType } from '../DeviceSelector/DeviceSelector';
 import ModalToggle, { ModalCategory } from '../ModalToggle/ModalToggle';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import GlassControls from '../GlassControls/GlassControls';
+import Logo from '../Logo/Logo';
 import styles from './TopBar.module.css';
 
 interface TopBarProps {
@@ -24,7 +26,15 @@ export default function TopBar({
 }: TopBarProps) {
   return (
     <header className={styles.topbar}>
-      <div className={styles.left}></div>
+      <div className={styles.left}>
+        <Link href="/" className={styles.brandLink} title="Back to Home">
+          <Logo size={20} />
+          <span className={styles.brandTitle}>ruler-picker</span>
+        </Link>
+        <span className={styles.navDivider}>/</span>
+        <span className={styles.currentPage}>Playground</span>
+        <Link href="/docs" className={styles.docsLink}>Docs</Link>
+      </div>
       
       <div className={styles.center}>
         <DeviceSelector activeDevice={activeDevice} onChange={onDeviceChange} />

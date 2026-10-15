@@ -19,6 +19,67 @@
   flex: 1;
 }
 
+.left {
+  justify-content: flex-start;
+  pointer-events: auto;
+}
+
+.brandLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.brandLink:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.brandLogo {
+  color: var(--color-accent);
+}
+
+.brandTitle {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.navDivider {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.currentPage {
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.docsLink {
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.docsLink:hover {
+  color: var(--color-accent);
+  background-color: var(--color-surface);
+}
+
 .right {
   justify-content: flex-end;
   pointer-events: auto;
