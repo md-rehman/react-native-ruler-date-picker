@@ -144,6 +144,7 @@ export default function HomePage() {
 
   return (
     <div className={styles.page}>
+      <div className={styles.gridBackground} />
       <div className={styles.glowTop} />
       <div className={styles.glowAccent} />
 
