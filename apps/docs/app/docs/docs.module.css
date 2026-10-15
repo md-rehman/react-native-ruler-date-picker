@@ -1,0 +1,208 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg);
+  position: relative;
+}
+
+.layout {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 48px var(--spacing-lg);
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 48px;
+  flex: 1;
+}
+
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sidebarGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebarTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  padding-left: 12px;
+}
+
+.sidebarLink {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.sidebarLink:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+}
+
+.sidebarLinkActive {
+  color: var(--color-accent);
+  background: var(--color-surface);
+  font-weight: 600;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.comingSoonBanner {
+  border-radius: var(--radius-lg);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.bannerText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bannerTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bannerDesc {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.bannerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: var(--radius-xl);
+  background: var(--color-accent);
+  color: #FFFFFF !important;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+  transition: all var(--transition-fast);
+}
+
+.bannerBtn:hover {
+  background: var(--color-accent-hover);
+  transform: translateY(-1px);
+}
+
+.docSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sectionTitle {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.sectionLead {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.codeBlock {
+  border-radius: var(--radius-md);
+  background: #0D1117;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #E6EDF3;
+  overflow-x: auto;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  box-shadow: var(--glass-shadow);
+}
+
+.propsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.propsTable th {
+  padding: 12px 16px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--glass-border);
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.propsTable td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--glass-border);
+  color: var(--color-text-secondary);
+}
+
+.propsTable tr:last-child td {
+  border-bottom: none;
+}
+
+.propName {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.propType {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8rem;
+  color: #8B949E;
+}
