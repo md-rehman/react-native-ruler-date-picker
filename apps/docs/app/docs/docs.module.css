@@ -1,72 +1,58 @@
 .container {
+  width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: var(--color-bg);
   position: relative;
+  overflow-x: hidden;
 }
 
 .layout {
-  max-width: 1200px;
   width: 100%;
-  margin: 0 auto;
-  padding: 80px var(--spacing-lg) 48px;
+  padding: 76px var(--spacing-xl) 48px;
   display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 48px;
+  grid-template-columns: 320px minmax(0, 1fr) 220px;
+  gap: 40px;
   flex: 1;
+  transition: grid-template-columns 0.3s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@media (max-width: 860px) {
+.layoutCollapsed {
+  grid-template-columns: 0px minmax(0, 1fr) 220px;
+  padding-left: 32px;
+}
+
+@media (max-width: 1200px) {
   .layout {
-    grid-template-columns: 1fr;
-    gap: 32px;
+    grid-template-columns: 320px minmax(0, 1fr);
+  }
+
+  .layoutCollapsed {
+    grid-template-columns: 0px minmax(0, 1fr);
   }
 }
 
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 76px var(--spacing-md) 32px;
+  }
 
-.sidebarGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+  .layoutCollapsed {
+    padding-left: var(--spacing-md);
+  }
 
-.sidebarTitle {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-text-muted);
-  padding-left: 12px;
-}
-
-.sidebarLink {
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-text-secondary);
-  text-decoration: none;
-  transition: all var(--transition-fast);
-}
-
-.sidebarLink:hover {
-  color: var(--color-text-primary);
-  background: var(--color-surface);
-}
-
-.sidebarLinkActive {
-  color: var(--color-accent);
-  background: var(--color-surface);
-  font-weight: 600;
+  .content {
+    grid-column: 1;
+  }
 }
 
 .content {
+  grid-column: 2;
+  width: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 48px;
@@ -133,6 +119,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  scroll-margin-top: 80px;
 }
 
 .sectionTitle {
@@ -162,12 +149,56 @@
   overflow-x: auto;
 }
 
+.anatomyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.anatomyCard {
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all var(--transition-fast);
+}
+
+.anatomyCard:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-accent);
+}
+
+.anatomyTag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--color-accent);
+}
+
+.anatomyName {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+}
+
+.anatomyDesc {
+  font-size: 0.825rem;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+  margin: 0;
+}
+
 .tableWrapper {
   overflow-x: auto;
   border-radius: var(--radius-md);
   border: 1px solid var(--glass-border);
   background: var(--glass-bg);
   box-shadow: var(--glass-shadow);
+  width: 100%;
 }
 
 .propsTable {
