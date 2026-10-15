@@ -27,57 +27,53 @@
 .brandLink {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-xl);
   background-color: var(--color-surface);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.brandLink:hover {
+  background-color: var(--color-surface-hover);
+  transform: translateY(-1px);
+}
+
+.brandLink:active {
+  transform: translateY(0);
+}
+
+.docsButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
   color: var(--color-text-primary);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  font-size: 0.825rem;
   font-weight: 600;
-  font-size: 0.85rem;
+  cursor: pointer;
   text-decoration: none;
   transition: all var(--transition-fast);
 }
 
-.brandLink:hover {
+.docsButton:hover {
   background-color: var(--color-surface-hover);
   color: var(--color-accent);
   transform: translateY(-1px);
 }
 
-.brandLogo {
-  color: var(--color-accent);
-}
-
-.brandTitle {
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.navDivider {
-  color: var(--color-text-muted);
-  font-size: 0.8rem;
-}
-
-.currentPage {
-  font-size: 0.825rem;
-  font-weight: 500;
-  color: var(--color-text-secondary);
-}
-
-.docsLink {
-  font-size: 0.825rem;
-  font-weight: 500;
-  color: var(--color-text-secondary);
-  padding: 4px 10px;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-fast);
-}
-
-.docsLink:hover {
-  color: var(--color-accent);
-  background-color: var(--color-surface);
+.docsButton:active {
+  transform: translateY(0);
 }
 
 .right {
@@ -149,10 +145,12 @@
 }
 
 @media (max-width: 640px) {
-  .codeButton span {
+  .codeButton span,
+  .docsButton span {
     display: none;
   }
-  .codeButton {
+  .codeButton,
+  .docsButton {
     width: 40px;
     padding: 0;
     justify-content: center;

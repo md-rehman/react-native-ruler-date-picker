@@ -16,8 +16,8 @@ interface TopBarProps {
   onOpenCodeModal: () => void;
 }
 
-export default function TopBar({ 
-  activeDevice, 
+export default function TopBar({
+  activeDevice,
   onDeviceChange,
   visibleModals,
   onToggleModal,
@@ -27,21 +27,24 @@ export default function TopBar({
   return (
     <header className={styles.topbar}>
       <div className={styles.left}>
-        <Link href="/" className={styles.brandLink} title="Back to Home">
-          <Logo size={20} />
-          <span className={styles.brandTitle}>ruler-picker</span>
+        <Link href="/" className={styles.brandLink} title="Home" aria-label="Home">
+          <Logo size={32} />
         </Link>
-        <span className={styles.navDivider}>/</span>
-        <span className={styles.currentPage}>Playground</span>
-        <Link href="/docs" className={styles.docsLink}>Docs</Link>
+        <Link href="/docs" className={styles.docsButton} title="Documentation" aria-label="Docs">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          <span>Docs</span>
+        </Link>
       </div>
-      
+
       <div className={styles.center}>
         <DeviceSelector activeDevice={activeDevice} onChange={onDeviceChange} />
       </div>
 
       <div className={styles.right}>
-        <button 
+        <button
           className={styles.codeButton}
           onClick={onOpenCodeModal}
           title="View & Copy Example Code"
