@@ -1,8 +1,10 @@
 .sidebarWrapper {
   width: 320px;
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
-  position: relative;
+  position: sticky;
+  top: 76px;
+  align-self: start;
   z-index: 10;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
 }
 
 .sidebarWrapperCollapsed {
@@ -23,8 +25,6 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   background: var(--glass-bg);
-  position: sticky;
-  top: 76px;
   max-height: calc(100vh - 96px);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
