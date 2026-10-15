@@ -1,0 +1,62 @@
+import React, { useId } from 'react';
+
+interface LogoProps {
+  size?: number;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+export default function Logo({ size = 32, className, style }: LogoProps) {
+  const rawId = useId();
+  const clipId = `ruler-circle-clip-${rawId.replace(/:/g, '')}`;
+
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 500 500"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      style={{ display: 'inline-block', verticalAlign: 'middle', flexShrink: 0, borderRadius: '50%', ...style }}
+    >
+      <defs>
+        <clipPath id={clipId}>
+          <circle cx="250" cy="250" r="250" />
+        </clipPath>
+      </defs>
+
+      {/* 1. Black Circle Background */}
+      <circle cx="250" cy="250" r="250" fill="#000000" />
+
+      {/* 2. Ruler ticks and indicator clipped to circle */}
+      <g clipPath={`url(#${clipId})`}>
+        {/* Left Major Graduation (Tall) */}
+        <rect x="14" y="170" width="16" height="160" fill="#D9D9D9" />
+
+        {/* 5 Minor Graduations (Short) */}
+        <rect x="52" y="250" width="16" height="80" fill="#D9D9D9" />
+        <rect x="90" y="250" width="16" height="80" fill="#D9D9D9" />
+        <rect x="128" y="250" width="16" height="80" fill="#D9D9D9" />
+        <rect x="166" y="250" width="16" height="80" fill="#D9D9D9" />
+        <rect x="204" y="250" width="16" height="80" fill="#D9D9D9" />
+
+        {/* Center Major Graduations (Tall) */}
+        <rect x="242" y="170" width="16" height="160" fill="#D9D9D9" />
+        <rect x="280" y="170" width="16" height="160" fill="#D9D9D9" />
+
+        {/* 4 Minor Graduations (Short) */}
+        <rect x="318" y="250" width="16" height="80" fill="#D9D9D9" />
+        <rect x="356" y="250" width="16" height="80" fill="#D9D9D9" />
+        <rect x="394" y="250" width="16" height="80" fill="#D9D9D9" />
+        <rect x="432" y="250" width="16" height="80" fill="#D9D9D9" />
+
+        {/* Right Major Graduation (Tall) */}
+        <rect x="470" y="170" width="16" height="160" fill="#D9D9D9" />
+
+        {/* Central Blue Needle Indicator */}
+        <rect x="248" y="121" width="4" height="209" fill="#00BFFF" />
+      </g>
+    </svg>
+  );
+}
