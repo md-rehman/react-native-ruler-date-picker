@@ -185,6 +185,14 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     description: 'Show "Today" reset pill button when scrolled away.',
   },
   {
+    name: 'lensEffect',
+    type: 'boolean',
+    label: 'lensEffect',
+    category: 'Features',
+    defaultValue: false,
+    description: 'Non-linear fisheye lens distortion with magnified center spacing.',
+  },
+  {
     name: 'enableHaptics',
     type: 'boolean',
     label: 'enableHaptics',

@@ -93,6 +93,16 @@ export function generateCodeSnippet({
   if (cleanProps.showResetToToday !== undefined && cleanProps.showResetToToday) {
     propLines.push(`      showResetToToday={true}`);
   }
+  if (cleanProps.lensEffect) {
+    if (typeof cleanProps.lensEffect === 'object') {
+      const lensProps = Object.entries(cleanProps.lensEffect)
+        .map(([k, v]) => `        ${k}: ${v},`)
+        .join('\n');
+      propLines.push(`      lensEffect={{\n${lensProps}\n      }}`);
+    } else {
+      propLines.push(`      lensEffect={true}`);
+    }
+  }
   if (cleanProps.enableHaptics !== undefined && !cleanProps.enableHaptics) {
     propLines.push(`      enableHaptics={false}`);
   }
