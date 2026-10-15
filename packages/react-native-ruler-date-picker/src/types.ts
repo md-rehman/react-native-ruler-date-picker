@@ -196,8 +196,38 @@ export interface RulerDatePickerProps {
   /** Pulse interval in ms during continuous haptic mode (default: 20) */
   continuousHapticIntervalMs?: number;
 
+  // ── Fisheye Lens Effect ──
+  /**
+   * Enable non-linear fisheye lens distortion where tick spacing is wider near the center
+   * needle and gradually flattens out to standard spacing away from the center.
+   * Can be true (for default configuration) or a custom LensConfig object.
+   */
+  lensEffect?: boolean | LensConfig;
+
   /** Test ID for automated tests */
   testID?: string;
+}
+
+// ── Fisheye Lens Types ───────────────────────────────────────────────────────
+
+export interface LensConfig {
+  /**
+   * Spacing magnification factor at the center needle.
+   * (e.g. 1.6 means 60% wider spacing at the needle).
+   * Default: 1.6
+   */
+  magnification?: number;
+  /**
+   * Radius in pixels around the center needle over which the magnification
+   * smoothly transitions back to standard linear spacing.
+   * Default: 60
+   */
+  radius?: number;
+  /**
+   * Whether to subtly scale tick bar height and label prominence near the center.
+   * Default: true
+   */
+  scaleTicks?: boolean;
 }
 
 // ── Range Picker Types ───────────────────────────────────────────────────────

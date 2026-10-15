@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import type { RulerDatePickerProps } from './types';
 import { useRulerDatePicker } from './useRulerDatePicker';
 import { RulerContext } from './RulerContext';
-import { DEFAULTS } from './defaults';
+import { DEFAULTS, DEFAULT_LENS_CONFIG } from './defaults';
 
 export interface RulerRootProps extends RulerDatePickerProps {
   children?: React.ReactNode;
@@ -17,10 +17,22 @@ export function RulerRoot(props: RulerRootProps) {
     indicatorHeight = DEFAULTS.indicatorHeight,
     indicatorColor,
     renderIndicator,
+    lensEffect,
     testID,
   } = props;
 
   const ruler = useRulerDatePicker(props);
+
+  const lensConfig = React.useMemo(() => {
+    if (!lensEffect) return null;
+    if (typeof lensEffect === 'object') {
+      return {
+        ...DEFAULT_LENS_CONFIG,
+        ...lensEffect,
+      };
+    }
+    return DEFAULT_LENS_CONFIG;
+  }, [lensEffect]);
 
   const contextValue = {
     ...ruler,
@@ -28,6 +40,7 @@ export function RulerRoot(props: RulerRootProps) {
     indicatorHeight,
     indicatorColor,
     renderIndicator,
+    lensConfig,
   };
 
   return (

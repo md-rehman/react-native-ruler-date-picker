@@ -1,4 +1,4 @@
-import type { ResolvedRulerTheme } from './types';
+import type { ResolvedRulerTheme, LensConfig } from './types';
 
 // ── Internal constants (not user-configurable) ───────────────────────────
 export const MS_PER_DAY = 86_400_000;
@@ -21,6 +21,12 @@ export const DEFAULTS = {
   showResetToToday: false,
   showHeader: true,
 } as const;
+
+export const DEFAULT_LENS_CONFIG: Required<LensConfig> = {
+  magnification: 1.6,
+  radius: 60,
+  scaleTicks: true,
+};
 
 // ── Default color palettes ───────────────────────────────────────────────
 export const LIGHT_THEME: ResolvedRulerTheme = {

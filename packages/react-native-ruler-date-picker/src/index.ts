@@ -4,6 +4,9 @@ export { RulerDateRangePicker } from './RulerDateRangePicker';
 export { Ruler } from './Ruler';
 export { RulerRange } from './RulerRange';
 export { Tick } from './Tick';
+export { RulerLensTrack } from './RulerLensTrack';
+export { RulerLensTicks } from './RulerLensTicks';
+export { LensTick } from './LensTick';
 
 // ── Headless Hooks ─────────────────────────────────────────────────────────
 export { useRulerDatePicker, type UseRulerDatePickerReturn } from './useRulerDatePicker';
@@ -28,7 +31,7 @@ export {
   computeDayRange,
   useResolvedTheme,
 } from './utils';
-export { DEFAULTS, LIGHT_THEME, DARK_THEME, MS_PER_DAY } from './defaults';
+export { DEFAULTS, DEFAULT_LENS_CONFIG, LIGHT_THEME, DARK_THEME, MS_PER_DAY } from './defaults';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 export type {
@@ -41,12 +44,16 @@ export type {
   RulerTheme,
   ResolvedRulerTheme,
   RulerDatePickerProps,
+  LensConfig,
   DateRange,
   DateRangeChangePayload,
   RulerDateRangePickerProps,
 } from './types';
 export type { RulerRootProps } from './RulerRoot';
 export type { RulerTrackProps } from './RulerTrack';
+export type { RulerLensTrackProps } from './RulerLensTrack';
+export type { RulerLensTicksProps } from './RulerLensTicks';
+export type { LensTickProps } from './LensTick';
 export type { RulerIndicatorProps } from './RulerIndicator';
 export type { RulerTicksProps } from './RulerTicks';
 export type { RulerHeaderProps } from './RulerHeader';

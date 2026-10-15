@@ -5,6 +5,8 @@ import { RulerTicks } from './RulerTicks';
 import { Tick } from './Tick';
 import { RulerHeader } from './RulerHeader';
 import { RulerResetButton } from './RulerResetButton';
+import { RulerLensTrack } from './RulerLensTrack';
+import { RulerLensTicks } from './RulerLensTicks';
 
 /**
  * Compound Anatomy API for the Ruler Date Picker.
@@ -13,19 +15,17 @@ import { RulerResetButton } from './RulerResetButton';
  * ```tsx
  * <Ruler.Root value={selectedDate} onChange={setSelectedDate}>
  *   <Ruler.Header />
- *   <Ruler.Track>
- *     <Ruler.Indicator />
- *     <Ruler.Ticks />
- *   </Ruler.Track>
- *   <Ruler.ResetButton />
+ *   <Ruler.LensTrack />
  * </Ruler.Root>
  * ```
  */
 export const Ruler = {
   Root: RulerRoot,
   Track: RulerTrack,
-  Indicator: RulerIndicator,
+  LensTrack: RulerLensTrack,
   Ticks: RulerTicks,
+  LensTicks: RulerLensTicks,
+  Indicator: RulerIndicator,
   Tick: Tick,
   Header: RulerHeader,
   ResetButton: RulerResetButton,
