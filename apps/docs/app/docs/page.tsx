@@ -108,6 +108,7 @@ export default function DocsPage() {
 
   return (
     <div className={styles.container}>
+      <div className={styles.gridBackground} />
       <TopBar />
 
       <div className={`${styles.layout} ${isSidebarCollapsed ? styles.layoutCollapsed : ''}`}>

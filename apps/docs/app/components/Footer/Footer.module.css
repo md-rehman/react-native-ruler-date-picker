@@ -6,6 +6,8 @@
   -webkit-backdrop-filter: blur(12px);
   padding: 48px 0 32px;
   margin-top: 64px;
+  position: relative;
+  z-index: 1;
 }
 
 .container {

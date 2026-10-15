@@ -8,6 +8,21 @@
   overflow-x: hidden;
 }
 
+.gridBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(to right, var(--color-border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-border) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.3;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .layout {
   width: 100%;
   padding: 76px var(--spacing-xl) 48px;
@@ -16,6 +31,8 @@
   gap: 40px;
   flex: 1;
   transition: grid-template-columns 0.3s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  z-index: 1;
 }
 
 .layoutCollapsed {
