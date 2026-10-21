@@ -16,8 +16,10 @@ export interface FloatingModalProps {
   onDockChange?: (docked: DockState) => void;
   onCollapseChange?: (collapsed: boolean) => void;
   onHeightChange?: (height: number) => void;
+  onClose?: () => void;
   defaultPosition?: { x: number; y: number } | (() => { x: number; y: number });
   defaultDocked?: 'none' | 'left' | 'right';
+  noPadding?: boolean;
 }
 
 export default function FloatingModal({ 
@@ -31,8 +33,10 @@ export default function FloatingModal({
   onDockChange,
   onCollapseChange,
   onHeightChange,
+  onClose,
   defaultPosition, 
-  defaultDocked = 'none' 
+  defaultDocked = 'none',
+  noPadding = false,
 }: FloatingModalProps) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -269,11 +273,19 @@ export default function FloatingModal({
                 <polyline points="6 9 12 15 18 9"></polyline>
              </svg>
            </button>
+           {onClose && (
+             <button onClick={onClose} className={styles.iconBtn} title="Close" aria-label="Close">
+               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                 <line x1="18" y1="6" x2="6" y2="18"></line>
+                 <line x1="6" y1="6" x2="18" y2="18"></line>
+               </svg>
+             </button>
+           )}
         </div>
       </div>
       
       {!isCollapsed && (
-        <div className={styles.content}>
+        <div className={`${styles.content} ${noPadding ? styles.noPadding : ''}`}>
           {children}
         </div>
       )}
