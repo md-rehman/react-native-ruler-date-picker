@@ -109,6 +109,15 @@ describe('Tick Resolver & Presets', () => {
       expect(resolved.hasDot).toBe(true);
       expect(resolved.dotColor).toBe(LIGHT_THEME.accentColor);
     });
+
+    it('respects defaultWidth when rule width is omitted', () => {
+      // rule 2 (weekends) does not specify width
+      const resolvedDefault = resolveTick(baseContext, rules, LIGHT_THEME);
+      expect(resolvedDefault.width).toBe(3);
+
+      const resolvedCustom = resolveTick(baseContext, rules, LIGHT_THEME, 5);
+      expect(resolvedCustom.width).toBe(5);
+    });
   });
 
   describe('resolveTickRules preset helper', () => {
