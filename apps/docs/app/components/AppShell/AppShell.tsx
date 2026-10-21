@@ -7,10 +7,12 @@ import FloatingModal from '../FloatingModal/FloatingModal';
 import ExamplesPanel from '../ExamplesPanel/ExamplesPanel';
 import PropControl from '../PropControl/PropControl';
 import CodeModal from '../CodeModal/CodeModal';
+import LiveCodeEditor from '../LiveCodeEditor/LiveCodeEditor';
 import { DeviceType } from '../DeviceSelector/DeviceSelector';
 import { usePickerProps } from '../../../hooks/usePickerProps';
 import { PROP_DEFINITIONS } from '../../../data/propDefinitions';
-import { SelectionIcon, DimensionsIcon, ColorsIcon, FeaturesIcon } from '../ModalToggle/ModalToggle';
+import { EXAMPLES } from '../../../data/examples';
+import { SelectionIcon, DimensionsIcon, ColorsIcon, FeaturesIcon, CodeIcon, ModalCategory } from '../ModalToggle/ModalToggle';
 import styles from './AppShell.module.css';
 
 function getPropValue(props: Record<string, any>, name: string) {
@@ -28,12 +30,16 @@ export default function AppShell() {
   const pickerState = usePickerProps();
 
   const handleOpenCodeModal = (presetId?: string) => {
-    setCodeModalPresetId(presetId || pickerState.activeExampleId || 'default');
-    setIsCodeModalOpen(true);
+    const id = presetId || pickerState.activeExampleId || 'default';
+    const preset = EXAMPLES.find((e) => e.id === id);
+    if (preset) {
+      pickerState.loadPreset(preset);
+    }
+    setVisibleModals((prev) => ({ ...prev, Code: true }));
   };
 
   const categories = ['Selection', 'Dimensions', 'Colors', 'Features'] as const;
-  type Category = typeof categories[number];
+  type PropCategory = typeof categories[number];
 
   const PANEL_WIDTH = 280;
   const HORIZONTAL_GAP = 12;
@@ -42,18 +48,19 @@ export default function AppShell() {
   const BOTTOM_MARGIN = 24;
   const RIGHT_MARGIN = 20;
 
-  const [visibleModals, setVisibleModals] = useState<Record<Category, boolean>>({
+  const [visibleModals, setVisibleModals] = useState<Record<ModalCategory, boolean>>({
     Selection: true,
     Dimensions: true,
     Colors: true,
-    Features: true
+    Features: true,
+    Code: false,
   });
 
   // Track the order in which modals were opened/activated
-  const [openOrder, setOpenOrder] = useState<Category[]>([...categories]);
+  const [openOrder, setOpenOrder] = useState<PropCategory[]>([...categories]);
 
   // Track DOM rendered heights of panels (with sensible defaults)
-  const [panelHeights, setPanelHeights] = useState<Record<Category, number>>({
+  const [panelHeights, setPanelHeights] = useState<Record<PropCategory, number>>({
     Selection: 360,
     Dimensions: 240,
     Colors: 240,
@@ -61,7 +68,7 @@ export default function AppShell() {
   });
 
   // User manually moved positions
-  const [manualPositions, setManualPositions] = useState<Partial<Record<Category, { x: number; y: number }>>>({});
+  const [manualPositions, setManualPositions] = useState<Partial<Record<PropCategory, { x: number; y: number }>>>({});
 
   // Viewport dimensions
   const [windowSize, setWindowSize] = useState<{ width: number; height: number }>({
@@ -77,7 +84,7 @@ export default function AppShell() {
     handleResize();
     window.addEventListener('resize', handleResize);
 
-    const loaded: Partial<Record<Category, { x: number; y: number }>> = {};
+    const loaded: Partial<Record<PropCategory, { x: number; y: number }>> = {};
     categories.forEach((cat) => {
       const stored = localStorage.getItem(`modal-${cat.toLowerCase()}`);
       if (stored) {
@@ -105,7 +112,7 @@ export default function AppShell() {
     // Panels that need auto-layout (i.e. not manually dragged)
     const autoPanels = activePanels.filter((cat) => !manualPositions[cat]);
 
-    const result: Partial<Record<Category, { x: number; y: number }>> = {};
+    const result: Partial<Record<PropCategory, { x: number; y: number }>> = {};
     let currentColumnIndex = 0;
     let currentY = TOP_MARGIN;
 
@@ -129,9 +136,17 @@ export default function AppShell() {
   }, [windowSize, openOrder, visibleModals, panelHeights, manualPositions]);
 
   // Requirement 1 & 2: Toggle modal logic
-  const toggleModal = (category: Category) => {
+  const toggleModal = (category: ModalCategory) => {
     const isCurrentlyVisible = visibleModals[category];
     const willBeVisible = !isCurrentlyVisible;
+
+    if (category === 'Code') {
+      if (!willBeVisible && typeof window !== 'undefined') {
+        localStorage.removeItem('modal-code');
+      }
+      setVisibleModals((prev) => ({ ...prev, Code: willBeVisible }));
+      return;
+    }
 
     if (!willBeVisible) {
       // Requirement 1: When panel are toggle off their position should reset.
@@ -165,10 +180,13 @@ export default function AppShell() {
 
   // Requirement 5: When reset is clicked, recalculate positions of all open panels neatly
   const handleResetModals = () => {
-    // 1. Clear manual positions for all categories
+    // 1. Clear manual positions for all categories & code
     categories.forEach((cat) => {
       localStorage.removeItem(`modal-${cat.toLowerCase()}`);
     });
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('modal-code');
+    }
     setManualPositions({});
 
     // 2. Normalize openOrder to canonical order of currently visible panels
@@ -180,7 +198,7 @@ export default function AppShell() {
   };
 
   // Requirement 4: When open panel is moved, update state and local storage
-  const handlePositionChange = React.useCallback((category: Category, pos: { x: number; y: number }, isManual: boolean) => {
+  const handlePositionChange = React.useCallback((category: PropCategory, pos: { x: number; y: number }, isManual: boolean) => {
     if (isManual) {
       setManualPositions((prev) => ({
         ...prev,
@@ -189,7 +207,7 @@ export default function AppShell() {
     }
   }, []);
 
-  const handleHeightChange = React.useCallback((category: Category, height: number) => {
+  const handleHeightChange = React.useCallback((category: PropCategory, height: number) => {
     setPanelHeights((prev) => {
       if (Math.abs(prev[category] - height) < 2) return prev;
       return { ...prev, [category]: height };
@@ -204,7 +222,7 @@ export default function AppShell() {
         visibleModals={visibleModals}
         onToggleModal={toggleModal}
         onResetModals={handleResetModals}
-        onOpenCodeModal={() => handleOpenCodeModal()}
+        onOpenCodeModal={() => toggleModal('Code')}
       />
       
       <div className={styles.main}>
@@ -227,6 +245,34 @@ export default function AppShell() {
             onOpenCodeModal={(presetId) => handleOpenCodeModal(presetId)}
           />
         </FloatingModal>
+
+        {visibleModals['Code'] && (
+          <FloatingModal
+            id="code"
+            title="Code"
+            icon={<CodeIcon />}
+            width={Math.min(520, windowSize.width - 32)}
+            defaultPosition={() => ({
+              x: Math.max(24, Math.min(windowSize.width - 544, 340)),
+              y: 80,
+            })}
+            defaultDocked="none"
+            noPadding
+            onClose={() => toggleModal('Code')}
+          >
+            <div style={{ height: 'min(540px, calc(100vh - 160px))', width: '100%' }}>
+              <LiveCodeEditor
+                code={pickerState.code}
+                onChange={pickerState.updateFromCode}
+                error={pickerState.codeError}
+                mode={pickerState.codeMode}
+                onModeChange={pickerState.setCodeMode}
+                onReset={pickerState.resetCode}
+                embedded
+              />
+            </div>
+          </FloatingModal>
+        )}
 
         {categories.map((category) => {
           if (!visibleModals[category]) return null;
@@ -274,6 +320,13 @@ export default function AppShell() {
         onClose={() => setIsCodeModalOpen(false)}
         activePresetId={codeModalPresetId}
         currentProps={pickerState.props}
+        code={pickerState.code}
+        updateFromCode={pickerState.updateFromCode}
+        codeError={pickerState.codeError}
+        codeMode={pickerState.codeMode}
+        setCodeMode={pickerState.setCodeMode}
+        resetCode={pickerState.resetCode}
+        onSelectPreset={pickerState.loadPreset}
       />
     </div>
   );
