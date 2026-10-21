@@ -240,6 +240,13 @@
   transform: translateY(0);
 }
 
+.codeButtonActive {
+  background-color: rgba(56, 189, 248, 0.2);
+  color: var(--color-accent);
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.25);
+}
+
 @media (max-width: 640px) {
   .codeButton span,
   .docsButton span,

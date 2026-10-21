@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './ModalToggle.module.css';
 
-export type ModalCategory = 'Selection' | 'Dimensions' | 'Colors' | 'Features';
+export type ModalCategory = 'Selection' | 'Dimensions' | 'Colors' | 'Features' | 'Code';
 
 interface ModalToggleProps {
   visibleModals: Record<ModalCategory, boolean>;
@@ -49,6 +49,13 @@ export const FeaturesIcon = () => (
   </svg>
 );
 
+export const CodeIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="16 18 22 12 16 6"></polyline>
+    <polyline points="8 6 2 12 8 18"></polyline>
+  </svg>
+);
+
 export const ResetIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
@@ -86,6 +93,13 @@ export default function ModalToggle({ visibleModals, onToggle, onReset }: ModalT
         title="Toggle Features Settings"
       >
         <FeaturesIcon />
+      </button>
+      <button
+        className={`${styles.button} ${visibleModals['Code'] ? styles.active : ''}`}
+        onClick={() => onToggle('Code')}
+        title="Toggle Live Code Editor"
+      >
+        <CodeIcon />
       </button>
       <div style={{ width: '1px', backgroundColor: 'var(--glass-border)', margin: '4px 2px' }} />
       <button
