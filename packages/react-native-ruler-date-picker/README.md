@@ -68,12 +68,13 @@ export default function App() {
 | `onChange` | `(date: Date, dateString: string) => void` | `undefined` | Called when selected date changes |
 | `minDate` | `Date \| string` | `-365 days` | Minimum selectable date boundary |
 | `maxDate` | `Date \| string` | `+365 days` | Maximum selectable date boundary |
+| `locale` | `string` | `'default'` | BCP 47 locale for date formatting |
 | `ticks` | `TickRule[] \| 'calendar' \| 'metric' \| 'minimal'` | `'calendar'` | Graduation rules or preset name |
 | `tickSpacing` | `number` | `24` | Gap between tick centers (px) |
-| `tickThickness` | `number` | `3` | Base thickness of tick bars (px) |
+| `tickWidth` | `number` | `3` | Base thickness of tick bars (px) |
 | `rulerHeight` | `number` | `60` | Ruler track viewport height (px) |
-| `indicator` | `boolean \| IndicatorConfig` | `true` | Needle dimensions `{ width, height }` or custom renderer |
-| `header` | `boolean \| HeaderConfig` | `true` | Header display, `{ showResetToToday }`, or custom renderer |
+| `indicator` | `boolean \| IndicatorConfig` | `true` | Needle dimensions `{ width, height, alignment }` or custom renderer |
+| `header` | `boolean \| HeaderConfig` | `true` | Header display, `{ showResetToToday, format }`, or custom renderer |
 | `haptics` | `boolean \| HapticConfig` | `true` | Haptics toggle, `{ onTrigger }`, or velocity tuning |
 | `theme` | `RulerTheme` | auto | Color tokens (`indicatorColor`, `background`, etc.) |
 | `style` | `StyleProp<ViewStyle>` | `undefined` | Container view style (`height`, `margin`, etc.) |
