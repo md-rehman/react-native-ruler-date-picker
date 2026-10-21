@@ -5,6 +5,19 @@
   justify-content: center;
   position: relative;
   overflow: hidden;
+  cursor: default;
+  user-select: none;
+  touch-action: none;
+  background-color: var(--color-bg);
+}
+
+.central.spaceGrab {
+  cursor: grab !important;
+}
+
+.central.dragging {
+  cursor: grabbing !important;
+  user-select: none !important;
 }
 
 .gridBackground {
@@ -17,12 +30,12 @@
     linear-gradient(to right, var(--color-border) 1px, transparent 1px),
     linear-gradient(to bottom, var(--color-border) 1px, transparent 1px);
   background-size: 24px 24px;
-  opacity: 0.3;
+  opacity: 0.35;
   z-index: 0;
   pointer-events: none;
 }
 
-.container {
+.canvasViewport {
   position: relative;
   z-index: 10;
   width: 100%;
@@ -30,5 +43,87 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-xl);
+  pointer-events: none;
+}
+
+.canvasTransform {
+  will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.canvasTransform.dragging {
+  transition: none !important;
+}
+
+/* Floating HUD Controls */
+.hud {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 8px;
+  background: var(--glass-bg, rgba(20, 20, 24, 0.75));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  border-radius: 9999px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  pointer-events: auto;
+  user-select: none;
+}
+
+.hudButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 9999px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary, #94a3b8);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hudButton:hover {
+  background: var(--color-surface-hover, rgba(255, 255, 255, 0.1));
+  color: var(--color-text, #ffffff);
+}
+
+.hudButton:active {
+  transform: scale(0.95);
+}
+
+.hudDivider {
+  width: 1px;
+  height: 14px;
+  background: var(--color-border, rgba(255, 255, 255, 0.12));
+  margin: 0 2px;
+}
+
+.hudPercent {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-width: 46px;
+  text-align: center;
+  color: var(--color-text, #ffffff);
+}
+
+@media (max-width: 768px) {
+  .hud {
+    bottom: 16px;
+  }
 }
