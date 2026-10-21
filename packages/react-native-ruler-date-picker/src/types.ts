@@ -69,7 +69,7 @@ export interface TickRule {
   /** Height of the tick bar in pixels */
   height: number;
 
-  /** Width/thickness of the tick bar in pixels (defaults to tickThickness or 3) */
+  /** Width/thickness of the tick bar in pixels (defaults to tickWidth or 3) */
   width?: number;
 
   /** Color of the tick bar */
@@ -139,6 +139,8 @@ export interface IndicatorConfig {
   height?: number;
   /** Color of the center indicator needle */
   color?: string;
+  /** Vertical alignment of the indicator needle in track (default: 'bottom') */
+  alignment?: 'bottom' | 'center' | 'top';
   /** Custom style for the center indicator needle */
   style?: StyleProp<ViewStyle>;
   /** Custom renderer for the center indicator */
@@ -157,6 +159,8 @@ export interface HeaderConfig {
   dateStyle?: StyleProp<TextStyle>;
   /** Header year label style */
   yearStyle?: StyleProp<TextStyle>;
+  /** Custom date format function for the header text */
+  format?: (date: Date) => string;
   /** Custom header renderer replacing the default header */
   render?: (
     selectedDate: Date,
@@ -191,14 +195,16 @@ export interface RulerDatePickerProps {
   minDate?: Date | string;
   /** Maximum selectable date */
   maxDate?: Date | string;
+  /** BCP 47 locale string for date formatting (default: system 'default') */
+  locale?: string;
 
   // ── Tick Configuration ──
   /** Array of tick rules or a preset name ('calendar' | 'metric' | 'minimal') */
   ticks?: TickRule[] | 'calendar' | 'metric' | 'minimal';
   /** Distance in pixels between tick centers (default: 24) */
   tickSpacing?: number;
-  /** Default thickness of tick bars in pixels (default: 3) */
-  tickThickness?: number;
+  /** Base width of tick bars in pixels (default: 3) */
+  tickWidth?: number;
 
   // ── Dimensions & Theming ──
   /** Height of the ruler track area in pixels (default: 60) */
@@ -262,27 +268,51 @@ export interface DateRange {
 }
 
 export interface DateRangeChangePayload {
+  start: Date;
+  end: Date;
   startDate: Date;
   endDate: Date;
   startString: string;
   endString: string;
+  spanDays: number;
+}
+
+export interface RangeHeaderContext {
+  start: Date;
+  end: Date;
+  spanDays: number;
+  activeHandle: 'start' | 'end';
+  scrollToHandle: (handle: 'start' | 'end', animated?: boolean) => void;
+}
+
+export interface RangeHeaderConfig {
+  /** Header container style */
+  style?: StyleProp<ViewStyle>;
+  /** Header date label style */
+  dateStyle?: StyleProp<TextStyle>;
+  /** Custom date format function for start/end labels */
+  format?: (date: Date) => string;
+  /** Custom header renderer replacing default range header */
+  render?: (context: RangeHeaderContext) => React.ReactNode;
 }
 
 export interface RulerDateRangePickerProps
-  extends Omit<RulerDatePickerProps, 'value' | 'defaultValue' | 'onChange'> {
+  extends Omit<RulerDatePickerProps, 'value' | 'defaultValue' | 'onChange' | 'header'> {
   /** Currently selected date range (controlled) */
   value?: DateRange;
   /** Initial selected date range (uncontrolled) */
   defaultValue?: DateRange;
   /** Called when the selected range changes */
   onChange?: (range: DateRangeChangePayload) => void;
+  /** Header configuration or boolean toggle (default: true) */
+  header?: boolean | RangeHeaderConfig;
 
   /** Minimum selectable span in days (default: 1) */
   minSpanDays?: number;
   /** Maximum selectable span in days */
   maxSpanDays?: number;
 
-  /** Color of the range connecting highlight strip */
+  /** Color of the range connecting highlight strip (also configurable via theme.rangeHighlightColor) */
   rangeHighlightColor?: string;
   /** Custom renderer for the range highlight span */
   renderRangeHighlight?: (

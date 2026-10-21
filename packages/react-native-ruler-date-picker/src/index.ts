@@ -8,10 +8,24 @@ export { RulerLensTrack } from './RulerLensTrack';
 export { RulerLensTicks } from './RulerLensTicks';
 export { LensTick } from './LensTick';
 
-// ── Headless Hooks ─────────────────────────────────────────────────────────
+// ── Compound Subcomponents ──────────────────────────────────────────────────
+export { RulerRoot, type RulerRootProps } from './RulerRoot';
+export { RulerTrack, type RulerTrackProps } from './RulerTrack';
+export { RulerIndicator, type RulerIndicatorProps } from './RulerIndicator';
+export { RulerTicks, type RulerTicksProps } from './RulerTicks';
+export { RulerHeader, type RulerHeaderProps } from './RulerHeader';
+export { RulerResetButton, type RulerResetButtonProps } from './RulerResetButton';
+export { RulerRangeRoot, type RulerRangeRootProps } from './RulerRangeRoot';
+export { RulerRangeTrack, type RulerRangeTrackProps } from './RulerRangeTrack';
+export { RulerRangeHeader, type RulerRangeHeaderProps } from './RulerRangeHeader';
+export { RulerRangeHighlight, type RulerRangeHighlightProps } from './RulerRangeHighlight';
+
+// ── Headless Hooks & Contexts ───────────────────────────────────────────────
 export { useRulerDatePicker, type UseRulerDatePickerReturn } from './useRulerDatePicker';
 export { useRulerDateRangePicker, type UseRulerDateRangePickerReturn } from './useRulerDateRangePicker';
 export { useHaptics } from './useHaptics';
+export { RulerContext, useRulerContext, type RulerContextValue } from './RulerContext';
+export { RulerRangeContext, useRulerRangeContext, type RulerRangeContextValue } from './RulerRangeContext';
 
 // ── Presets & Resolvers ───────────────────────────────────────────────────
 export {
@@ -43,23 +57,18 @@ export type {
   ResolvedTick,
   RulerTheme,
   ResolvedRulerTheme,
+  IndicatorConfig,
+  HeaderConfig,
+  RangeHeaderConfig,
+  RangeHeaderContext,
+  HapticConfig,
   RulerDatePickerProps,
   LensConfig,
   DateRange,
   DateRangeChangePayload,
   RulerDateRangePickerProps,
 } from './types';
-export type { RulerRootProps } from './RulerRoot';
-export type { RulerTrackProps } from './RulerTrack';
+export type { LensTickProps } from './LensTick';
 export type { RulerLensTrackProps } from './RulerLensTrack';
 export type { RulerLensTicksProps } from './RulerLensTicks';
-export type { LensTickProps } from './LensTick';
-export type { RulerIndicatorProps } from './RulerIndicator';
-export type { RulerTicksProps } from './RulerTicks';
-export type { RulerHeaderProps } from './RulerHeader';
-export type { RulerResetButtonProps } from './RulerResetButton';
-export type { RulerRangeRootProps } from './RulerRangeRoot';
-export type { RulerRangeTrackProps } from './RulerRangeTrack';
-export type { RulerRangeHeaderProps } from './RulerRangeHeader';
-export type { RulerRangeHighlightProps } from './RulerRangeHighlight';
 export type { TickProps } from './Tick';

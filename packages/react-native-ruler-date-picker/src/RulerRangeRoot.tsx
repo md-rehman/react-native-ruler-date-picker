@@ -20,10 +20,14 @@ export function RulerRangeRoot(props: RulerRangeRootProps) {
   const rangeRuler = useRulerDateRangePicker(props);
   const indicatorConfig: IndicatorConfig | undefined =
     typeof indicator === 'object' ? indicator : undefined;
+  const headerConfig =
+    typeof props.header === 'object' ? props.header : undefined;
 
   const contextValue = {
     ...rangeRuler,
     indicatorConfig,
+    headerConfig,
+    locale: props.locale,
     rangeHighlightColor,
   };
 

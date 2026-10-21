@@ -1,9 +1,11 @@
 import { createContext, useContext } from 'react';
 import type { UseRulerDateRangePickerReturn } from './useRulerDateRangePicker';
-import type { IndicatorConfig } from './types';
+import type { IndicatorConfig, RangeHeaderConfig } from './types';
 
 export interface RulerRangeContextValue extends UseRulerDateRangePickerReturn {
   indicatorConfig?: IndicatorConfig;
+  headerConfig?: RangeHeaderConfig;
+  locale?: string;
   rangeHighlightColor?: string;
 }
 

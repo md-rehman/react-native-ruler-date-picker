@@ -28,6 +28,14 @@ export function RulerRangeTrack({ style, children }: RulerRangeTrackProps = {}) 
   const indicatorHeight = indicatorConfig?.height ?? 40;
   const indicatorColor = indicatorConfig?.color ?? theme.indicatorColor;
 
+  const alignment = indicatorConfig?.alignment ?? 'bottom';
+  const alignmentStyle: ViewStyle =
+    alignment === 'top'
+      ? { top: 0 }
+      : alignment === 'center'
+      ? { top: '50%', transform: [{ translateY: -indicatorHeight / 2 }] }
+      : { bottom: 0 };
+
   const animatedStyle = useAnimatedStyle(
     () => ({
       transform: [{ translateX: translateX.value }],
@@ -39,19 +47,24 @@ export function RulerRangeTrack({ style, children }: RulerRangeTrackProps = {}) 
     <GestureDetector gesture={panGesture}>
       <View style={[styles.rulerContainer, { height: rulerHeight }, style]}>
         {/* Center Indicator pointing at active handle */}
-        <View
-          pointerEvents="none"
-          style={[
-            styles.indicator,
-            {
-              width: indicatorWidth,
-              height: indicatorHeight,
-              backgroundColor: indicatorColor,
-              borderRadius: indicatorWidth / 2,
-            },
-            indicatorConfig?.style,
-          ]}
-        />
+        {indicatorConfig?.render ? (
+          indicatorConfig.render()
+        ) : (
+          <View
+            pointerEvents="none"
+            style={[
+              styles.indicator,
+              alignmentStyle,
+              {
+                width: indicatorWidth,
+                height: indicatorHeight,
+                backgroundColor: indicatorColor,
+                borderRadius: indicatorWidth / 2,
+              },
+              indicatorConfig?.style,
+            ]}
+          />
+        )}
 
         <Animated.View style={[styles.ticksWrapper, animatedStyle]}>
           {/* Highlight Span */}
@@ -85,7 +98,6 @@ const styles = StyleSheet.create({
   indicator: {
     position: 'absolute',
     zIndex: 10,
-    bottom: 0,
   },
   ticksWrapper: {
     position: 'absolute',

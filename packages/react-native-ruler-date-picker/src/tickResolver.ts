@@ -53,7 +53,7 @@ export function resolveTick(
   ctx: TickContext,
   rules: TickRule[],
   theme: ResolvedRulerTheme,
-  defaultThickness: number = 3
+  defaultWidth: number = 3
 ): ResolvedTick {
   // Find the first matching rule, or fall back to the last rule in the list
   const matchedRule =
@@ -61,7 +61,7 @@ export function resolveTick(
     rules[rules.length - 1];
 
   const height = matchedRule?.height ?? 12;
-  const width = matchedRule?.width ?? defaultThickness;
+  const width = matchedRule?.width ?? defaultWidth;
   const color = matchedRule?.color ?? theme.defaultTickColor;
 
   // Resolve label

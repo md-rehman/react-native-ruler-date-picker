@@ -7,7 +7,7 @@ export const DEFAULT_DAY_RANGE = 365;
 // ── User-configurable defaults ───────────────────────────────────────────
 export const DEFAULTS = {
   tickSpacing: 24,
-  tickThickness: 3,
+  tickWidth: 3,
   height: 120,
   rulerHeight: 60,
   indicatorWidth: 2,

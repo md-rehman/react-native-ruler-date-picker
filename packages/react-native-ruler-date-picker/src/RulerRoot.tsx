@@ -33,10 +33,14 @@ export function RulerRoot(props: RulerRootProps) {
 
   const indicatorConfig: IndicatorConfig | undefined =
     typeof indicator === 'object' ? indicator : undefined;
+  const headerConfig =
+    typeof props.header === 'object' ? props.header : undefined;
 
   const contextValue = {
     ...ruler,
     indicatorConfig,
+    headerConfig,
+    locale: props.locale,
     lensConfig,
   };
 

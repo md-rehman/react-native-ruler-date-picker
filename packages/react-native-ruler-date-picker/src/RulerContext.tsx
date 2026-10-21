@@ -1,9 +1,11 @@
 import { createContext, useContext } from 'react';
 import type { UseRulerDatePickerReturn } from './useRulerDatePicker';
-import type { LensConfig, IndicatorConfig } from './types';
+import type { LensConfig, IndicatorConfig, HeaderConfig } from './types';
 
 export interface RulerContextValue extends UseRulerDatePickerReturn {
   indicatorConfig?: IndicatorConfig;
+  headerConfig?: HeaderConfig;
+  locale?: string;
   lensConfig?: Required<LensConfig> | null;
 }
 

@@ -8,6 +8,7 @@ export interface RulerHeaderProps {
   dateStyle?: StyleProp<TextStyle>;
   yearStyle?: StyleProp<TextStyle>;
   showResetToToday?: boolean;
+  format?: (date: Date) => string;
   render?: (
     selectedDate: Date,
     isToday: boolean,
@@ -19,30 +20,47 @@ export function RulerHeader({
   style,
   dateStyle,
   yearStyle,
-  showResetToToday = false,
+  showResetToToday: customShowReset,
+  format: customFormat,
   render,
 }: RulerHeaderProps = {}) {
-  const { selectedDate, isTodaySelected, resetToToday, theme } =
-    useRulerContext();
+  const {
+    selectedDate,
+    isTodaySelected,
+    resetToToday,
+    theme,
+    headerConfig,
+    locale = 'default',
+  } = useRulerContext();
 
-  if (render) {
-    return <>{render(selectedDate, isTodaySelected, resetToToday)}</>;
+  const customRenderer = render ?? headerConfig?.render;
+  if (customRenderer) {
+    return <>{customRenderer(selectedDate, isTodaySelected, resetToToday)}</>;
   }
 
-  const displayFormat = selectedDate.toLocaleDateString('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-  });
+  const showReset = customShowReset ?? headerConfig?.showResetToToday ?? false;
+  const formatFn = customFormat ?? headerConfig?.format;
+
+  const displayFormat = formatFn
+    ? formatFn(selectedDate)
+    : selectedDate.toLocaleDateString(locale, {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+      });
   const displayYear = selectedDate.getFullYear();
   const currentYear = new Date().getFullYear();
-  const showYear = displayYear !== currentYear;
+  const showYear = !formatFn && displayYear !== currentYear;
+
+  const headerStyle = style ?? headerConfig?.style;
+  const resolvedDateStyle = dateStyle ?? headerConfig?.dateStyle;
+  const resolvedYearStyle = yearStyle ?? headerConfig?.yearStyle;
 
   return (
-    <View style={[styles.headerContainer, style]}>
+    <View style={[styles.headerContainer, headerStyle]}>
       <View style={styles.dateHeader}>
         {showYear && (
-          <Text style={[styles.yearText, { color: theme.labelColor }, yearStyle]}>
+          <Text style={[styles.yearText, { color: theme.labelColor }, resolvedYearStyle]}>
             {displayYear}
           </Text>
         )}
@@ -50,14 +68,14 @@ export function RulerHeader({
           style={[
             styles.dateText,
             { color: theme.accentColor },
-            dateStyle,
+            resolvedDateStyle,
           ]}
         >
           {displayFormat}
         </Text>
       </View>
 
-      {showResetToToday && !isTodaySelected && (
+      {showReset && !isTodaySelected && (
         <RulerResetButton style={styles.resetBtnPosition} />
       )}
     </View>

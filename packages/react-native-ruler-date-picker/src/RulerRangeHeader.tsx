@@ -6,14 +6,24 @@ import {
   StyleSheet,
   type StyleProp,
   type ViewStyle,
+  type TextStyle,
 } from 'react-native';
 import { useRulerRangeContext } from './RulerRangeContext';
+import type { RangeHeaderContext } from './types';
 
 export interface RulerRangeHeaderProps {
   style?: StyleProp<ViewStyle>;
+  dateStyle?: StyleProp<TextStyle>;
+  format?: (date: Date) => string;
+  render?: (context: RangeHeaderContext) => React.ReactNode;
 }
 
-export function RulerRangeHeader({ style }: RulerRangeHeaderProps = {}) {
+export function RulerRangeHeader({
+  style,
+  dateStyle,
+  format: customFormat,
+  render,
+}: RulerRangeHeaderProps = {}) {
   const {
     startDate,
     endDate,
@@ -21,19 +31,45 @@ export function RulerRangeHeader({ style }: RulerRangeHeaderProps = {}) {
     activeHandle,
     scrollToHandle,
     theme,
+    headerConfig,
+    locale = 'default',
   } = useRulerRangeContext();
 
-  const startFormatted = startDate.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-  });
-  const endFormatted = endDate.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-  });
+  const customRenderer = render ?? headerConfig?.render;
+  if (customRenderer) {
+    return (
+      <>
+        {customRenderer({
+          start: startDate,
+          end: endDate,
+          spanDays,
+          activeHandle,
+          scrollToHandle,
+        })}
+      </>
+    );
+  }
+
+  const formatFn = customFormat ?? headerConfig?.format;
+
+  const startFormatted = formatFn
+    ? formatFn(startDate)
+    : startDate.toLocaleDateString(locale, {
+        month: 'short',
+        day: 'numeric',
+      });
+  const endFormatted = formatFn
+    ? formatFn(endDate)
+    : endDate.toLocaleDateString(locale, {
+        month: 'short',
+        day: 'numeric',
+      });
+
+  const headerStyle = style ?? headerConfig?.style;
+  const resolvedDateStyle = dateStyle ?? headerConfig?.dateStyle;
 
   return (
-    <View style={[styles.headerContainer, style]}>
+    <View style={[styles.headerContainer, headerStyle]}>
       {/* Start Date Button */}
       <TouchableOpacity
         activeOpacity={0.7}
@@ -51,6 +87,7 @@ export function RulerRangeHeader({ style }: RulerRangeHeaderProps = {}) {
           style={[
             styles.dateLabel,
             { color: activeHandle === 'start' ? theme.accentColor : theme.labelColor },
+            resolvedDateStyle,
           ]}
         >
           {startFormatted}
@@ -82,6 +119,7 @@ export function RulerRangeHeader({ style }: RulerRangeHeaderProps = {}) {
           style={[
             styles.dateLabel,
             { color: activeHandle === 'end' ? theme.accentColor : theme.labelColor },
+            resolvedDateStyle,
           ]}
         >
           {endFormatted}

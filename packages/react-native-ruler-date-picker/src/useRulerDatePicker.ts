@@ -71,7 +71,7 @@ export function useRulerDatePicker(
     maxDate,
     ticks = 'calendar',
     tickSpacing = DEFAULTS.tickSpacing,
-    tickThickness = DEFAULTS.tickThickness,
+    tickWidth = DEFAULTS.tickWidth,
     rulerHeight = DEFAULTS.rulerHeight,
     theme: propTheme,
     debounceMs = DEFAULTS.debounceMs,
@@ -162,7 +162,7 @@ export function useRulerDatePicker(
           },
           rules,
           theme,
-          tickThickness
+          tickWidth
         )
       );
     }
@@ -176,7 +176,7 @@ export function useRulerDatePicker(
     selectedDateStr,
     rules,
     theme,
-    tickThickness,
+    tickWidth,
   ]);
 
   // ── Tick Changed Callback ─────────────────────────────────────────────────

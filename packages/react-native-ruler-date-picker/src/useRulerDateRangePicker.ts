@@ -75,7 +75,7 @@ export function useRulerDateRangePicker(
     maxDate,
     ticks = 'calendar',
     tickSpacing = DEFAULTS.tickSpacing,
-    tickThickness = DEFAULTS.tickThickness,
+    tickWidth = DEFAULTS.tickWidth,
     rulerHeight = DEFAULTS.rulerHeight,
     theme: propTheme,
     debounceMs = DEFAULTS.debounceMs,
@@ -180,7 +180,7 @@ export function useRulerDateRangePicker(
           },
           rules,
           theme,
-          tickThickness
+          tickWidth
         )
       );
     }
@@ -195,17 +195,23 @@ export function useRulerDateRangePicker(
     endOffset,
     rules,
     theme,
-    tickThickness,
+    tickWidth,
   ]);
 
   // ── Notify Change ─────────────────────────────────────────────────────────
   const emitChange = useCallback(
     (newStart: Date, newEnd: Date) => {
+      const spanDays = Math.round(
+        (newEnd.getTime() - newStart.getTime()) / (1000 * 60 * 60 * 24)
+      );
       const payload: DateRangeChangePayload = {
+        start: newStart,
+        end: newEnd,
         startDate: newStart,
         endDate: newEnd,
         startString: formatDateString(newStart),
         endString: formatDateString(newEnd),
+        spanDays,
       };
       onChange?.(payload);
     },
