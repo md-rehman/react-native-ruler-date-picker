@@ -39,6 +39,17 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     description: 'Distance between tick centers in pixels.',
   },
   {
+    name: 'tickWidth',
+    type: 'number',
+    label: 'Tick Width',
+    category: 'Dimensions',
+    defaultValue: 3,
+    min: 1,
+    max: 10,
+    step: 1,
+    description: 'Base thickness of tick bars in pixels.',
+  },
+  {
     name: 'rulerHeight',
     type: 'number',
     label: 'Ruler Height',
@@ -70,6 +81,15 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     max: 80,
     step: 5,
     description: 'Height of center pointer needle in pixels.',
+  },
+  {
+    name: 'indicator.alignment',
+    type: 'enum',
+    label: 'Indicator Alignment',
+    category: 'Dimensions',
+    defaultValue: 'bottom',
+    options: ['bottom', 'center', 'top'],
+    description: 'Vertical alignment of center needle pointer.',
   },
 
   // Colors (theme.* mapping)

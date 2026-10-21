@@ -22,12 +22,15 @@ export function generateCodeSnippet({
   propLines.push('      value={selectedDate}');
   propLines.push('      onChange={(date) => setSelectedDate(date)}');
 
-  // Boundaries (minDate / maxDate)
+  // Boundaries (minDate / maxDate) & locale
   if (cleanProps.minDate) {
     propLines.push(`      minDate="${cleanProps.minDate}"`);
   }
   if (cleanProps.maxDate) {
     propLines.push(`      maxDate="${cleanProps.maxDate}"`);
+  }
+  if (cleanProps.locale) {
+    propLines.push(`      locale="${cleanProps.locale}"`);
   }
 
   // 1. Ticks configuration
@@ -60,6 +63,9 @@ export function generateCodeSnippet({
   // 2. Dimensions & Indicator
   if (cleanProps.tickSpacing !== undefined) {
     propLines.push(`      tickSpacing={${cleanProps.tickSpacing}}`);
+  }
+  if (cleanProps.tickWidth !== undefined) {
+    propLines.push(`      tickWidth={${cleanProps.tickWidth}}`);
   }
   if (cleanProps.rulerHeight !== undefined) {
     propLines.push(`      rulerHeight={${cleanProps.rulerHeight}}`);

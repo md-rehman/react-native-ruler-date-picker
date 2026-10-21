@@ -47,6 +47,14 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     description: 'Maximum selectable date boundary (YYYY-MM-DD string or Date).',
   },
   {
+    name: 'locale',
+    type: 'text',
+    label: 'locale',
+    category: 'Selection',
+    defaultValue: '',
+    description: 'BCP 47 locale string for date formatting (e.g. en-US, de-DE, ja-JP).',
+  },
+  {
     name: 'ticks',
     type: 'tick-rules',
     label: 'ticks',
@@ -66,6 +74,17 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     max: 100,
     step: 1,
     description: 'Horizontal gap between tick centers in pixels.',
+  },
+  {
+    name: 'tickWidth',
+    type: 'number',
+    label: 'tickWidth',
+    category: 'Dimensions',
+    defaultValue: 3,
+    min: 1,
+    max: 10,
+    step: 1,
+    description: 'Base thickness/width of tick bars in pixels.',
   },
   {
     name: 'rulerHeight',
@@ -99,6 +118,15 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     max: 80,
     step: 5,
     description: 'Height of the center needle pointer in pixels.',
+  },
+  {
+    name: 'indicator.alignment',
+    type: 'enum',
+    label: 'indicator.alignment',
+    category: 'Dimensions',
+    defaultValue: 'bottom',
+    options: ['bottom', 'center', 'top'],
+    description: 'Vertical alignment of the center needle pointer.',
   },
 
   // ── Colors (1-to-1 mapping with RulerTheme) ──
