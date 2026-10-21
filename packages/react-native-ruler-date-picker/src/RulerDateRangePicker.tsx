@@ -3,16 +3,16 @@ import type { RulerDateRangePickerProps } from './types';
 import { RulerRangeRoot } from './RulerRangeRoot';
 import { RulerRangeHeader } from './RulerRangeHeader';
 import { RulerRangeTrack } from './RulerRangeTrack';
-import { DEFAULTS } from './defaults';
 
 /**
- * A performant horizontal ruler date range picker for React Native & Expo.
+ * A performant, customizable horizontal ruler date range picker for React Native & Expo.
  *
  * Features:
- * - Select date ranges (startDate to endDate) with dual-point feedback
- * - Range highlight strip spanning across selected days
- * - Reanimated 3 physics and snap alignment
- * - Rule-Based tick system and haptics
+ * - Dual-handle windowed date range selection with connecting highlight strip
+ * - Active handle auto-switching (tap near a handle or tap between to focus)
+ * - 60 FPS scrolling via Reanimated 3 decay physics & snap alignment
+ * - Min/max selectable span in days (`minSpanDays`, `maxSpanDays`)
+ * - Automatic Dark/Light mode theme detection
  *
  * @example
  * ```tsx
@@ -24,23 +24,22 @@ import { DEFAULTS } from './defaults';
  */
 export function RulerDateRangePicker(props: RulerDateRangePickerProps) {
   const {
-    showHeader = DEFAULTS.showHeader,
-    indicatorWidth = DEFAULTS.indicatorWidth,
-    indicatorHeight = DEFAULTS.indicatorHeight,
-    indicatorColor,
+    header = true,
+    indicator = true,
     rangeHighlightColor,
     ...rootProps
   } = props;
 
+  const isHeaderVisible = header !== false;
+  const indicatorConfig = typeof indicator === 'object' ? indicator : undefined;
+
   return (
     <RulerRangeRoot
       {...rootProps}
-      indicatorWidth={indicatorWidth}
-      indicatorHeight={indicatorHeight}
-      indicatorColor={indicatorColor}
+      indicator={indicatorConfig}
       rangeHighlightColor={rangeHighlightColor}
     >
-      {showHeader && <RulerRangeHeader />}
+      {isHeaderVisible && <RulerRangeHeader />}
       <RulerRangeTrack />
     </RulerRangeRoot>
   );

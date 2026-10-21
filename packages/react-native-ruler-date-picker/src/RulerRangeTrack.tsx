@@ -20,11 +20,13 @@ export function RulerRangeTrack({ style, children }: RulerRangeTrackProps = {}) 
     visibleTicks,
     tickSpacing,
     rulerHeight,
-    indicatorWidth = 2,
-    indicatorHeight = 40,
-    indicatorColor,
+    indicatorConfig,
     theme,
   } = useRulerRangeContext();
+
+  const indicatorWidth = indicatorConfig?.width ?? 2;
+  const indicatorHeight = indicatorConfig?.height ?? 40;
+  const indicatorColor = indicatorConfig?.color ?? theme.indicatorColor;
 
   const animatedStyle = useAnimatedStyle(
     () => ({
@@ -44,9 +46,10 @@ export function RulerRangeTrack({ style, children }: RulerRangeTrackProps = {}) 
             {
               width: indicatorWidth,
               height: indicatorHeight,
-              backgroundColor: indicatorColor ?? theme.indicatorColor,
+              backgroundColor: indicatorColor,
               borderRadius: indicatorWidth / 2,
             },
+            indicatorConfig?.style,
           ]}
         />
 

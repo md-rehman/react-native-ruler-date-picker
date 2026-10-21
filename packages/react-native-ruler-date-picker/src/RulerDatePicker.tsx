@@ -1,6 +1,5 @@
 import React from 'react';
 import type { RulerDatePickerProps } from './types';
-import { DEFAULTS } from './defaults';
 import { RulerRoot } from './RulerRoot';
 import { RulerHeader } from './RulerHeader';
 import { RulerTrack } from './RulerTrack';
@@ -30,37 +29,40 @@ import { RulerLensTrack } from './RulerLensTrack';
  */
 export function RulerDatePicker(props: RulerDatePickerProps) {
   const {
-    showHeader = DEFAULTS.showHeader,
-    showResetToToday = DEFAULTS.showResetToToday,
-    renderHeader,
-    indicatorWidth = DEFAULTS.indicatorWidth,
-    indicatorHeight = DEFAULTS.indicatorHeight,
-    indicatorColor,
-    renderIndicator,
+    header = true,
+    indicator = true,
     lensEffect,
     ...rootProps
   } = props;
+
+  // Resolve Header
+  const isHeaderVisible = header !== false;
+  const headerConfig = typeof header === 'object' ? header : undefined;
+
+  // Resolve Indicator
+  const isIndicatorVisible = indicator !== false;
+  const indicatorConfig = typeof indicator === 'object' ? indicator : undefined;
 
   return (
     <RulerRoot
       {...rootProps}
       lensEffect={lensEffect}
-      indicatorWidth={indicatorWidth}
-      indicatorHeight={indicatorHeight}
-      indicatorColor={indicatorColor}
-      renderIndicator={renderIndicator}
+      indicator={indicatorConfig}
     >
-      {showHeader && (
+      {isHeaderVisible && (
         <RulerHeader
-          showResetToToday={showResetToToday}
-          render={renderHeader}
+          showResetToToday={headerConfig?.showResetToToday}
+          render={headerConfig?.render}
+          style={headerConfig?.style}
+          dateStyle={headerConfig?.dateStyle}
+          yearStyle={headerConfig?.yearStyle}
         />
       )}
       {lensEffect ? (
         <RulerLensTrack />
       ) : (
         <RulerTrack>
-          <RulerIndicator />
+          {isIndicatorVisible && <RulerIndicator />}
           <RulerTicks />
         </RulerTrack>
       )}

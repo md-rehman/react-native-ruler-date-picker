@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { useRulerContext } from './RulerContext';
+import { DEFAULTS } from './defaults';
 
 export interface RulerIndicatorProps {
   width?: number;
@@ -17,22 +18,17 @@ export function RulerIndicator({
   style,
   render,
 }: RulerIndicatorProps = {}) {
-  const {
-    indicatorWidth = 2,
-    indicatorHeight = 40,
-    indicatorColor: contextColor,
-    theme,
-    renderIndicator: contextRender,
-  } = useRulerContext();
+  const { indicatorConfig, theme } = useRulerContext();
 
-  const customRenderer = render ?? contextRender;
+  const customRenderer = render ?? indicatorConfig?.render;
   if (customRenderer) {
     return <>{customRenderer()}</>;
   }
 
-  const width = customWidth ?? indicatorWidth;
-  const height = customHeight ?? indicatorHeight;
-  const color = customColor ?? contextColor ?? theme.indicatorColor;
+  const width = customWidth ?? indicatorConfig?.width ?? DEFAULTS.indicatorWidth;
+  const height = customHeight ?? indicatorConfig?.height ?? DEFAULTS.indicatorHeight;
+  const color = customColor ?? indicatorConfig?.color ?? theme.indicatorColor;
+  const indicatorStyle = style ?? indicatorConfig?.style;
 
   return (
     <View
@@ -45,7 +41,7 @@ export function RulerIndicator({
           backgroundColor: color,
           borderRadius: width / 2,
         },
-        style,
+        indicatorStyle,
       ]}
     />
   );

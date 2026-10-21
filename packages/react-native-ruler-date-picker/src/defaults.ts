@@ -17,9 +17,7 @@ export const DEFAULTS = {
   debounceMs: 100,
   fastSwipeTickThreshold: 1,
   continuousHapticIntervalMs: 20,
-  enableHaptics: true,
   showResetToToday: false,
-  showHeader: true,
 } as const;
 
 export const DEFAULT_LENS_CONFIG: Required<LensConfig> = {

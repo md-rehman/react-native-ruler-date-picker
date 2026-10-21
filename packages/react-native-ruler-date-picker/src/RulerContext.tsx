@@ -1,12 +1,9 @@
-import React, { createContext, useContext } from 'react';
+import { createContext, useContext } from 'react';
 import type { UseRulerDatePickerReturn } from './useRulerDatePicker';
-import type { LensConfig } from './types';
+import type { LensConfig, IndicatorConfig } from './types';
 
 export interface RulerContextValue extends UseRulerDatePickerReturn {
-  indicatorWidth?: number;
-  indicatorHeight?: number;
-  indicatorColor?: string;
-  renderIndicator?: () => React.ReactNode;
+  indicatorConfig?: IndicatorConfig;
   lensConfig?: Required<LensConfig> | null;
 }
 

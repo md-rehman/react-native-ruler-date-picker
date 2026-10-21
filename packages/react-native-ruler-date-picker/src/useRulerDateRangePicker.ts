@@ -76,26 +76,29 @@ export function useRulerDateRangePicker(
     ticks = 'calendar',
     tickSpacing = DEFAULTS.tickSpacing,
     tickThickness = DEFAULTS.tickThickness,
-    height = DEFAULTS.height,
     rulerHeight = DEFAULTS.rulerHeight,
     theme: propTheme,
-    bufferTicks = DEFAULTS.bufferTicks,
     debounceMs = DEFAULTS.debounceMs,
-    enableHaptics = DEFAULTS.enableHaptics,
-    onHapticTrigger,
-    fastSwipeTickThreshold = DEFAULTS.fastSwipeTickThreshold,
-    continuousHapticIntervalMs = DEFAULTS.continuousHapticIntervalMs,
+    haptics = true,
     minSpanDays = 1,
     maxSpanDays,
+    style,
   } = props;
+
+  const bufferTicks = DEFAULTS.bufferTicks;
+  const isHapticsEnabled = typeof haptics === 'boolean' ? haptics : (haptics?.enabled ?? true);
+  const resolvedHapticTrigger = typeof haptics === 'object' ? haptics.onTrigger : undefined;
+  const fastSwipeTickThreshold = (typeof haptics === 'object' ? haptics.fastSwipeTickThreshold : undefined) ?? DEFAULTS.fastSwipeTickThreshold;
+  const continuousHapticIntervalMs = (typeof haptics === 'object' ? haptics.continuousHapticIntervalMs : undefined) ?? DEFAULTS.continuousHapticIntervalMs;
+  const height = (style as any)?.height ?? DEFAULTS.height;
 
   const theme = useResolvedTheme(propTheme);
   const rules = useMemo(() => resolveTickRules(ticks), [ticks]);
 
   const { fireDiscreteHaptic, startContinuousHaptic, stopContinuousHaptic } =
     useHaptics({
-      enableHaptics,
-      onHapticTrigger,
+      enableHaptics: isHapticsEnabled,
+      onHapticTrigger: resolvedHapticTrigger,
       continuousHapticIntervalMs,
     });
 

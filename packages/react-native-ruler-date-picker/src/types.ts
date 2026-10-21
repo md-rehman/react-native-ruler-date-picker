@@ -129,6 +129,56 @@ export type ResolvedRulerTheme = Required<RulerTheme>;
 
 // ── Single Picker Props ──────────────────────────────────────────────────────
 
+/**
+ * Configuration for the center alignment needle indicator.
+ */
+export interface IndicatorConfig {
+  /** Width of the center indicator needle in pixels (default: 2) */
+  width?: number;
+  /** Height of the center indicator needle in pixels (default: 40) */
+  height?: number;
+  /** Color of the center indicator needle */
+  color?: string;
+  /** Custom style for the center indicator needle */
+  style?: StyleProp<ViewStyle>;
+  /** Custom renderer for the center indicator */
+  render?: () => React.ReactNode;
+}
+
+/**
+ * Configuration for the date picker header.
+ */
+export interface HeaderConfig {
+  /** Show "Today" reset button when not on today (default: false) */
+  showResetToToday?: boolean;
+  /** Header container style */
+  style?: StyleProp<ViewStyle>;
+  /** Header date label style */
+  dateStyle?: StyleProp<TextStyle>;
+  /** Header year label style */
+  yearStyle?: StyleProp<TextStyle>;
+  /** Custom header renderer replacing the default header */
+  render?: (
+    selectedDate: Date,
+    isToday: boolean,
+    resetToToday: () => void
+  ) => React.ReactNode;
+}
+
+/**
+ * Configuration for tactile haptic feedback.
+ */
+export interface HapticConfig {
+  /** Whether haptics are enabled (default: true) */
+  enabled?: boolean;
+  /** Custom haptic callback (e.g. for Expo Haptics) */
+  onTrigger?: (mode: 'tick' | 'continuous') => void;
+  /** Speed threshold (ticks/frame) to trigger continuous buzz mode (default: 1) */
+  fastSwipeTickThreshold?: number;
+  /** Pulse interval in ms during continuous haptic mode (default: 20) */
+  continuousHapticIntervalMs?: number;
+}
+
 export interface RulerDatePickerProps {
   // ── Value & Selection ──
   /** Currently selected date (controlled). Accepts Date or YYYY-MM-DD string. */
@@ -150,51 +200,21 @@ export interface RulerDatePickerProps {
   /** Default thickness of tick bars in pixels (default: 3) */
   tickThickness?: number;
 
-  // ── Indicator ──
-  /** Width of the center indicator needle in pixels (default: 2) */
-  indicatorWidth?: number;
-  /** Height of the center indicator needle in pixels (default: 40) */
-  indicatorHeight?: number;
-  /** Color override for the center indicator */
-  indicatorColor?: string;
-  /** Custom renderer for the center indicator */
-  renderIndicator?: () => React.ReactNode;
-
-  // ── Header & Reset Controls ──
-  /** Show default date/year header (default: true) */
-  showHeader?: boolean;
-  /** Show "Today" reset button when not on today (default: false) */
-  showResetToToday?: boolean;
-  /** Custom header renderer replacing the default header */
-  renderHeader?: (
-    selectedDate: Date,
-    isToday: boolean,
-    resetToToday: () => void
-  ) => React.ReactNode;
-
   // ── Dimensions & Theming ──
-  /** Total height of the component in pixels (default: 120) */
-  height?: number;
   /** Height of the ruler track area in pixels (default: 60) */
   rulerHeight?: number;
-  /** Color theme overrides or full palette */
+  /** Color theme overrides (background, indicatorColor, accentColor, labelColor, etc.) */
   theme?: RulerTheme;
   /** Container style */
   style?: StyleProp<ViewStyle>;
 
-  // ── Performance & Haptics ──
-  /** Number of off-screen ticks to buffer on each side (default: 10) */
-  bufferTicks?: number;
-  /** Debounce ms for onChange during scrolling (default: 100) */
-  debounceMs?: number;
-  /** Enable haptic feedback (default: true) */
-  enableHaptics?: boolean;
-  /** Custom haptic callback */
-  onHapticTrigger?: (mode: 'tick' | 'continuous') => void;
-  /** Speed threshold (ticks/frame) to trigger continuous haptic mode (default: 1) */
-  fastSwipeTickThreshold?: number;
-  /** Pulse interval in ms during continuous haptic mode (default: 20) */
-  continuousHapticIntervalMs?: number;
+  // ── Indicator, Header, & Haptics (Consolidated APIs) ──
+  /** Center indicator needle configuration or boolean toggle (default: true) */
+  indicator?: boolean | IndicatorConfig;
+  /** Header configuration or boolean toggle (default: true) */
+  header?: boolean | HeaderConfig;
+  /** Haptics configuration or boolean toggle (default: true) */
+  haptics?: boolean | HapticConfig;
 
   // ── Fisheye Lens Effect ──
   /**
@@ -203,6 +223,10 @@ export interface RulerDatePickerProps {
    * Can be true (for default configuration) or a custom LensConfig object.
    */
   lensEffect?: boolean | LensConfig;
+
+  // ── Performance ──
+  /** Debounce ms for onChange during scrolling (default: 100) */
+  debounceMs?: number;
 
   /** Test ID for automated tests */
   testID?: string;
@@ -245,10 +269,7 @@ export interface DateRangeChangePayload {
 }
 
 export interface RulerDateRangePickerProps
-  extends Omit<
-    RulerDatePickerProps,
-    'value' | 'defaultValue' | 'onChange' | 'renderIndicator'
-  > {
+  extends Omit<RulerDatePickerProps, 'value' | 'defaultValue' | 'onChange'> {
   /** Currently selected date range (controlled) */
   value?: DateRange;
   /** Initial selected date range (uncontrolled) */

@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import type { RulerDateRangePickerProps } from './types';
+import type { RulerDateRangePickerProps, IndicatorConfig } from './types';
 import { useRulerDateRangePicker } from './useRulerDateRangePicker';
 import { RulerRangeContext } from './RulerRangeContext';
-import { DEFAULTS } from './defaults';
 
 export interface RulerRangeRootProps extends RulerDateRangePickerProps {
   children?: React.ReactNode;
@@ -13,20 +12,18 @@ export function RulerRangeRoot(props: RulerRangeRootProps) {
   const {
     children,
     style,
-    indicatorWidth = DEFAULTS.indicatorWidth,
-    indicatorHeight = DEFAULTS.indicatorHeight,
-    indicatorColor,
+    indicator,
     rangeHighlightColor,
     testID,
   } = props;
 
   const rangeRuler = useRulerDateRangePicker(props);
+  const indicatorConfig: IndicatorConfig | undefined =
+    typeof indicator === 'object' ? indicator : undefined;
 
   const contextValue = {
     ...rangeRuler,
-    indicatorWidth,
-    indicatorHeight,
-    indicatorColor,
+    indicatorConfig,
     rangeHighlightColor,
   };
 
