@@ -35,7 +35,18 @@ export default function AppShell() {
     if (preset) {
       pickerState.loadPreset(preset);
     }
-    setVisibleModals((prev) => ({ ...prev, Code: true }));
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('modal-code');
+    }
+    setManualPositions({});
+    // Only 1 modal open at a time: open Code, close others
+    setVisibleModals({
+      Selection: false,
+      Dimensions: false,
+      Colors: false,
+      Features: false,
+      Code: true,
+    });
   };
 
   const categories = ['Selection', 'Dimensions', 'Colors', 'Features'] as const;
@@ -50,14 +61,14 @@ export default function AppShell() {
 
   const [visibleModals, setVisibleModals] = useState<Record<ModalCategory, boolean>>({
     Selection: true,
-    Dimensions: true,
-    Colors: true,
-    Features: true,
+    Dimensions: false,
+    Colors: false,
+    Features: false,
     Code: false,
   });
 
   // Track the order in which modals were opened/activated
-  const [openOrder, setOpenOrder] = useState<PropCategory[]>([...categories]);
+  const [openOrder, setOpenOrder] = useState<PropCategory[]>(['Selection']);
 
   // Track DOM rendered heights of panels (with sensible defaults)
   const [panelHeights, setPanelHeights] = useState<Record<PropCategory, number>>({
@@ -68,7 +79,7 @@ export default function AppShell() {
   });
 
   // User manually moved positions
-  const [manualPositions, setManualPositions] = useState<Partial<Record<PropCategory, { x: number; y: number }>>>({});
+  const [manualPositions, setManualPositions] = useState<Partial<Record<ModalCategory, { x: number; y: number }>>>({});
 
   // Viewport dimensions
   const [windowSize, setWindowSize] = useState<{ width: number; height: number }>({
@@ -84,8 +95,8 @@ export default function AppShell() {
     handleResize();
     window.addEventListener('resize', handleResize);
 
-    const loaded: Partial<Record<PropCategory, { x: number; y: number }>> = {};
-    categories.forEach((cat) => {
+    const loaded: Partial<Record<ModalCategory, { x: number; y: number }>> = {};
+    ([...categories, 'Code' as const]).forEach((cat) => {
       const stored = localStorage.getItem(`modal-${cat.toLowerCase()}`);
       if (stored) {
         try {
@@ -135,22 +146,12 @@ export default function AppShell() {
     return result;
   }, [windowSize, openOrder, visibleModals, panelHeights, manualPositions]);
 
-  // Requirement 1 & 2: Toggle modal logic
+  // Only 1 modal in ModalToggle_selector can be open at a time
   const toggleModal = (category: ModalCategory) => {
     const isCurrentlyVisible = visibleModals[category];
-    const willBeVisible = !isCurrentlyVisible;
 
-    if (category === 'Code') {
-      if (!willBeVisible && typeof window !== 'undefined') {
-        localStorage.removeItem('modal-code');
-      }
-      setVisibleModals((prev) => ({ ...prev, Code: willBeVisible }));
-      return;
-    }
-
-    if (!willBeVisible) {
-      // Requirement 1: When panel are toggle off their position should reset.
-      // Requirement 3: In local storage we only preserve the position of opened pane.
+    if (isCurrentlyVisible) {
+      // Toggle off: close all
       if (typeof window !== 'undefined') {
         localStorage.removeItem(`modal-${category.toLowerCase()}`);
       }
@@ -159,26 +160,32 @@ export default function AppShell() {
         delete next[category];
         return next;
       });
-      setOpenOrder((order) => order.filter((c) => c !== category));
+      setOpenOrder([]);
+      setVisibleModals({
+        Selection: false,
+        Dimensions: false,
+        Colors: false,
+        Features: false,
+        Code: false,
+      });
     } else {
-      // Requirement 2: When panel is toggled on:
-      // Clear any manual position so it resets and auto-layouts
+      // Open ONLY this modal, close all others
       if (typeof window !== 'undefined') {
         localStorage.removeItem(`modal-${category.toLowerCase()}`);
       }
-      setManualPositions((mp) => {
-        const next = { ...mp };
-        delete next[category];
-        return next;
+      setManualPositions({});
+      setOpenOrder(category !== 'Code' ? [category as PropCategory] : []);
+      setVisibleModals({
+        Selection: category === 'Selection',
+        Dimensions: category === 'Dimensions',
+        Colors: category === 'Colors',
+        Features: category === 'Features',
+        Code: category === 'Code',
       });
-      // Add to open order at the end so it comes after already open panels
-      setOpenOrder((order) => [...order.filter((c) => c !== category), category]);
     }
-
-    setVisibleModals((prev) => ({ ...prev, [category]: willBeVisible }));
   };
 
-  // Requirement 5: When reset is clicked, recalculate positions of all open panels neatly
+  // Requirement 5: When reset is clicked, reset to default single modal (Selection)
   const handleResetModals = () => {
     // 1. Clear manual positions for all categories & code
     categories.forEach((cat) => {
@@ -189,16 +196,22 @@ export default function AppShell() {
     }
     setManualPositions({});
 
-    // 2. Normalize openOrder to canonical order of currently visible panels
-    const currentOpen = categories.filter((c) => visibleModals[c]);
-    setOpenOrder(currentOpen.length > 0 ? currentOpen : [...categories]);
+    // 2. Reset visible modals: only Selection open
+    setVisibleModals({
+      Selection: true,
+      Dimensions: false,
+      Colors: false,
+      Features: false,
+      Code: false,
+    });
+    setOpenOrder(['Selection']);
 
     // 3. Dispatch reset event to undock/uncollapse modals
     window.dispatchEvent(new Event('resetModals'));
   };
 
   // Requirement 4: When open panel is moved, update state and local storage
-  const handlePositionChange = React.useCallback((category: PropCategory, pos: { x: number; y: number }, isManual: boolean) => {
+  const handlePositionChange = React.useCallback((category: ModalCategory, pos: { x: number; y: number }, isManual: boolean) => {
     if (isManual) {
       setManualPositions((prev) => ({
         ...prev,
@@ -246,33 +259,37 @@ export default function AppShell() {
           />
         </FloatingModal>
 
-        {visibleModals['Code'] && (
-          <FloatingModal
-            id="code"
-            title="Code"
-            icon={<CodeIcon />}
-            width={Math.min(520, windowSize.width - 32)}
-            defaultPosition={() => ({
-              x: Math.max(24, Math.min(windowSize.width - 544, 340)),
-              y: 80,
-            })}
-            defaultDocked="none"
-            noPadding
-            onClose={() => toggleModal('Code')}
-          >
-            <div style={{ height: 'min(540px, calc(100vh - 160px))', width: '100%' }}>
-              <LiveCodeEditor
-                code={pickerState.code}
-                onChange={pickerState.updateFromCode}
-                error={pickerState.codeError}
-                mode={pickerState.codeMode}
-                onModeChange={pickerState.setCodeMode}
-                onReset={pickerState.resetCode}
-                embedded
-              />
-            </div>
-          </FloatingModal>
-        )}
+        {visibleModals['Code'] && (() => {
+          const codeWidth = Math.min(540, windowSize.width - 32);
+          const defaultCodeX = Math.max(16, windowSize.width - codeWidth - RIGHT_MARGIN);
+          const currentCodePos = manualPositions['Code'] ?? { x: defaultCodeX, y: TOP_MARGIN };
+
+          return (
+            <FloatingModal
+              id="code"
+              title="Code"
+              icon={<CodeIcon />}
+              width={codeWidth}
+              position={currentCodePos}
+              onPositionChange={(pos, isManual) => handlePositionChange('Code', pos, isManual)}
+              defaultDocked={typeof window !== 'undefined' && window.innerWidth < 1024 ? 'right' : 'none'}
+              noPadding
+              onClose={() => toggleModal('Code')}
+            >
+              <div style={{ height: 'calc(100vh - 140px)', width: '100%' }}>
+                <LiveCodeEditor
+                  code={pickerState.code}
+                  onChange={pickerState.updateFromCode}
+                  error={pickerState.codeError}
+                  mode={pickerState.codeMode}
+                  onModeChange={pickerState.setCodeMode}
+                  onReset={pickerState.resetCode}
+                  embedded
+                />
+              </div>
+            </FloatingModal>
+          );
+        })()}
 
         {categories.map((category) => {
           if (!visibleModals[category]) return null;
@@ -298,6 +315,7 @@ export default function AppShell() {
               position={currentPos}
               onPositionChange={(pos, isManual) => handlePositionChange(category, pos, isManual)}
               onHeightChange={(h) => handleHeightChange(category, h)}
+              onClose={() => toggleModal(category)}
               defaultDocked={typeof window !== 'undefined' && window.innerWidth < 1024 ? 'right' : 'none'}
             >
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
