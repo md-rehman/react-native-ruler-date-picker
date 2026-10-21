@@ -16,9 +16,9 @@ import { SelectionIcon, DimensionsIcon, ColorsIcon, FeaturesIcon, CodeIcon, Moda
 import styles from './AppShell.module.css';
 
 function getPropValue(props: Record<string, any>, name: string) {
-  if (name.startsWith('theme.')) {
-    const key = name.split('.')[1];
-    return props.theme?.[key];
+  if (name.includes('.')) {
+    const [parent, child] = name.split('.');
+    return props[parent]?.[child];
   }
   return props[name];
 }

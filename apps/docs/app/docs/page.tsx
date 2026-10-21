@@ -156,8 +156,7 @@ export default function MyCalendar() {
         console.log('Selected date:', dateString); // e.g. "2026-08-07"
       }}
       ticks="calendar"
-      showResetToToday
-      enableHaptics
+      header={{ showResetToToday: true }}
     />
   );
 }`}</code>

@@ -20,7 +20,6 @@ const PRESETS = [
       defaultTickColor: '#475569',
     },
     tickSpacing: 24,
-    tickThickness: 3,
     ticks: 'calendar',
   },
   {
@@ -34,7 +33,6 @@ const PRESETS = [
       defaultTickColor: '#52525B',
     },
     tickSpacing: 28,
-    tickThickness: 4,
     ticks: 'calendar',
   },
   {
@@ -48,7 +46,6 @@ const PRESETS = [
       defaultTickColor: '#52525B',
     },
     tickSpacing: 26,
-    tickThickness: 4,
     ticks: 'calendar',
   },
   {
@@ -62,7 +59,6 @@ const PRESETS = [
       defaultTickColor: '#475569',
     },
     tickSpacing: 22,
-    tickThickness: 3,
     ticks: 'metric',
   },
 ];
@@ -138,15 +134,9 @@ export default function HeroDemo() {
                   theme={activePreset.theme}
                   ticks={activePreset.ticks}
                   tickSpacing={activePreset.tickSpacing}
-                  tickThickness={activePreset.tickThickness}
-                  height={120}
                   rulerHeight={60}
-                  indicatorWidth={2}
-                  indicatorHeight={40}
-                  showHeader={false}
-                  showResetToToday={false}
-                  bufferTicks={10}
-                  debounceMs={100}
+                  indicator={{ width: 2, height: 40 }}
+                  header={false}
                 />
               </View>
             </GestureHandlerRootView>

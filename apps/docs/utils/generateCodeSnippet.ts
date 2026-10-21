@@ -57,24 +57,27 @@ export function generateCodeSnippet({
     }
   }
 
-  // 2. Dimensions
+  // 2. Dimensions & Indicator
   if (cleanProps.tickSpacing !== undefined) {
     propLines.push(`      tickSpacing={${cleanProps.tickSpacing}}`);
-  }
-  if (cleanProps.tickThickness !== undefined) {
-    propLines.push(`      tickThickness={${cleanProps.tickThickness}}`);
-  }
-  if (cleanProps.height !== undefined) {
-    propLines.push(`      height={${cleanProps.height}}`);
   }
   if (cleanProps.rulerHeight !== undefined) {
     propLines.push(`      rulerHeight={${cleanProps.rulerHeight}}`);
   }
-  if (cleanProps.indicatorWidth !== undefined) {
-    propLines.push(`      indicatorWidth={${cleanProps.indicatorWidth}}`);
-  }
-  if (cleanProps.indicatorHeight !== undefined) {
-    propLines.push(`      indicatorHeight={${cleanProps.indicatorHeight}}`);
+  if (cleanProps.indicator === false) {
+    propLines.push('      indicator={false}');
+  } else if (cleanProps.indicator && typeof cleanProps.indicator === 'object') {
+    const indEntries = Object.entries(cleanProps.indicator)
+      .filter(([_, v]) => v !== undefined)
+      .map(([k, v]) => `${k}: ${typeof v === 'string' ? `'${v}'` : v}`);
+    if (indEntries.length > 0) {
+      propLines.push(`      indicator={{ ${indEntries.join(', ')} }}`);
+    }
+  } else if (cleanProps.indicatorWidth !== undefined || cleanProps.indicatorHeight !== undefined) {
+    const parts: string[] = [];
+    if (cleanProps.indicatorWidth !== undefined) parts.push(`width: ${cleanProps.indicatorWidth}`);
+    if (cleanProps.indicatorHeight !== undefined) parts.push(`height: ${cleanProps.indicatorHeight}`);
+    propLines.push(`      indicator={{ ${parts.join(', ')} }}`);
   }
 
   // 3. Theme Object (v0.2.0 standardized theme token grouping)
@@ -86,13 +89,20 @@ export function generateCodeSnippet({
     propLines.push(`      theme={{\n${themeLines}\n      }}`);
   }
 
-  // 4. Feature Flags & Haptics
-  if (cleanProps.showHeader !== undefined && !cleanProps.showHeader) {
-    propLines.push(`      showHeader={false}`);
+  // 4. Header & Feature Flags
+  if (cleanProps.header === false || cleanProps.showHeader === false) {
+    propLines.push(`      header={false}`);
+  } else if (cleanProps.header && typeof cleanProps.header === 'object') {
+    const headerEntries = Object.entries(cleanProps.header)
+      .filter(([_, v]) => v !== undefined)
+      .map(([k, v]) => `${k}: ${typeof v === 'string' ? `'${v}'` : v}`);
+    if (headerEntries.length > 0) {
+      propLines.push(`      header={{ ${headerEntries.join(', ')} }}`);
+    }
+  } else if (cleanProps.showResetToToday) {
+    propLines.push(`      header={{ showResetToToday: true }}`);
   }
-  if (cleanProps.showResetToToday !== undefined && cleanProps.showResetToToday) {
-    propLines.push(`      showResetToToday={true}`);
-  }
+
   if (cleanProps.lensEffect) {
     if (typeof cleanProps.lensEffect === 'object') {
       const lensProps = Object.entries(cleanProps.lensEffect)
@@ -103,20 +113,16 @@ export function generateCodeSnippet({
       propLines.push(`      lensEffect={true}`);
     }
   }
-  if (cleanProps.enableHaptics !== undefined && !cleanProps.enableHaptics) {
-    propLines.push(`      enableHaptics={false}`);
-  }
-  if (cleanProps.debounceMs !== undefined && cleanProps.debounceMs !== 100) {
-    propLines.push(`      debounceMs={${cleanProps.debounceMs}}`);
-  }
-  if (cleanProps.bufferTicks !== undefined && cleanProps.bufferTicks !== 10) {
-    propLines.push(`      bufferTicks={${cleanProps.bufferTicks}}`);
-  }
-  if (cleanProps.fastSwipeTickThreshold !== undefined && cleanProps.fastSwipeTickThreshold !== 1) {
-    propLines.push(`      fastSwipeTickThreshold={${cleanProps.fastSwipeTickThreshold}}`);
-  }
-  if (cleanProps.continuousHapticIntervalMs !== undefined && cleanProps.continuousHapticIntervalMs !== 20) {
-    propLines.push(`      continuousHapticIntervalMs={${cleanProps.continuousHapticIntervalMs}}`);
+
+  if (cleanProps.haptics === false || cleanProps.enableHaptics === false) {
+    propLines.push(`      haptics={false}`);
+  } else if (cleanProps.haptics && typeof cleanProps.haptics === 'object') {
+    const hapticEntries = Object.entries(cleanProps.haptics)
+      .filter(([_, v]) => v !== undefined)
+      .map(([k, v]) => `${k}: ${typeof v === 'string' ? `'${v}'` : v}`);
+    if (hapticEntries.length > 0) {
+      propLines.push(`      haptics={{ ${hapticEntries.join(', ')} }}`);
+    }
   }
 
   const jsxSnippet = [

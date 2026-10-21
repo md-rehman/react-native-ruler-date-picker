@@ -72,8 +72,7 @@ export default function AppointmentPicker() {
         console.log('Selected date:', str);
       }}
       ticks="calendar"
-      showResetToToday
-      enableHaptics
+      header={{ showResetToToday: true }}
       theme={{
         indicatorColor: '#38BDF8',
         accentColor: '#38BDF8',

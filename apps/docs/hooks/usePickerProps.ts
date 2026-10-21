@@ -53,14 +53,16 @@ export function usePickerProps() {
     (name: string, value: any) => {
       setProps((prev) => {
         let updated: Record<string, any>;
-        if (name.startsWith('theme.')) {
-          const themeKey = name.split('.')[1];
+        if (name.includes('.')) {
+          const [parentKey, childKey] = name.split('.');
+          const parentObj =
+            typeof prev[parentKey] === 'object' && prev[parentKey] !== null
+              ? { ...prev[parentKey] }
+              : {};
+          parentObj[childKey] = value;
           updated = {
             ...prev,
-            theme: {
-              ...prev.theme,
-              [themeKey]: value,
-            },
+            [parentKey]: parentObj,
           };
         } else {
           updated = {
