@@ -51,7 +51,7 @@ export default function App() {
         setDate(newDate);
         console.log('Selected:', dateString); // "2026-08-07"
       }}
-      showResetToToday
+      header={{ showResetToToday: true }}
     />
   );
 }
@@ -71,20 +71,14 @@ export default function App() {
 | `ticks` | `TickRule[] \| 'calendar' \| 'metric' \| 'minimal'` | `'calendar'` | Graduation rules or preset name |
 | `tickSpacing` | `number` | `24` | Gap between tick centers (px) |
 | `tickThickness` | `number` | `3` | Base thickness of tick bars (px) |
-| `theme` | `RulerTheme` | auto | Color theme object override |
-| `height` | `number` | `120` | Total component height (px) |
 | `rulerHeight` | `number` | `60` | Ruler track viewport height (px) |
-| `indicatorWidth` | `number` | `2` | Center indicator width (px) |
-| `indicatorHeight` | `number` | `40` | Center indicator height (px) |
-| `indicatorColor` | `string` | `theme.indicatorColor` | Center indicator needle color override |
-| `renderIndicator` | `() => ReactNode` | `undefined` | Custom renderer for center indicator |
-| `showHeader` | `boolean` | `true` | Show default date/year header |
-| `showResetToToday` | `boolean` | `false` | Show "Today" reset button when scrolled away |
-| `renderHeader` | `(date, isToday, reset) => ReactNode` | `undefined` | Custom header renderer override |
-| `bufferTicks` | `number` | `10` | Off-screen render buffer on each side |
+| `indicator` | `boolean \| IndicatorConfig` | `true` | Needle dimensions `{ width, height }` or custom renderer |
+| `header` | `boolean \| HeaderConfig` | `true` | Header display, `{ showResetToToday }`, or custom renderer |
+| `haptics` | `boolean \| HapticConfig` | `true` | Haptics toggle, `{ onTrigger }`, or velocity tuning |
+| `theme` | `RulerTheme` | auto | Color tokens (`indicatorColor`, `background`, etc.) |
+| `style` | `StyleProp<ViewStyle>` | `undefined` | Container view style (`height`, `margin`, etc.) |
+| `lensEffect` | `boolean \| LensConfig` | `false` | Fisheye lens distortion magnifying center spacing |
 | `debounceMs` | `number` | `100` | Debounce before firing `onChange` during scroll |
-| `enableHaptics` | `boolean` | `true` | Enable/disable haptic feedback |
-| `onHapticTrigger` | `(mode: 'tick' \| 'continuous') => void` | `undefined` | Custom haptic callback |
 
 ## 🎨 Theming
 

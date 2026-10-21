@@ -12,14 +12,16 @@ export function usePickerProps() {
 
   const updateProp = useCallback((name: string, value: any) => {
     setProps((prev) => {
-      if (name.startsWith('theme.')) {
-        const themeKey = name.split('.')[1];
+      if (name.includes('.')) {
+        const [parentKey, childKey] = name.split('.');
+        const parentObj =
+          typeof prev[parentKey] === 'object' && prev[parentKey] !== null
+            ? { ...prev[parentKey] }
+            : {};
+        parentObj[childKey] = value;
         return {
           ...prev,
-          theme: {
-            ...prev.theme,
-            [themeKey]: value,
-          },
+          [parentKey]: parentObj,
         };
       }
       return {
