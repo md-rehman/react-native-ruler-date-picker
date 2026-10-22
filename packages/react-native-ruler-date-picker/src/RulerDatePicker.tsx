@@ -46,18 +46,11 @@ export function RulerDatePicker(props: RulerDatePickerProps) {
   return (
     <RulerRoot
       {...rootProps}
+      header={header}
       lensEffect={lensEffect}
       indicator={indicatorConfig}
     >
-      {isHeaderVisible && (
-        <RulerHeader
-          showResetToToday={headerConfig?.showResetToToday}
-          render={headerConfig?.render}
-          style={headerConfig?.style}
-          dateStyle={headerConfig?.dateStyle}
-          yearStyle={headerConfig?.yearStyle}
-        />
-      )}
+      {isHeaderVisible && <RulerHeader {...headerConfig} />}
       {lensEffect ? (
         <RulerLensTrack />
       ) : (

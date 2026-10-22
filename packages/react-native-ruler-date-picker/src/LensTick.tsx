@@ -1,10 +1,9 @@
 import React from 'react';
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Animated, { useAnimatedStyle, type SharedValue } from 'react-native-reanimated';
+import { useRulerContext } from './RulerContext';
 import { Tick } from './Tick';
 import type { ResolvedTick } from './types';
-
-const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export interface LensTickProps {
   tick: ResolvedTick;
@@ -14,6 +13,7 @@ export interface LensTickProps {
   magnification: number;
   radius: number;
   scaleTicks: boolean;
+  containerWidth?: number;
 }
 
 /**
@@ -29,7 +29,11 @@ export function LensTick({
   magnification,
   radius,
   scaleTicks,
+  containerWidth,
 }: LensTickProps) {
+  const { width: contextWidth } = useRulerContext();
+  const width = containerWidth ?? contextWidth;
+
   const animatedStyle = useAnimatedStyle(() => {
     'worklet';
     const d = tick.offset * tickSpacing + translateX.value;
@@ -59,7 +63,7 @@ export function LensTick({
     <Animated.View
       style={[
         styles.lensTickWrapper,
-        { height: rulerHeight },
+        { height: rulerHeight, left: width / 2 },
         animatedStyle,
       ]}
     >
@@ -80,7 +84,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     height: '100%',
     width: 0,
-    left: SCREEN_WIDTH / 2,
     justifyContent: 'flex-end',
     alignItems: 'center',
   },

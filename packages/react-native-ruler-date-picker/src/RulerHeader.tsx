@@ -8,6 +8,7 @@ export interface RulerHeaderProps {
   dateStyle?: StyleProp<TextStyle>;
   yearStyle?: StyleProp<TextStyle>;
   showResetToToday?: boolean;
+  resetLabel?: string;
   format?: (date: Date) => string;
   render?: (
     selectedDate: Date,
@@ -21,6 +22,7 @@ export function RulerHeader({
   dateStyle,
   yearStyle,
   showResetToToday: customShowReset,
+  resetLabel: customResetLabel,
   format: customFormat,
   render,
 }: RulerHeaderProps = {}) {
@@ -39,6 +41,7 @@ export function RulerHeader({
   }
 
   const showReset = customShowReset ?? headerConfig?.showResetToToday ?? false;
+  const resetLabel = customResetLabel ?? headerConfig?.resetLabel;
   const formatFn = customFormat ?? headerConfig?.format;
 
   const displayFormat = formatFn
@@ -76,7 +79,10 @@ export function RulerHeader({
       </View>
 
       {showReset && !isTodaySelected && (
-        <RulerResetButton style={styles.resetBtnPosition} />
+        <RulerResetButton
+          style={styles.resetBtnPosition}
+          label={resetLabel}
+        />
       )}
     </View>
   );

@@ -48,6 +48,25 @@ export function RulerRoot(props: RulerRootProps) {
     <RulerContext.Provider value={contextValue}>
       <View
         testID={testID}
+        accessible={true}
+        accessibilityRole="adjustable"
+        accessibilityLabel={props.accessibilityLabel ?? 'Date picker'}
+        accessibilityValue={{ text: ruler.selectedDateStr }}
+        accessibilityActions={[
+          { name: 'increment', label: 'Next day' },
+          { name: 'decrement', label: 'Previous day' },
+        ]}
+        onAccessibilityAction={(event) => {
+          if (event.nativeEvent.actionName === 'increment') {
+            const next = new Date(ruler.selectedDate);
+            next.setDate(next.getDate() + 1);
+            ruler.scrollToDate(next, true);
+          } else if (event.nativeEvent.actionName === 'decrement') {
+            const prev = new Date(ruler.selectedDate);
+            prev.setDate(prev.getDate() - 1);
+            ruler.scrollToDate(prev, true);
+          }
+        }}
         style={[
           styles.container,
           {

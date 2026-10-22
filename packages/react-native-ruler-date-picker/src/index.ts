@@ -17,6 +17,7 @@ export { RulerHeader, type RulerHeaderProps } from './RulerHeader';
 export { RulerResetButton, type RulerResetButtonProps } from './RulerResetButton';
 export { RulerRangeRoot, type RulerRangeRootProps } from './RulerRangeRoot';
 export { RulerRangeTrack, type RulerRangeTrackProps } from './RulerRangeTrack';
+export { RulerRangeIndicator, type RulerRangeIndicatorProps } from './RulerRangeIndicator';
 export { RulerRangeHeader, type RulerRangeHeaderProps } from './RulerRangeHeader';
 export { RulerRangeHighlight, type RulerRangeHighlightProps } from './RulerRangeHighlight';
 
@@ -61,6 +62,8 @@ export type {
   HeaderConfig,
   RangeHeaderConfig,
   RangeHeaderContext,
+  RangeHighlightConfig,
+  RangeIndicatorConfig,
   HapticConfig,
   RulerDatePickerProps,
   LensConfig,

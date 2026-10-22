@@ -8,10 +8,14 @@ export interface RulerRangeHighlightProps {
 }
 
 export function RulerRangeHighlight({ style, color }: RulerRangeHighlightProps = {}) {
-  const { startOffset, endOffset, tickSpacing, rulerHeight, theme, rangeHighlightColor: propColor } =
+  const { startOffset, endOffset, tickSpacing, rulerHeight, theme, highlightConfig } =
     useRulerRangeContext();
 
-  const highlightColor = color ?? propColor ?? theme.rangeHighlightColor;
+  if (highlightConfig?.render) {
+    return <>{highlightConfig.render(startOffset, endOffset, tickSpacing)}</>;
+  }
+
+  const highlightColor = color ?? highlightConfig?.color ?? theme.rangeHighlightColor;
   const left = startOffset * tickSpacing - tickSpacing / 2;
   const width = Math.max(tickSpacing, (endOffset - startOffset + 1) * tickSpacing);
 
@@ -26,6 +30,7 @@ export function RulerRangeHighlight({ style, color }: RulerRangeHighlightProps =
           height: rulerHeight,
           backgroundColor: highlightColor,
         },
+        highlightConfig?.style,
         style,
       ]}
     />

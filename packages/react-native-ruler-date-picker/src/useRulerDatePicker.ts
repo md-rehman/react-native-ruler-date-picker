@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
-import { Dimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import {
   useSharedValue,
   withDecay,
@@ -28,8 +28,6 @@ import {
 } from './utils';
 import { useHaptics } from './useHaptics';
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-
 export interface UseRulerDatePickerReturn {
   // Animated values
   translateX: SharedValue<number>;
@@ -48,6 +46,7 @@ export interface UseRulerDatePickerReturn {
   tickSpacing: number;
   rulerHeight: number;
   height: number;
+  width: number;
   minOffset: number;
   maxOffset: number;
 
@@ -137,8 +136,10 @@ export function useRulerDatePicker(
   );
   const [windowCenter, setWindowCenter] = useState<number>(-initialOffsetDays);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const windowDimensions = useWindowDimensions();
+  const width = props.width ?? windowDimensions.width;
 
-  const halfVisible = Math.ceil(SCREEN_WIDTH / 2 / tickSpacing);
+  const halfVisible = Math.ceil(width / 2 / tickSpacing);
   const windowSize = halfVisible + bufferTicks;
 
   // ── Visible Ticks Resolution ──────────────────────────────────────────────
@@ -337,11 +338,12 @@ export function useRulerDatePicker(
   );
 
   // ── Sync with external controlled value ───────────────────────────────────
+  const prevValuePropRef = useRef(value);
   useEffect(() => {
-    if (value !== undefined) {
+    if (value !== undefined && value !== prevValuePropRef.current) {
+      prevValuePropRef.current = value;
       const target = normalizeDate(value);
-      const current = selectedDate;
-      if (formatDateString(target) !== formatDateString(current)) {
+      if (formatDateString(target) !== formatDateString(selectedDate)) {
         scrollToDate(target, true);
       }
     }
@@ -362,6 +364,7 @@ export function useRulerDatePicker(
     tickSpacing,
     rulerHeight,
     height,
+    width,
     minOffset,
     maxOffset,
     scrollToDate,

@@ -1,12 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions, type StyleProp, type ViewStyle } from 'react-native';
+import { View, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { GestureDetector } from 'react-native-gesture-handler';
 import { useRulerRangeContext } from './RulerRangeContext';
 import { RulerRangeHighlight } from './RulerRangeHighlight';
+import { RulerRangeIndicator } from './RulerRangeIndicator';
 import { Tick } from './Tick';
-
-const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export interface RulerRangeTrackProps {
   style?: StyleProp<ViewStyle>;
@@ -20,21 +19,8 @@ export function RulerRangeTrack({ style, children }: RulerRangeTrackProps = {}) 
     visibleTicks,
     tickSpacing,
     rulerHeight,
-    indicatorConfig,
-    theme,
+    width,
   } = useRulerRangeContext();
-
-  const indicatorWidth = indicatorConfig?.width ?? 2;
-  const indicatorHeight = indicatorConfig?.height ?? 40;
-  const indicatorColor = indicatorConfig?.color ?? theme.indicatorColor;
-
-  const alignment = indicatorConfig?.alignment ?? 'bottom';
-  const alignmentStyle: ViewStyle =
-    alignment === 'top'
-      ? { top: 0 }
-      : alignment === 'center'
-      ? { top: '50%', transform: [{ translateY: -indicatorHeight / 2 }] }
-      : { bottom: 0 };
 
   const animatedStyle = useAnimatedStyle(
     () => ({
@@ -45,28 +31,11 @@ export function RulerRangeTrack({ style, children }: RulerRangeTrackProps = {}) 
 
   return (
     <GestureDetector gesture={panGesture}>
-      <View style={[styles.rulerContainer, { height: rulerHeight }, style]}>
+      <View style={[styles.rulerContainer, { width, height: rulerHeight }, style]}>
         {/* Center Indicator pointing at active handle */}
-        {indicatorConfig?.render ? (
-          indicatorConfig.render()
-        ) : (
-          <View
-            pointerEvents="none"
-            style={[
-              styles.indicator,
-              alignmentStyle,
-              {
-                width: indicatorWidth,
-                height: indicatorHeight,
-                backgroundColor: indicatorColor,
-                borderRadius: indicatorWidth / 2,
-              },
-              indicatorConfig?.style,
-            ]}
-          />
-        )}
+        <RulerRangeIndicator />
 
-        <Animated.View style={[styles.ticksWrapper, animatedStyle]}>
+        <Animated.View style={[styles.ticksWrapper, { left: width / 2 }, animatedStyle]}>
           {/* Highlight Span */}
           <RulerRangeHighlight />
 
@@ -89,20 +58,14 @@ export function RulerRangeTrack({ style, children }: RulerRangeTrackProps = {}) 
 
 const styles = StyleSheet.create({
   rulerContainer: {
-    width: SCREEN_WIDTH,
     position: 'relative',
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'center',
   },
-  indicator: {
-    position: 'absolute',
-    zIndex: 10,
-  },
   ticksWrapper: {
     position: 'absolute',
     height: '100%',
     width: 0,
-    left: SCREEN_WIDTH / 2,
   },
 });

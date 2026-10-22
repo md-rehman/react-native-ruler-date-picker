@@ -1,11 +1,9 @@
 import React from 'react';
-import { StyleSheet, Dimensions, type StyleProp, type ViewStyle } from 'react-native';
+import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useRulerContext } from './RulerContext';
 import { Tick } from './Tick';
 import type { ResolvedTick } from './types';
-
-const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export interface RulerTicksProps {
   style?: StyleProp<ViewStyle>;
@@ -13,7 +11,7 @@ export interface RulerTicksProps {
 }
 
 export function RulerTicks({ style, renderTick }: RulerTicksProps = {}) {
-  const { translateX, visibleTicks, tickSpacing, rulerHeight } =
+  const { translateX, visibleTicks, tickSpacing, rulerHeight, width } =
     useRulerContext();
 
   const animatedStyle = useAnimatedStyle(
@@ -24,7 +22,14 @@ export function RulerTicks({ style, renderTick }: RulerTicksProps = {}) {
   );
 
   return (
-    <Animated.View style={[styles.ticksWrapper, animatedStyle, style]}>
+    <Animated.View
+      style={[
+        styles.ticksWrapper,
+        { left: width / 2 },
+        animatedStyle,
+        style,
+      ]}
+    >
       {visibleTicks.map((tick) =>
         renderTick ? (
           renderTick(tick, tickSpacing, rulerHeight)
@@ -46,6 +51,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     height: '100%',
     width: 0,
-    left: SCREEN_WIDTH / 2,
   },
 });

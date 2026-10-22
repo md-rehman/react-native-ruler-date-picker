@@ -153,6 +153,8 @@ export interface IndicatorConfig {
 export interface HeaderConfig {
   /** Show "Today" reset button when not on today (default: false) */
   showResetToToday?: boolean;
+  /** Text label for the reset button (default: 'Today') */
+  resetLabel?: string;
   /** Header container style */
   style?: StyleProp<ViewStyle>;
   /** Header date label style */
@@ -207,6 +209,8 @@ export interface RulerDatePickerProps {
   tickWidth?: number;
 
   // ── Dimensions & Theming ──
+  /** Width of the ruler viewport track in pixels (default: window width) */
+  width?: number;
   /** Height of the ruler track area in pixels (default: 60) */
   rulerHeight?: number;
   /** Color theme overrides (background, indicatorColor, accentColor, labelColor, etc.) */
@@ -236,6 +240,8 @@ export interface RulerDatePickerProps {
 
   /** Test ID for automated tests */
   testID?: string;
+  /** Accessibility label for assistive technologies / screen readers */
+  accessibilityLabel?: string;
 }
 
 // ── Fisheye Lens Types ───────────────────────────────────────────────────────
@@ -296,8 +302,32 @@ export interface RangeHeaderConfig {
   render?: (context: RangeHeaderContext) => React.ReactNode;
 }
 
+/**
+ * Configuration for the date range highlight span connecting the handles.
+ */
+export interface RangeHighlightConfig {
+  /** Color of the range connecting highlight strip (default: theme.rangeHighlightColor) */
+  color?: string;
+  /** Custom style for the range highlight span */
+  style?: StyleProp<ViewStyle>;
+  /** Custom renderer for the range highlight span */
+  render?: (
+    startOffset: number,
+    endOffset: number,
+    tickSpacing: number
+  ) => React.ReactNode;
+}
+
+/**
+ * Configuration for the center indicator needle in range mode.
+ */
+export interface RangeIndicatorConfig extends Omit<IndicatorConfig, 'render'> {
+  /** Custom renderer for range needle indicator receiving active handle and date */
+  render?: (handle: 'start' | 'end', date: Date) => React.ReactNode;
+}
+
 export interface RulerDateRangePickerProps
-  extends Omit<RulerDatePickerProps, 'value' | 'defaultValue' | 'onChange' | 'header'> {
+  extends Omit<RulerDatePickerProps, 'value' | 'defaultValue' | 'onChange' | 'header' | 'indicator'> {
   /** Currently selected date range (controlled) */
   value?: DateRange;
   /** Initial selected date range (uncontrolled) */
@@ -306,23 +336,13 @@ export interface RulerDateRangePickerProps
   onChange?: (range: DateRangeChangePayload) => void;
   /** Header configuration or boolean toggle (default: true) */
   header?: boolean | RangeHeaderConfig;
+  /** Center indicator needle configuration or boolean toggle (default: true) */
+  indicator?: boolean | RangeIndicatorConfig;
+  /** Range connecting highlight strip configuration or boolean toggle (default: true) */
+  highlight?: boolean | RangeHighlightConfig;
 
   /** Minimum selectable span in days (default: 1) */
   minSpanDays?: number;
   /** Maximum selectable span in days */
   maxSpanDays?: number;
-
-  /** Color of the range connecting highlight strip (also configurable via theme.rangeHighlightColor) */
-  rangeHighlightColor?: string;
-  /** Custom renderer for the range highlight span */
-  renderRangeHighlight?: (
-    startOffset: number,
-    endOffset: number,
-    tickSpacing: number
-  ) => React.ReactNode;
-  /** Custom renderer for range handle indicators */
-  renderRangeIndicator?: (
-    handle: 'start' | 'end',
-    date: Date
-  ) => React.ReactNode;
 }

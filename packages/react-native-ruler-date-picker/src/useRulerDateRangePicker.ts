@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
-import { Dimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import {
   useSharedValue,
   withDecay,
@@ -29,8 +29,6 @@ import {
 } from './utils';
 import { useHaptics } from './useHaptics';
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-
 export interface UseRulerDateRangePickerReturn {
   translateX: SharedValue<number>;
   panGesture: PanGesture;
@@ -52,6 +50,7 @@ export interface UseRulerDateRangePickerReturn {
   tickSpacing: number;
   rulerHeight: number;
   height: number;
+  width: number;
   minOffset: number;
   maxOffset: number;
 
@@ -154,7 +153,10 @@ export function useRulerDateRangePicker(
   const [windowCenter, setWindowCenter] = useState<number>(-activeOffset);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const halfVisible = Math.ceil(SCREEN_WIDTH / 2 / tickSpacing);
+  const windowDimensions = useWindowDimensions();
+  const width = props.width ?? windowDimensions.width;
+
+  const halfVisible = Math.ceil(width / 2 / tickSpacing);
   const windowSize = halfVisible + bufferTicks;
 
   // ── Visible Ticks Resolution ──────────────────────────────────────────────
@@ -409,8 +411,15 @@ export function useRulerDateRangePicker(
   );
 
   // Sync external controlled range
+  const prevRangePropRef = useRef(value);
   useEffect(() => {
-    if (value?.start && value?.end) {
+    if (
+      value?.start &&
+      value?.end &&
+      (value.start !== prevRangePropRef.current?.start ||
+        value.end !== prevRangePropRef.current?.end)
+    ) {
+      prevRangePropRef.current = value;
       const s = normalizeDate(value.start);
       const e = normalizeDate(value.end);
       if (
@@ -442,6 +451,7 @@ export function useRulerDateRangePicker(
     tickSpacing,
     rulerHeight,
     height,
+    width,
     minOffset,
     maxOffset,
     scrollToHandle,

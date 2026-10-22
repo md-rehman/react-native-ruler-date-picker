@@ -26,20 +26,23 @@ export function RulerDateRangePicker(props: RulerDateRangePickerProps) {
   const {
     header = true,
     indicator = true,
-    rangeHighlightColor,
+    highlight = true,
     ...rootProps
   } = props;
 
   const isHeaderVisible = header !== false;
+  const headerConfig = typeof header === 'object' ? header : undefined;
   const indicatorConfig = typeof indicator === 'object' ? indicator : undefined;
+  const highlightConfig = typeof highlight === 'object' ? highlight : undefined;
 
   return (
     <RulerRangeRoot
       {...rootProps}
+      header={header}
       indicator={indicatorConfig}
-      rangeHighlightColor={rangeHighlightColor}
+      highlight={highlightConfig}
     >
-      {isHeaderVisible && <RulerRangeHeader />}
+      {isHeaderVisible && <RulerRangeHeader {...headerConfig} />}
       <RulerRangeTrack />
     </RulerRangeRoot>
   );

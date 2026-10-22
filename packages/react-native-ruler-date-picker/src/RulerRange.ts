@@ -1,6 +1,7 @@
 import { RulerRangeRoot } from './RulerRangeRoot';
 import { RulerRangeTrack } from './RulerRangeTrack';
 import { RulerRangeHeader } from './RulerRangeHeader';
+import { RulerRangeIndicator } from './RulerRangeIndicator';
 import { RulerRangeHighlight } from './RulerRangeHighlight';
 import { Tick } from './Tick';
 
@@ -12,6 +13,7 @@ import { Tick } from './Tick';
  * <RulerRange.Root value={range} onChange={setRange}>
  *   <RulerRange.Header />
  *   <RulerRange.Track>
+ *     <RulerRange.Indicator />
  *     <RulerRange.Highlight />
  *   </RulerRange.Track>
  * </RulerRange.Root>
@@ -20,6 +22,7 @@ import { Tick } from './Tick';
 export const RulerRange = {
   Root: RulerRangeRoot,
   Track: RulerRangeTrack,
+  Indicator: RulerRangeIndicator,
   Header: RulerRangeHeader,
   Highlight: RulerRangeHighlight,
   Tick: Tick,

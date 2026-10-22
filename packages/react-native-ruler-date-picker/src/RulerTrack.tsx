@@ -1,9 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions, type StyleProp, type ViewStyle } from 'react-native';
+import { View, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 import { useRulerContext } from './RulerContext';
-
-const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export interface RulerTrackProps {
   children?: React.ReactNode;
@@ -11,11 +9,11 @@ export interface RulerTrackProps {
 }
 
 export function RulerTrack({ children, style }: RulerTrackProps) {
-  const { panGesture, rulerHeight } = useRulerContext();
+  const { panGesture, rulerHeight, width } = useRulerContext();
 
   return (
     <GestureDetector gesture={panGesture}>
-      <View style={[styles.rulerContainer, { height: rulerHeight }, style]}>
+      <View style={[styles.rulerContainer, { width, height: rulerHeight }, style]}>
         {children}
       </View>
     </GestureDetector>
@@ -24,7 +22,6 @@ export function RulerTrack({ children, style }: RulerTrackProps) {
 
 const styles = StyleSheet.create({
   rulerContainer: {
-    width: SCREEN_WIDTH,
     position: 'relative',
     flexDirection: 'row',
     alignItems: 'flex-end',
