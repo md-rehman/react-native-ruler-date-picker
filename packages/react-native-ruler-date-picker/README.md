@@ -72,13 +72,15 @@ export default function App() {
 | `ticks` | `TickRule[] \| 'calendar' \| 'metric' \| 'minimal'` | `'calendar'` | Graduation rules or preset name |
 | `tickSpacing` | `number` | `24` | Gap between tick centers (px) |
 | `tickWidth` | `number` | `3` | Base thickness of tick bars (px) |
+| `width` | `number` | `window width` | Viewport width of the ruler track (px) |
 | `rulerHeight` | `number` | `60` | Ruler track viewport height (px) |
 | `indicator` | `boolean \| IndicatorConfig` | `true` | Needle dimensions `{ width, height, alignment }` or custom renderer |
-| `header` | `boolean \| HeaderConfig` | `true` | Header display, `{ showResetToToday, format }`, or custom renderer |
+| `header` | `boolean \| HeaderConfig` | `true` | Header display, `{ showResetToToday, resetLabel, format }`, or custom renderer |
 | `haptics` | `boolean \| HapticConfig` | `true` | Haptics toggle, `{ onTrigger }`, or velocity tuning |
 | `theme` | `RulerTheme` | auto | Color tokens (`indicatorColor`, `background`, etc.) |
 | `style` | `StyleProp<ViewStyle>` | `undefined` | Container view style (`height`, `margin`, etc.) |
 | `lensEffect` | `boolean \| LensConfig` | `false` | Fisheye lens distortion magnifying center spacing |
+| `accessibilityLabel` | `string` | `'Date picker'` | Accessibility label for screen readers |
 | `debounceMs` | `number` | `100` | Debounce before firing `onChange` during scroll |
 
 ## 🎨 Theming
