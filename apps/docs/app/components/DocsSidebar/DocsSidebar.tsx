@@ -1,77 +1,32 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { DOCS_NAV_SECTIONS } from '../../../data/docsNav';
 import styles from './DocsSidebar.module.css';
 
-export interface DocNavItem {
-  id: string;
-  name: string;
-  badge: string;
-  desc: string;
-  href: string;
-  isExternal?: boolean;
-}
-
-export const DOCS_NAV_ITEMS: DocNavItem[] = [
-  {
-    id: 'quick-start',
-    name: 'Quick Start',
-    badge: '<> Code',
-    desc: 'Minimal setup example & React state binding',
-    href: '#quick-start'
-  },
-  {
-    id: 'installation',
-    name: 'Installation',
-    badge: '#setup',
-    desc: 'Package install & Reanimated 3 peer dependencies',
-    href: '#installation'
-  },
-  {
-    id: 'anatomy',
-    name: 'Compound Anatomy',
-    badge: '#compound',
-    desc: 'Root, Track, Needle & Ticks breakdown',
-    href: '#anatomy'
-  },
-  {
-    id: 'props',
-    name: 'Component Props',
-    badge: '#api',
-    desc: 'Complete props table, types & defaults',
-    href: '#props'
-  },
-  {
-    id: 'theming',
-    name: 'Theme Configuration',
-    badge: '#theming',
-    desc: 'Appearance tokens, custom colors & dark mode',
-    href: '#theming'
-  },
-  {
-    id: 'playground',
-    name: 'Interactive Playground',
-    badge: '⚡ Live',
-    desc: 'Live device simulators & preset sandbox',
-    href: '/playground',
-    isExternal: true
-  }
-];
-
 interface DocsSidebarProps {
-  activeSection: string;
-  onSelectSection: (id: string) => void;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
 }
 
 export default function DocsSidebar({
-  activeSection,
-  onSelectSection,
   isCollapsed,
-  onToggleCollapse
+  onToggleCollapse,
 }: DocsSidebarProps) {
+  const pathname = usePathname();
+
+  // Keep track of collapsed sections (all open by default)
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
+
+  const toggleSection = (sectionId: string) => {
+    setCollapsedSections((prev) => ({
+      ...prev,
+      [sectionId]: !prev[sectionId],
+    }));
+  };
+
   return (
     <>
       {isCollapsed && (
@@ -134,54 +89,76 @@ export default function DocsSidebar({
           </div>
 
           <nav className={styles.list}>
-            {DOCS_NAV_ITEMS.map((item) => {
-              const isActive = activeSection === item.id;
-
-              if (item.isExternal) {
-                return (
-                  <Link
-                    key={item.id}
-                    href={item.href}
-                    className={`${styles.item} ${isActive ? styles.itemActive : ''}`}
-                  >
-                    <div className={styles.itemHeader}>
-                      <span className={styles.itemName}>{item.name}</span>
-                      <span className={styles.itemBadge}>{item.badge}</span>
-                    </div>
-                    <p className={styles.itemDesc}>{item.desc}</p>
-                  </Link>
-                );
-              }
+            {DOCS_NAV_SECTIONS.map((section) => {
+              const isOpen = !collapsedSections[section.id];
+              const hasActiveChild = section.items.some((item) => pathname === item.href);
 
               return (
-                <a
-                  key={item.id}
-                  href={item.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onSelectSection(item.id);
-                    const el = document.getElementById(item.id);
-                    if (el) {
-                      const topOffset = 80;
-                      const elementPosition = el.getBoundingClientRect().top;
-                      const offsetPosition = elementPosition + window.pageYOffset - topOffset;
-                      window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                      });
-                    }
-                  }}
-                  className={`${styles.item} ${isActive ? styles.itemActive : ''}`}
-                >
-                  <div className={styles.itemHeader}>
-                    <span className={styles.itemName}>{item.name}</span>
-                    <span className={styles.itemBadge}>{item.badge}</span>
-                  </div>
-                  <p className={styles.itemDesc}>{item.desc}</p>
-                </a>
+                <div key={section.id} className={styles.sectionGroup}>
+                  <button
+                    type="button"
+                    onClick={() => toggleSection(section.id)}
+                    className={styles.sectionHeader}
+                    aria-expanded={isOpen}
+                  >
+                    <span
+                      className={styles.sectionTitle}
+                      style={{ color: hasActiveChild ? 'var(--color-accent)' : undefined }}
+                    >
+                      {section.title}
+                    </span>
+                    <svg
+                      className={`${styles.sectionArrow} ${isOpen ? styles.sectionArrowOpen : ''}`}
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </button>
+
+                  {isOpen && (
+                    <div className={styles.sectionItems}>
+                      {section.items.map((item) => {
+                        const isActive = pathname === item.href;
+
+                        return (
+                          <Link
+                            key={item.id}
+                            href={item.href}
+                            className={`${styles.item} ${isActive ? styles.itemActive : ''}`}
+                          >
+                            <div className={styles.itemHeader}>
+                              <span className={styles.itemName}>{item.title}</span>
+                              {item.badge && (
+                                <span className={styles.itemBadge}>{item.badge}</span>
+                              )}
+                            </div>
+                            {item.desc && (
+                              <p className={styles.itemDesc}>{item.desc}</p>
+                            )}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               );
             })}
           </nav>
+
+          <div className={styles.sidebarFooter}>
+            <Link href="/playground" className={styles.playgroundLink}>
+              <span>Interactive Playground</span>
+              <span className={styles.itemBadge} style={{ color: 'var(--color-accent)', borderColor: 'var(--color-accent)' }}>⚡ Live</span>
+            </Link>
+          </div>
         </div>
       </aside>
     </>

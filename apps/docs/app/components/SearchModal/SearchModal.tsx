@@ -15,45 +15,37 @@ export interface SearchItem {
 }
 
 const STATIC_SEARCH_ITEMS: SearchItem[] = [
-  // Sections
+  // Getting Started & Introduction
   {
-    id: 'sec-quickstart',
-    title: 'Quick Start',
-    desc: 'Minimal setup example & React state binding',
+    id: 'sec-getting-started',
+    title: 'Getting Started',
+    desc: 'Installation, peer dependencies, babel setup & quick start',
     category: 'Section',
-    href: '/docs#quick-start',
-    keywords: ['start', 'intro', 'example', 'react', 'code', 'minimal']
+    href: '/docs/getting-started',
+    keywords: ['start', 'intro', 'example', 'install', 'setup', 'babel', 'expo', 'dependencies']
   },
   {
-    id: 'sec-install',
-    title: 'Installation & Peer Dependencies',
-    desc: 'Package install, react-native-reanimated & gesture-handler setup',
+    id: 'sec-primitives',
+    title: 'Primitives (Ticks & LensTicks)',
+    desc: 'Graduation marks, virtual windowing & declarative rule evaluation',
     category: 'Section',
-    href: '/docs#installation',
-    keywords: ['install', 'npm', 'pnpm', 'yarn', 'expo', 'reanimated', 'gesture', 'dependencies']
+    href: '/docs/introduction/primitives',
+    keywords: ['primitives', 'ticks', 'lens', 'windowing', 'rule', 'resolver', 'virtualized']
   },
   {
-    id: 'sec-anatomy',
-    title: 'Compound Anatomy',
-    desc: 'Root, Track, Needle & Ticks modular sub-components',
+    id: 'sec-haptics',
+    title: 'Haptic Feedback',
+    desc: 'Dual-speed tactile engine, velocity thresholds & Expo Haptics',
     category: 'Section',
-    href: '/docs#anatomy',
-    keywords: ['anatomy', 'compound', 'modular', 'root', 'track', 'indicator', 'ticks', 'reset']
-  },
-  {
-    id: 'sec-props',
-    title: 'Component Props Reference',
-    desc: 'Complete configuration table, prop types, defaults & descriptions',
-    category: 'Section',
-    href: '/docs#props',
-    keywords: ['props', 'api', 'types', 'options', 'parameters', 'reference', 'table']
+    href: '/docs/introduction/haptics',
+    keywords: ['haptics', 'tactile', 'vibration', 'buzz', 'expo', 'taptic', 'feedback']
   },
   {
     id: 'sec-theming',
-    title: 'Theme Configuration',
-    desc: 'Appearance tokens, custom colors, ticks tint & dark mode',
-    category: 'Section',
-    href: '/docs#theming',
+    title: 'Theming & Appearance',
+    desc: 'Color tokens, automatic dark/light mode & useResolvedTheme',
+    category: 'Theming',
+    href: '/docs/introduction/theming',
     keywords: ['theme', 'colors', 'appearance', 'dark', 'light', 'customization', 'accent']
   },
   {
@@ -65,105 +57,99 @@ const STATIC_SEARCH_ITEMS: SearchItem[] = [
     keywords: ['playground', 'simulator', 'demo', 'sandbox', 'live', 'device', 'interactive']
   },
 
-  // Compound Components
+  // RulerDatePicker (Single Date)
   {
-    id: 'comp-root',
-    title: '<Ruler.Root>',
-    desc: 'State Provider, inertial decay physics & gesture controller context',
+    id: 'sec-rdp-basic',
+    title: 'RulerDatePicker - Basic Usage',
+    desc: 'Turnkey single-date picker with controlled state and boundaries',
     category: 'Component',
-    href: '/docs#anatomy',
-    keywords: ['root', 'provider', 'context', 'gesture', 'physics', 'reanimated']
+    href: '/docs/ruler-date-picker/basic',
+    keywords: ['single', 'date', 'picker', 'ruler', 'basic', 'controlled', 'value']
   },
   {
-    id: 'comp-header',
-    title: '<Ruler.Header>',
-    desc: 'Displays the currently active date, month, year or custom label',
+    id: 'sec-rdp-anatomy',
+    title: 'RulerDatePicker - Compound Anatomy',
+    desc: 'Modular subcomponents: Ruler.Root, Track, Indicator, Ticks, Header & Reset',
     category: 'Component',
-    href: '/docs#anatomy',
-    keywords: ['header', 'date', 'month', 'year', 'format', 'label']
+    href: '/docs/ruler-date-picker/anatomy',
+    keywords: ['anatomy', 'compound', 'modular', 'root', 'track', 'indicator', 'ticks', 'reset']
   },
   {
-    id: 'comp-track',
-    title: '<Ruler.Track>',
-    desc: 'Viewport boundary & horizontal pan gesture interaction arena',
+    id: 'sec-rdp-lens',
+    title: 'Lens Distortion Effect',
+    desc: 'Fisheye optical magnification & non-linear tick spacing',
     category: 'Component',
-    href: '/docs#anatomy',
-    keywords: ['track', 'viewport', 'drag', 'pan', 'horizontal', 'overflow']
+    href: '/docs/ruler-date-picker/lens-effect',
+    keywords: ['lens', 'fisheye', 'distortion', 'magnification', 'loupe', 'optical']
   },
   {
-    id: 'comp-indicator',
-    title: '<Ruler.Indicator>',
-    desc: 'Center cursor needle with customizable width, height, corner radius & color',
-    category: 'Component',
-    href: '/docs#anatomy',
-    keywords: ['indicator', 'needle', 'cursor', 'center', 'pointer', 'marker']
-  },
-  {
-    id: 'comp-ticks',
-    title: '<Ruler.Ticks>',
-    desc: 'Windowed virtualized graduations rendered at 60 FPS',
-    category: 'Component',
-    href: '/docs#anatomy',
-    keywords: ['ticks', 'graduations', 'virtualized', 'performance', '60fps', 'lines']
-  },
-  {
-    id: 'comp-reset',
-    title: '<Ruler.ResetButton>',
-    desc: 'Context-aware reset button that automatically appears when scrolled away from today',
-    category: 'Component',
-    href: '/docs#anatomy',
-    keywords: ['reset', 'today', 'jump', 'button', 'action']
-  },
-  {
-    id: 'comp-range',
-    title: '<RulerRange.*>',
-    desc: 'Range selection compound system with highlight band & interval headers',
-    category: 'Component',
-    href: '/docs#anatomy',
-    keywords: ['range', 'selection', 'interval', 'span', 'highlight', 'start', 'end']
+    id: 'sec-rdp-api',
+    title: 'RulerDatePicker - API Reference',
+    desc: 'Complete configuration table, prop types, defaults & descriptions',
+    category: 'Section',
+    href: '/docs/ruler-date-picker/api',
+    keywords: ['props', 'api', 'types', 'options', 'parameters', 'reference', 'table']
   },
 
-  // Theme Tokens
+  // RulerDateRangePicker (Range)
   {
-    id: 'theme-indicatorColor',
-    title: 'theme.indicatorColor',
-    desc: 'Primary color of the center needle cursor (default: #0A84FF)',
-    category: 'Theming',
-    href: '/docs#theming',
-    keywords: ['indicator', 'needle', 'color', 'theme', 'blue']
+    id: 'sec-rdrp-basic',
+    title: 'RulerDateRangePicker - Basic Usage',
+    desc: 'Dual handles, span boundaries, and range state management',
+    category: 'Component',
+    href: '/docs/ruler-date-range-picker/basic',
+    keywords: ['range', 'date-range', 'interval', 'dual', 'handles', 'span', 'booking']
   },
   {
-    id: 'theme-accentColor',
-    title: 'theme.accentColor',
-    desc: 'Highlight tint for active marks, headers & selection',
-    category: 'Theming',
-    href: '/docs#theming',
-    keywords: ['accent', 'highlight', 'active', 'color', 'theme']
+    id: 'sec-rdrp-anatomy',
+    title: 'RulerDateRangePicker - Compound Anatomy',
+    desc: 'RulerRange.Root, Track, Indicator, Highlight & Range Header',
+    category: 'Component',
+    href: '/docs/ruler-date-range-picker/anatomy',
+    keywords: ['range', 'anatomy', 'highlight', 'handles', 'compound']
   },
   {
-    id: 'theme-defaultTickColor',
-    title: 'theme.defaultTickColor',
-    desc: 'Default color of standard graduation marks (default: #8E8E93)',
-    category: 'Theming',
-    href: '/docs#theming',
-    keywords: ['tick', 'color', 'gray', 'standard', 'graduations']
+    id: 'sec-rdrp-api',
+    title: 'RulerDateRangePicker - API Reference',
+    desc: 'DateRange types, minSpanDays, maxSpanDays & range props table',
+    category: 'Section',
+    href: '/docs/ruler-date-range-picker/api',
+    keywords: ['range', 'api', 'props', 'types', 'dateRange']
+  },
+
+  // Headless Hooks
+  {
+    id: 'hook-use-ruler-date-picker',
+    title: 'useRulerDatePicker',
+    desc: 'Headless single-date physics, Reanimated 3 decay, snapping & windowing',
+    category: 'Component',
+    href: '/docs/hooks/use-ruler-date-picker',
+    keywords: ['hook', 'headless', 'decay', 'reanimated', 'snapping', 'scrollX']
   },
   {
-    id: 'theme-labelColor',
-    title: 'theme.labelColor',
-    desc: 'Text color for date numbers, month headers and tick labels',
-    category: 'Theming',
-    href: '/docs#theming',
-    keywords: ['label', 'text', 'color', 'font', 'date']
+    id: 'hook-use-ruler-date-range-picker',
+    title: 'useRulerDateRangePicker',
+    desc: 'Headless range physics, dual-handle shared values & collision clamping',
+    category: 'Component',
+    href: '/docs/hooks/use-ruler-date-range-picker',
+    keywords: ['hook', 'range', 'handles', 'clamping', 'headless']
   },
   {
-    id: 'theme-rangeHighlightColor',
-    title: 'theme.rangeHighlightColor',
-    desc: 'Tint color for selected interval highlight band',
-    category: 'Theming',
-    href: '/docs#theming',
-    keywords: ['range', 'band', 'highlight', 'color', 'selection']
-  }
+    id: 'hook-contexts',
+    title: 'Compound Contexts (useRulerContext & useRulerRangeContext)',
+    desc: 'Access internal Reanimated shared values in custom compound children',
+    category: 'Component',
+    href: '/docs/hooks/contexts',
+    keywords: ['context', 'useRulerContext', 'useRulerRangeContext', 'children']
+  },
+  {
+    id: 'hook-utility-hooks',
+    title: 'Utility Hooks & Date Helpers',
+    desc: 'useHaptics, useResolvedTheme, formatDateString & DST calendar math',
+    category: 'Component',
+    href: '/docs/hooks/utility-hooks',
+    keywords: ['utils', 'helpers', 'formatDateString', 'normalizeDate', 'timezone', 'dst']
+  },
 ];
 
 // Add props dynamically from prop definitions
@@ -174,7 +160,7 @@ const SEARCH_INDEX: SearchItem[] = [
     title: `${prop.name}`,
     desc: `${prop.type} — ${prop.description || 'Configurable ruler property'}`,
     category: 'Prop' as const,
-    href: '/docs#props',
+    href: '/docs/ruler-date-picker/api',
     keywords: ['prop', prop.name, prop.type, prop.category || '']
   }))
 ];

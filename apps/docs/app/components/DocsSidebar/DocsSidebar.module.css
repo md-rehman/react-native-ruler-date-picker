@@ -79,7 +79,7 @@
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 16px;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
@@ -101,10 +101,60 @@
   background: rgba(255, 255, 255, 0.35);
 }
 
+/* ── Section Grouping ── */
+.sectionGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  user-select: none;
+  transition: background-color var(--transition-fast);
+}
+
+.sectionHeader:hover {
+  background-color: var(--color-surface-hover);
+}
+
+.sectionTitle {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--color-text-muted);
+}
+
+.sectionArrow {
+  color: var(--color-text-muted);
+  transition: transform var(--transition-fast);
+}
+
+.sectionArrowOpen {
+  transform: rotate(90deg);
+}
+
+.sectionItems {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 4px;
+}
+
+/* ── Link Item ── */
 .item {
   width: 100%;
   text-align: left;
-  padding: 12px 14px;
+  padding: 9px 12px;
   border-radius: var(--radius-md);
   background-color: transparent;
   border: 1px solid transparent;
@@ -128,13 +178,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 4px;
   gap: 8px;
+  margin-bottom: 2px;
 }
 
 .itemName {
   font-weight: 600;
-  font-size: 0.925rem;
+  font-size: 0.875rem;
   color: var(--color-text-primary);
   margin: 0;
   transition: color var(--transition-fast);
@@ -147,9 +197,8 @@
 .itemBadge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 7px;
-  font-size: 0.7rem;
+  padding: 2px 6px;
+  font-size: 0.65rem;
   font-weight: 600;
   border-radius: var(--radius-sm);
   background-color: var(--color-surface);
@@ -164,13 +213,40 @@
 }
 
 .itemDesc {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--color-text-secondary);
-  line-height: 1.4;
+  line-height: 1.35;
   margin: 0;
 }
 
-/* Docked tab when collapsed to side */
+/* ── Playground Footer Link in Sidebar ── */
+.sidebarFooter {
+  padding: 12px;
+  border-top: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.playgroundLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  border: 1px solid var(--glass-border);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all var(--transition-fast);
+}
+
+.playgroundLink:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+/* ── Docked tab when collapsed to side ── */
 .dockTab {
   position: fixed;
   left: 0;
