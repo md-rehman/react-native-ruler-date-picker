@@ -163,7 +163,7 @@ export default function HeroDemo() {
 const rnStyles = StyleSheet.create({
   root: {
     width: '100%',
-    height: 120,
+    minHeight: 140,
     justifyContent: 'center',
     alignItems: 'center',
   },

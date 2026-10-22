@@ -109,6 +109,20 @@ export default function AppShell() {
     });
     setManualPositions(loaded);
 
+    // Check if user redirected from InlinePlayground with custom edited code
+    const incomingCode = localStorage.getItem('ruler-playground-incoming-code');
+    if (incomingCode) {
+      pickerState.updateFromCode(incomingCode);
+      setVisibleModals({
+        Selection: false,
+        Dimensions: false,
+        Colors: false,
+        Features: false,
+        Code: true,
+      });
+      localStorage.removeItem('ruler-playground-incoming-code');
+    }
+
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 

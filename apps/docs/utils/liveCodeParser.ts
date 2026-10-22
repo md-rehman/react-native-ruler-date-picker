@@ -13,11 +13,29 @@ export interface ParseResult {
 /**
  * Recursively search the Babel AST for the <RulerDatePicker ... /> JSX element.
  */
+function isRulerComponentName(nameNode: any): boolean {
+  if (!nameNode) return false;
+  if (nameNode.type === 'JSXIdentifier') {
+    return [
+      'RulerDatePicker',
+      'RulerDateRangePicker',
+      'RulerRoot',
+      'RulerRangeRoot',
+    ].includes(nameNode.name);
+  }
+  if (nameNode.type === 'JSXMemberExpression') {
+    const obj = nameNode.object?.name;
+    const prop = nameNode.property?.name;
+    return (obj === 'Ruler' || obj === 'RulerRange') && (prop === 'Root' || prop === 'Picker');
+  }
+  return false;
+}
+
 function findRulerElement(node: any): any {
   if (!node) return null;
   if (
     node.type === 'JSXElement' &&
-    node.openingElement?.name?.name === 'RulerDatePicker'
+    isRulerComponentName(node.openingElement?.name)
   ) {
     return node;
   }

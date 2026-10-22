@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { View, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
@@ -14,6 +15,8 @@ import {
   RulerResetButton,
   formatDateString,
 } from 'react-native-ruler-date-picker';
+import { highlightCode } from '../../../utils/highlightCode';
+import { parseCodeToProps } from '../../../utils/liveCodeParser';
 import styles from './InlinePlayground.module.css';
 
 export interface InlinePlaygroundProps {
@@ -26,10 +29,13 @@ export interface InlinePlaygroundProps {
 export default function InlinePlayground({
   title = 'Interactive Component Preview',
   type = 'single',
-  props = {},
+  props: initialProps = {},
   jsxCode,
 }: InlinePlaygroundProps) {
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [code, setCode] = useState<string>(jsxCode);
+  const [parsedProps, setParsedProps] = useState<Record<string, any>>(initialProps);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [dateString, setDateString] = useState<string>('');
   const [range, setRange] = useState<{ start: Date; end: Date }>({
@@ -37,17 +43,49 @@ export default function InlinePlayground({
     end: new Date(Date.now() + 7 * 86400000),
   });
   const [copied, setCopied] = useState(false);
-
   const [previewWidth, setPreviewWidth] = useState(360);
+
+  const overlayRef = useRef<HTMLPreElement | null>(null);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setMounted(true);
     setDateString(formatDateString(new Date()));
   }, []);
 
+  // Update code when jsxCode prop changes
+  useEffect(() => {
+    setCode(jsxCode);
+    setParsedProps(initialProps);
+  }, [jsxCode, initialProps]);
+
+  // Handle live code edits
+  const handleCodeChange = useCallback((newCode: string) => {
+    setCode(newCode);
+
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = setTimeout(() => {
+      const res = parseCodeToProps(newCode);
+      if (res.success && res.props) {
+        setParsedProps((prev) => ({
+          ...prev,
+          ...res.props,
+        }));
+      }
+    }, 250);
+  }, []);
+
+  const handleResetCode = () => {
+    setCode(jsxCode);
+    setParsedProps(initialProps);
+  };
+
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(jsxCode);
+      await navigator.clipboard.writeText(code);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -55,16 +93,24 @@ export default function InlinePlayground({
     }
   };
 
+  const handleOpenInPlayground = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('ruler-playground-incoming-code', code);
+    }
+    router.push('/playground');
+  };
+
+  const isCodeModified = code.trim() !== jsxCode.trim();
+  const effectiveWidth = parsedProps.width ?? previewWidth;
+
   const renderPreview = () => {
     if (!mounted) {
       return (
-        <div style={{ height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)' }}>
+        <div style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)' }}>
           Loading interactive ruler...
         </div>
       );
     }
-
-    const effectiveWidth = props.width ?? previewWidth;
 
     if (type === 'range') {
       return (
@@ -82,7 +128,7 @@ export default function InlinePlayground({
               onChange={({ startDate, endDate }) => {
                 setRange({ start: startDate, end: endDate });
               }}
-              {...props}
+              {...parsedProps}
             />
           </View>
         </GestureHandlerRootView>
@@ -106,14 +152,14 @@ export default function InlinePlayground({
                 setSelectedDate(date);
                 setDateString(str);
               }}
-              {...props}
+              {...parsedProps}
             >
               <RulerHeader showResetToToday={false} />
               <RulerTrack>
                 <RulerIndicator />
                 <RulerTicks />
               </RulerTrack>
-              <div style={{ display: 'flex', justifyContent: 'center', marginTop: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: 14 }}>
                 <RulerResetButton />
               </div>
             </RulerRoot>
@@ -140,7 +186,7 @@ export default function InlinePlayground({
               setDateString(str);
             }}
             lensEffect={type === 'lens'}
-            {...props}
+            {...parsedProps}
           />
         </View>
       </GestureHandlerRootView>
@@ -149,21 +195,29 @@ export default function InlinePlayground({
 
   return (
     <div className={styles.container}>
+      {/* ── Top Bar: Title on Left, Open in Playground on Right ── */}
       <div className={styles.topBar}>
-        <div className={styles.windowControls}>
-          <span className={`${styles.dot} ${styles.dotRed}`} />
-          <span className={`${styles.dot} ${styles.dotYellow}`} />
-          <span className={`${styles.dot} ${styles.dotGreen}`} />
-        </div>
         <div className={styles.topBarTitle}>
           <span>{title}</span>
           <span className={styles.badgeLive}>Live</span>
         </div>
-        <div style={{ width: 48 }} />
+
+        <button
+          onClick={handleOpenInPlayground}
+          className={styles.openPlaygroundBtn}
+          title="Open and edit this example in the full playground"
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+          <span>Open in Playground</span>
+        </button>
       </div>
 
       <div className={styles.splitArea}>
-        {/* Left Pane: Interactive Preview */}
+        {/* ── Left Pane: Interactive Preview ── */}
         <div className={styles.previewPane}>
           <div className={styles.previewHeader}>
             <span className={styles.previewLabel}>Interactive Canvas</span>
@@ -192,39 +246,80 @@ export default function InlinePlayground({
           </div>
         </div>
 
-        {/* Right Pane: Code (JSX only) */}
+        {/* ── Right Pane: Editable JSX Code with Syntax Highlighting ── */}
         <div className={styles.codePane}>
           <div className={styles.codeHeader}>
-            <span className={styles.codeLabel}>JSX Code</span>
-            <button
-              onClick={handleCopy}
-              className={styles.copyButton}
-              title="Copy JSX Code"
-              aria-label="Copy JSX Code"
-            >
-              {copied ? (
-                <>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
+            <div className={styles.codeLabelWrapper}>
+              <span className={styles.codeLabel}>JSX Code</span>
+              {isCodeModified && <span className={styles.editedBadge}>Edited</span>}
+            </div>
+
+            <div className={styles.codeActions}>
+              {isCodeModified && (
+                <button
+                  onClick={handleResetCode}
+                  className={styles.resetBtn}
+                  title="Reset to default code"
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                    <path d="M3 3v5h5"></path>
                   </svg>
-                  <span style={{ color: '#22c55e' }}>Copied</span>
-                </>
-              ) : (
-                <>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                  </svg>
-                  <span>Copy</span>
-                </>
+                  <span>Reset</span>
+                </button>
               )}
-            </button>
+
+              <button
+                onClick={handleCopy}
+                className={styles.copyButton}
+                title="Copy JSX Code"
+                aria-label="Copy JSX Code"
+              >
+                {copied ? (
+                  <>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span style={{ color: '#22c55e' }}>Copied</span>
+                  </>
+                ) : (
+                  <>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Copy</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
 
-          <div className={styles.codeScroll}>
-            <pre>
-              <code>{jsxCode}</code>
+          <div className={styles.editorContainer}>
+            <pre className={styles.highlightOverlay} ref={overlayRef} aria-hidden="true">
+              <code
+                className="language-tsx"
+                dangerouslySetInnerHTML={{
+                  __html: highlightCode(code, 'tsx') + '\n',
+                }}
+              />
             </pre>
+            <textarea
+              value={code}
+              onChange={(e) => handleCodeChange(e.target.value)}
+              onScroll={(e) => {
+                if (overlayRef.current) {
+                  overlayRef.current.scrollTop = e.currentTarget.scrollTop;
+                  overlayRef.current.scrollLeft = e.currentTarget.scrollLeft;
+                }
+              }}
+              className={styles.editorTextarea}
+              spellCheck={false}
+              autoCapitalize="off"
+              autoComplete="off"
+              autoCorrect="off"
+              placeholder="Edit JSX props or code..."
+            />
           </div>
         </div>
       </div>
@@ -236,15 +331,13 @@ const rnStyles = StyleSheet.create({
   root: {
     width: '100%',
     flex: 1,
-    minHeight: 120,
+    minHeight: 160,
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden',
   },
   container: {
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden',
   },
 });
