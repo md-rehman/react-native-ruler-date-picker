@@ -5,6 +5,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import TopBar from './components/TopBar/TopBar';
 import Footer from './components/Footer/Footer';
+import { highlightCode } from '../utils/highlightCode';
 import styles from './page.module.css';
 
 const HeroDemo = dynamic(
@@ -191,7 +192,12 @@ export default function HomePage() {
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
               </svg>
-              <code>npm i react-native-ruler-date-picker</code>
+              <code
+                className="language-bash"
+                dangerouslySetInnerHTML={{
+                  __html: highlightCode('npm i react-native-ruler-date-picker', 'bash'),
+                }}
+              />
               <span className={styles.copyLabel}>{copiedInstall ? 'Copied!' : 'Copy'}</span>
             </button>
           </div>
@@ -314,7 +320,12 @@ export default function HomePage() {
               </div>
 
               <pre className={styles.codeContent}>
-                <code>{CODE_EXAMPLES[activeCodeTab]}</code>
+                <code
+                  className="language-tsx"
+                  dangerouslySetInnerHTML={{
+                    __html: highlightCode(CODE_EXAMPLES[activeCodeTab], 'tsx'),
+                  }}
+                />
               </pre>
             </div>
           </div>
@@ -346,7 +357,12 @@ export default function HomePage() {
             <div className={styles.terminalBlock}>
               <div className={styles.terminalCommand}>
                 <span className={styles.terminalPrompt}>$</span>
-                <span>{installCommand}</span>
+                <span
+                  className="language-bash"
+                  dangerouslySetInnerHTML={{
+                    __html: highlightCode(installCommand, 'bash'),
+                  }}
+                />
               </div>
               <button 
                 onClick={handleCopyInstall} 

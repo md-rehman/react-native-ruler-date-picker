@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { EXAMPLES, ExamplePreset } from '../../../data/examples';
 import { generateCodeSnippet, SnippetMode } from '../../../utils/generateCodeSnippet';
 import LiveCodeEditor from '../LiveCodeEditor/LiveCodeEditor';
+import { highlightCode } from '../../../utils/highlightCode';
 import styles from './CodeModal.module.css';
 
 interface CodeModalProps {
@@ -169,7 +170,13 @@ export default function CodeModal({
               <polyline points="4 17 10 11 4 5"></polyline>
               <line x1="12" y1="19" x2="20" y2="19"></line>
             </svg>
-            <span>pnpm add react-native-ruler-date-picker</span>
+            <code
+              className="language-bash"
+              style={{ background: 'transparent', padding: 0 }}
+              dangerouslySetInnerHTML={{
+                __html: highlightCode('pnpm add react-native-ruler-date-picker', 'bash'),
+              }}
+            />
             <span style={{ fontSize: '0.7rem', color: installCopied ? '#10B981' : 'var(--color-text-muted)', marginLeft: 4 }}>
               {installCopied ? '✓ Copied!' : '(Click to copy)'}
             </span>

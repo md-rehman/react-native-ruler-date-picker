@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { getAdjacentPages } from '../../../data/docsNav';
+import { highlightCode } from '../../../utils/highlightCode';
 import styles from './DocElements.module.css';
 
 // ── DocHeader ──
@@ -130,7 +131,10 @@ export function CodeBlock({ code, language = 'tsx', title }: CodeBlockProps) {
         </button>
       </div>
       <pre className={styles.codeContent}>
-        <code>{code}</code>
+        <code
+          className={`language-${language}`}
+          dangerouslySetInnerHTML={{ __html: highlightCode(code, language) }}
+        />
       </pre>
     </div>
   );
