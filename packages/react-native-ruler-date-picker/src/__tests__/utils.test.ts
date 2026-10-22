@@ -37,6 +37,20 @@ describe('RulerDatePicker Utils', () => {
       expect(normalized.getDate()).toBe(15);
       expect(normalized.getHours()).toBe(0);
     });
+
+    it('handles invalid date string gracefully by falling back to today', () => {
+      const normalized = normalizeDate('not-a-real-date');
+      expect(normalized).toBeInstanceOf(Date);
+      expect(isNaN(normalized.getTime())).toBe(false);
+      expect(normalized.getHours()).toBe(0);
+    });
+
+    it('parses YYYY-MM-DD in local time without UTC offset drift', () => {
+      const normalized = normalizeDate('2026-01-01');
+      expect(normalized.getFullYear()).toBe(2026);
+      expect(normalized.getMonth()).toBe(0);
+      expect(normalized.getDate()).toBe(1);
+    });
   });
 
   describe('dateToDayOffset and dayOffsetToDate', () => {
@@ -72,6 +86,15 @@ describe('RulerDatePicker Utils', () => {
     it('computes offset for explicit minDate and maxDate', () => {
       const minDate = new Date(2026, 6, 22); // 10 days before today
       const maxDate = new Date(2026, 7, 21); // 20 days after today
+
+      const { minOffset, maxOffset } = computeDayRange(todayTime, minDate, maxDate);
+      expect(minOffset).toBe(-10);
+      expect(maxOffset).toBe(20);
+    });
+
+    it('swaps inverted minDate and maxDate safely', () => {
+      const minDate = new Date(2026, 7, 21); // 20 days after today
+      const maxDate = new Date(2026, 6, 22); // 10 days before today
 
       const { minOffset, maxOffset } = computeDayRange(todayTime, minDate, maxDate);
       expect(minOffset).toBe(-10);

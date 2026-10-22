@@ -15,9 +15,31 @@ export function formatDateString(date: Date = new Date()): string {
 
 /**
  * Normalizes a Date or string to a local midnight Date object.
+ * Parses YYYY-MM-DD explicitly as local midnight to avoid UTC timezone shifts,
+ * and guards against Invalid Dates.
  */
 export function normalizeDate(input?: Date | string): Date {
-  const d = input ? (typeof input === 'string' ? new Date(input) : new Date(input.getTime())) : new Date();
+  let d: Date;
+  if (!input) {
+    d = new Date();
+  } else if (typeof input === 'string') {
+    const parts = input.trim().split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      d = new Date(year, month, day);
+    } else {
+      d = new Date(input);
+    }
+  } else {
+    d = new Date(input.getTime());
+  }
+
+  if (isNaN(d.getTime())) {
+    d = new Date();
+  }
+
   d.setHours(0, 0, 0, 0);
   return d;
 }
@@ -34,10 +56,14 @@ export function dateToDayOffset(
 }
 
 /**
- * Converts a day offset back to a Date object at midnight.
+ * Converts a day offset back to a Date object at local midnight.
+ * Uses native calendar math (setDate) to avoid Daylight Saving Time (DST) 23h/25h hour drift.
  */
 export function dayOffsetToDate(offset: number, referenceTime: number): Date {
-  return new Date(referenceTime + offset * MS_PER_DAY);
+  const d = new Date(referenceTime);
+  d.setDate(d.getDate() + offset);
+  d.setHours(0, 0, 0, 0);
+  return d;
 }
 
 /**
@@ -59,6 +85,12 @@ export function computeDayRange(
   if (maxDate) {
     const d = normalizeDate(maxDate);
     maxOffset = Math.round((d.getTime() - todayTime) / MS_PER_DAY);
+  }
+
+  if (minOffset > maxOffset) {
+    const temp = minOffset;
+    minOffset = maxOffset;
+    maxOffset = temp;
   }
 
   return { minOffset, maxOffset };
