@@ -61,6 +61,9 @@ export function generateCodeSnippet({
   }
 
   // 2. Dimensions & Indicator
+  if (cleanProps.width !== undefined) {
+    propLines.push(`      width={${cleanProps.width}}`);
+  }
   if (cleanProps.tickSpacing !== undefined) {
     propLines.push(`      tickSpacing={${cleanProps.tickSpacing}}`);
   }
@@ -129,6 +132,10 @@ export function generateCodeSnippet({
     if (hapticEntries.length > 0) {
       propLines.push(`      haptics={{ ${hapticEntries.join(', ')} }}`);
     }
+  }
+
+  if (cleanProps.accessibilityLabel) {
+    propLines.push(`      accessibilityLabel="${cleanProps.accessibilityLabel}"`);
   }
 
   const jsxSnippet = [

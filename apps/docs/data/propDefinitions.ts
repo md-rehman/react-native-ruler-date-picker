@@ -65,6 +65,17 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
 
   // ── Dimensions (1-to-1 mapping with RulerDatePickerProps) ──
   {
+    name: 'width',
+    type: 'number',
+    label: 'width',
+    category: 'Dimensions',
+    defaultValue: undefined,
+    min: 200,
+    max: 1200,
+    step: 10,
+    description: 'Viewport width of the ruler in pixels (defaults to window width).',
+  },
+  {
     name: 'tickSpacing',
     type: 'number',
     label: 'tickSpacing',
@@ -173,7 +184,6 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     description: 'Color for range selection connecting bar in range mode.',
   },
 
-  // ── Features (1-to-1 mapping with RulerDatePickerProps) ──
   {
     name: 'header.showResetToToday',
     type: 'boolean',
@@ -181,6 +191,14 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     category: 'Features',
     defaultValue: false,
     description: 'Show "Today" reset pill button in header when scrolled away.',
+  },
+  {
+    name: 'header.resetLabel',
+    type: 'text',
+    label: 'header.resetLabel',
+    category: 'Features',
+    defaultValue: 'Today',
+    description: 'Text label displayed on the reset button.',
   },
   {
     name: 'haptics',
@@ -197,5 +215,13 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     category: 'Features',
     defaultValue: false,
     description: 'Non-linear fisheye lens distortion with magnified center spacing.',
+  },
+  {
+    name: 'accessibilityLabel',
+    type: 'text',
+    label: 'accessibilityLabel',
+    category: 'Features',
+    defaultValue: 'Date picker',
+    description: 'Accessibility label for screen readers (VoiceOver & TalkBack).',
   },
 ];

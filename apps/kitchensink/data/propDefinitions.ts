@@ -139,6 +139,14 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     description: 'Show "Today" reset pill button in header when scrolled away.',
   },
   {
+    name: 'header.resetLabel',
+    type: 'readonly',
+    label: 'Reset Label',
+    category: 'Features',
+    defaultValue: 'Today',
+    description: 'Custom text label for the reset button.',
+  },
+  {
     name: 'haptics',
     type: 'boolean',
     label: 'Enable Haptics',
