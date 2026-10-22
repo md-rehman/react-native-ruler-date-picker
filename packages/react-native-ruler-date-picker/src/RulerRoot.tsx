@@ -70,7 +70,7 @@ export function RulerRoot(props: RulerRootProps) {
         style={[
           styles.container,
           {
-            height: ruler.height,
+            minHeight: ruler.height,
             backgroundColor: ruler.theme.background,
           },
           style,
@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden',
     position: 'relative',
     width: '100%',
+    paddingVertical: 8,
   },
 });

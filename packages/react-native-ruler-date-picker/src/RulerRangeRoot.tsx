@@ -64,7 +64,7 @@ export function RulerRangeRoot(props: RulerRangeRootProps) {
         style={[
           styles.container,
           {
-            height: rangeRuler.height,
+            minHeight: rangeRuler.height,
             backgroundColor: rangeRuler.theme.background,
           },
           style,
@@ -80,8 +80,8 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden',
     position: 'relative',
     width: '100%',
+    paddingVertical: 8,
   },
 });

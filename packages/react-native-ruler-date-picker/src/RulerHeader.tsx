@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 20,
     marginBottom: 16,
-    height: 40,
+    minHeight: 40,
     position: 'relative',
   },
   dateHeader: {

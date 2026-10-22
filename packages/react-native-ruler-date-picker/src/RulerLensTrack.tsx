@@ -40,5 +40,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
 });

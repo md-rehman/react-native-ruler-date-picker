@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 20,
     marginBottom: 16,
-    height: 48,
+    minHeight: 48,
   },
   pill: {
     paddingVertical: 6,
