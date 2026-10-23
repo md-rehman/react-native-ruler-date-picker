@@ -249,7 +249,6 @@ export default function AppShell() {
         visibleModals={visibleModals}
         onToggleModal={toggleModal}
         onResetModals={handleResetModals}
-        onOpenCodeModal={() => toggleModal('Code')}
       />
       
       <div className={styles.main}>
