@@ -106,7 +106,7 @@ export default function InlinePlayground({
   const renderPreview = () => {
     if (!mounted) {
       return (
-        <div style={{ height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)' }}>
+        <div style={{ height: 240, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)' }}>
           Loading interactive ruler...
         </div>
       );
@@ -331,7 +331,7 @@ const rnStyles = StyleSheet.create({
   root: {
     width: '100%',
     flex: 1,
-    minHeight: 160,
+    minHeight: 240,
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -71,7 +71,7 @@
 .splitArea {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  min-height: 300px;
+  min-height: 480px;
 }
 
 @media (max-width: 900px) {
@@ -86,11 +86,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 24px 20px;
+  padding: 28px 20px;
   background: radial-gradient(circle at center, rgba(10, 132, 255, 0.04) 0%, transparent 70%);
   border-right: 1px solid var(--color-border);
   position: relative;
-  min-height: 280px;
+  min-height: 440px;
   min-width: 0;
   overflow: visible;
 }
@@ -150,8 +150,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 180px;
-  padding: 14px 0;
+  min-height: 260px;
+  padding: 16px 0;
   overflow: visible;
 }
 
@@ -263,8 +263,8 @@
 .editorContainer {
   position: relative;
   flex: 1;
-  min-height: 250px;
-  max-height: 380px;
+  min-height: 440px;
+  max-height: 600px;
   overflow: hidden;
   background: transparent;
 }
@@ -276,10 +276,10 @@
   right: 0;
   bottom: 0;
   margin: 0;
-  padding: 16px 18px;
+  padding: 18px 20px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.825rem;
-  line-height: 1.55;
+  font-size: 0.85rem;
+  line-height: 1.6;
   white-space: pre;
   word-wrap: normal;
   pointer-events: none;
@@ -302,7 +302,7 @@
   width: 100%;
   height: 100%;
   margin: 0;
-  padding: 16px 18px;
+  padding: 18px 20px;
   border: none;
   outline: none;
   resize: none;
@@ -310,18 +310,58 @@
   color: transparent;
   caret-color: #38bdf8;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.825rem;
-  line-height: 1.55;
+  font-size: 0.85rem;
+  line-height: 1.6;
   tab-size: 2;
   white-space: pre;
   word-wrap: normal;
   overflow: auto;
   z-index: 2;
   box-sizing: border-box;
+
+  /* Firefox custom scrollbar */
   scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
 .editorTextarea::selection {
   background: rgba(56, 189, 248, 0.35);
   color: transparent;
+}
+
+/* Custom Minimal Scrollbar for Chrome, Safari, Edge (both horizontal and vertical) */
+.editorTextarea::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.editorTextarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.editorTextarea::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  transition: background var(--transition-fast);
+}
+
+.editorTextarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.editorTextarea::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Light mode adjustments */
+[data-theme="light"] .editorTextarea {
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+[data-theme="light"] .editorTextarea::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+[data-theme="light"] .editorTextarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.38);
 }
