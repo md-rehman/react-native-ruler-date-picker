@@ -1,0 +1,128 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.triggerButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), 0 20px 40px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(var(--glass-blur, 12px));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 12px));
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.triggerButton:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.triggerButton:active {
+  transform: translateY(0);
+}
+
+.triggerButtonActive {
+  background-color: rgba(56, 189, 248, 0.2);
+  color: var(--color-accent);
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
+}
+
+/* ── Popover Panel ── */
+.popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 260px;
+  max-width: calc(100vw - 32px);
+  background: var(--glass-bg, rgba(18, 18, 24, 0.85));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--glass-shadow), 0 24px 48px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 16px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: popoverFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes popoverFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.sectionTitle {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--color-text-secondary);
+}
+
+.sectionHint {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+}
+
+.divider {
+  height: 1px;
+  background-color: var(--color-border);
+  margin: 2px 0;
+  opacity: 0.6;
+}
+
+/* ── Responsive Visibility for Sections inside Popover ── */
+/* On desktop/tablet (> 768px), panels are already visible in the top bar, so hide inside popover */
+.panelsSection {
+  display: none;
+}
+
+/* On small screens (<= 960px), panels move inside the popover */
+@media (max-width: 960px) {
+  .panelsSection {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .divider {
+    display: block;
+  }
+}
+
+.glassSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.controlRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 0;
+}

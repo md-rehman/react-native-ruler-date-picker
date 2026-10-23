@@ -9,6 +9,7 @@ import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import GlassControls from '../GlassControls/GlassControls';
 import Logo from '../Logo/Logo';
 import SearchModal from '../SearchModal/SearchModal';
+import TopBarSettingsMenu from './TopBarSettingsMenu';
 import styles from './TopBar.module.css';
 
 interface TopBarProps {
@@ -133,15 +134,26 @@ export default function TopBar({
 
         <div className={styles.right}>
           {isPlayground && visibleModals && onToggleModal && onResetModals && (
-            <ModalToggle visibleModals={visibleModals} onToggle={onToggleModal} onReset={onResetModals} />
+            <div className={styles.desktopModalToggle}>
+              <ModalToggle visibleModals={visibleModals} onToggle={onToggleModal} onReset={onResetModals} />
+            </div>
           )}
-          <GlassControls />
+          <div className={styles.desktopGlassControls}>
+            <GlassControls />
+          </div>
+          <div className={styles.settingsMenuWrapper}>
+            <TopBarSettingsMenu
+              visibleModals={visibleModals}
+              onToggleModal={onToggleModal}
+              onResetModals={onResetModals}
+            />
+          </div>
           <ThemeToggle />
           <a
             href="https://github.com/md-rehman/react-native-ruler-date-picker"
             target="_blank"
             rel="noopener noreferrer"
-            className={styles.iconButton}
+            className={`${styles.iconButton} ${styles.githubLink}`}
             title="GitHub Repository"
             aria-label="GitHub"
           >

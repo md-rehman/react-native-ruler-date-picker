@@ -8,7 +8,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--spacing-md);
-  z-index: 100;
+  z-index: 2000;
   pointer-events: none;
 }
 
@@ -210,9 +210,35 @@
   color: var(--color-text-primary);
 }
 
+.desktopModalToggle,
+.desktopGlassControls {
+  display: flex;
+  align-items: center;
+}
+
+.settingsMenuWrapper {
+  display: none;
+  align-items: center;
+}
+
 @media (min-width: 768px) {
   .title {
     display: block;
+  }
+}
+
+@media (max-width: 1080px) {
+  .desktopGlassControls {
+    display: none !important;
+  }
+  .settingsMenuWrapper {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 960px) {
+  .desktopModalToggle {
+    display: none !important;
   }
 }
 
@@ -235,5 +261,11 @@
   .searchText,
   .searchKbd {
     display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .githubLink {
+    display: none !important;
   }
 }
