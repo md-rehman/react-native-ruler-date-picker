@@ -131,7 +131,7 @@ export default function CustomHaptics() {
             {
               name: 'customHapticTrigger',
               type: "(mode: 'step' | 'fast') => void",
-              default: 'undefined',
+              default: '-',
               description: 'Custom haptic handler callback for bare React Native or non-Expo custom vibration libraries.',
             },
           ]}

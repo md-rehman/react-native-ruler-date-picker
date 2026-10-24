@@ -90,7 +90,7 @@ export function CustomRangeView() {
             {
               name: 'maxSpanDays',
               type: 'number',
-              default: 'undefined',
+              default: '-',
               description: 'Maximum allowable days separating start and end offsets.',
             },
             {

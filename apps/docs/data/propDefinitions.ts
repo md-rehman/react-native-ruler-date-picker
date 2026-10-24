@@ -28,6 +28,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     type: 'text',
     label: 'value',
     category: 'Selection',
+    defaultValue: 'Today',
     description: 'Currently selected date (controlled). Accepts Date or YYYY-MM-DD string.',
   },
   {
@@ -35,23 +36,23 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     type: 'text',
     label: 'minDate',
     category: 'Selection',
-    defaultValue: '',
-    description: 'Minimum selectable date boundary (YYYY-MM-DD string or Date).',
+    defaultValue: 'Today - 365d',
+    description: 'Minimum selectable date boundary (defaults to 1 year ago).',
   },
   {
     name: 'maxDate',
     type: 'text',
     label: 'maxDate',
     category: 'Selection',
-    defaultValue: '',
-    description: 'Maximum selectable date boundary (YYYY-MM-DD string or Date).',
+    defaultValue: 'Today + 365d',
+    description: 'Maximum selectable date boundary (defaults to 1 year ahead).',
   },
   {
     name: 'locale',
     type: 'text',
     label: 'locale',
     category: 'Selection',
-    defaultValue: '',
+    defaultValue: 'default',
     description: 'BCP 47 locale string for date formatting (e.g. en-US, de-DE, ja-JP).',
   },
   {
@@ -69,7 +70,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     type: 'number',
     label: 'width',
     category: 'Dimensions',
-    defaultValue: undefined,
+    defaultValue: 'Window width',
     min: 200,
     max: 1200,
     step: 10,
@@ -146,6 +147,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     type: 'color',
     label: 'theme.background',
     category: 'Colors',
+    defaultValue: 'transparent',
     description: 'Component background color token.',
   },
   {
@@ -153,6 +155,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     type: 'color',
     label: 'theme.indicatorColor',
     category: 'Colors',
+    defaultValue: '#3B82F6 (Light) / #60A5FA (Dark)',
     description: 'Center indicator pointer needle color.',
   },
   {
@@ -160,6 +163,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     type: 'color',
     label: 'theme.accentColor',
     category: 'Colors',
+    defaultValue: '#3B82F6 (Light) / #60A5FA (Dark)',
     description: 'Primary accent color for today indicator badge.',
   },
   {
@@ -167,6 +171,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     type: 'color',
     label: 'theme.labelColor',
     category: 'Colors',
+    defaultValue: '#6B7280 (Light) / #9CA3AF (Dark)',
     description: 'Color of date and year label text.',
   },
   {
@@ -174,6 +179,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     type: 'color',
     label: 'theme.defaultTickColor',
     category: 'Colors',
+    defaultValue: '#D1D5DB (Light) / #4B5563 (Dark)',
     description: 'Base color for unstyled tick bars.',
   },
   {
@@ -181,6 +187,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     type: 'color',
     label: 'theme.rangeHighlightColor',
     category: 'Colors',
+    defaultValue: 'rgba(59, 130, 246, 0.15)',
     description: 'Color for range selection connecting bar in range mode.',
   },
 

@@ -170,7 +170,7 @@ export function PropsTable({ data }: PropsTableProps) {
               <td className={styles.propName}>{item.name}</td>
               <td className={styles.propType}>{item.type}</td>
               <td>
-                <code>{item.default ?? '—'}</code>
+                <code>{item.default && item.default !== 'undefined' ? item.default : '-'}</code>
               </td>
               <td>{item.description}</td>
             </tr>
