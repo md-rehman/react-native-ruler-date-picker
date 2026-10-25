@@ -10,6 +10,7 @@ const nextConfig = {
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
       'react-native$': 'react-native-web',
+      'expo-haptics$': false,
     }
     config.resolve.extensions = [
       '.web.js',
