@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { View, StyleSheet } from 'react-native';
+import { View as RNViewComponent, StyleSheet, type ViewProps } from 'react-native';
+const View = RNViewComponent as unknown as React.ComponentType<ViewProps>;
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   RulerDatePicker,
@@ -38,15 +39,15 @@ export default function InlinePlayground({
   const [parsedProps, setParsedProps] = useState<Record<string, any>>(initialProps);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [dateString, setDateString] = useState<string>('');
-  const [range, setRange] = useState<{ start: Date; end: Date }>({
+  const [range, setRange] = useState<{ start: Date; end: Date }>(() => ({
     start: new Date(),
     end: new Date(Date.now() + 7 * 86400000),
-  });
+  }));
   const [copied, setCopied] = useState(false);
   const [previewWidth, setPreviewWidth] = useState(360);
 
   const overlayRef = useRef<HTMLPreElement | null>(null);
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setMounted(true);

@@ -13,7 +13,9 @@ import 'prismjs/components/prism-json';
  * which caused complex JSX snippets to fail tag matching and lose syntax highlighting.
  */
 function patchPrismJsxBraces() {
-  if (!Prism.languages.jsx || !Prism.languages.jsx.tag) return;
+  const jsx = Prism.languages.jsx as any;
+  const tsx = Prism.languages.tsx as any;
+  if (!jsx || !jsx.tag) return;
 
   let s = '[^{}]*';
   for (let i = 0; i < 10; i++) {
@@ -22,20 +24,20 @@ function patchPrismJsxBraces() {
   const deepBraces = '\\{' + s + '\\}';
   const threeLevel = '(?:\\\\{(?:\\\\{(?:\\\\{[^{}]*\\\\}|[^{}])*\\\\}|[^{}])*\\\\})';
 
-  const origTag = Prism.languages.jsx.tag.pattern?.source;
+  const origTag = jsx.tag.pattern?.source;
   if (origTag && origTag.includes(threeLevel)) {
     const newTag = origTag.split(threeLevel).join(deepBraces);
-    Prism.languages.jsx.tag.pattern = new RegExp(newTag);
-    if (Prism.languages.tsx?.tag) {
-      Prism.languages.tsx.tag.pattern = new RegExp(newTag);
+    jsx.tag.pattern = new RegExp(newTag);
+    if (tsx?.tag) {
+      tsx.tag.pattern = new RegExp(newTag);
     }
   }
 
-  if (Prism.languages.jsx.tag.inside?.script) {
-    Prism.languages.jsx.tag.inside.script.pattern = new RegExp('=' + deepBraces);
+  if (jsx.tag.inside?.script) {
+    jsx.tag.inside.script.pattern = new RegExp('=' + deepBraces);
   }
-  if (Prism.languages.tsx?.tag?.inside?.script) {
-    Prism.languages.tsx.tag.inside.script.pattern = new RegExp('=' + deepBraces);
+  if (tsx?.tag?.inside?.script) {
+    tsx.tag.inside.script.pattern = new RegExp('=' + deepBraces);
   }
 
   // Ensure property keys in object literals (e.g. { condition: ..., height: ... }) are recognized and highlighted

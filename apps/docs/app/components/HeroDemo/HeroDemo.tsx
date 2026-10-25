@@ -1,9 +1,9 @@
-// @ts-nocheck
 "use client";
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { View, StyleSheet } from 'react-native';
+import { View as RNViewComponent, StyleSheet, type ViewProps } from 'react-native';
+const View = RNViewComponent as unknown as React.ComponentType<ViewProps>;
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { RulerDatePicker } from 'react-native-ruler-date-picker';
 import styles from './HeroDemo.module.css';
@@ -61,7 +61,7 @@ const PRESETS = [
     tickSpacing: 22,
     ticks: 'metric',
   },
-];
+] as const;
 
 export default function HeroDemo() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());

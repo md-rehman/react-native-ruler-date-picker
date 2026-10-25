@@ -25,9 +25,6 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ],
-      "react-native": [
-        "../../node_modules/@types/react-native"
       ]
     }
   },

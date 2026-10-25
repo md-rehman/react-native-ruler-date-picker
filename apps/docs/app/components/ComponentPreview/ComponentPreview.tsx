@@ -1,8 +1,9 @@
-// @ts-nocheck
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View as RNViewComponent, Text as RNTextComponent, StyleSheet, type ViewProps, type TextProps } from 'react-native';
+const View = RNViewComponent as unknown as React.ComponentType<ViewProps>;
+const Text = RNTextComponent as unknown as React.ComponentType<TextProps>;
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { RulerDatePicker } from 'react-native-ruler-date-picker';
 import styles from './ComponentPreview.module.css';

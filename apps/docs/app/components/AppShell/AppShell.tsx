@@ -239,7 +239,7 @@ export default function AppShell() {
       if (Math.abs(prev[category] - height) < 2) return prev;
       return { ...prev, [category]: height };
     });
-  }, []);
+  }, [setPanelHeights]);
 
   return (
     <div className={styles.shell}>
