@@ -128,6 +128,13 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     category: 'Colors',
     description: 'Base color for unstyled tick bars.',
   },
+  {
+    name: 'theme.rangeHighlightColor',
+    type: 'color',
+    label: 'Range Highlight',
+    category: 'Colors',
+    description: 'Connecting bar highlight color for range mode.',
+  },
 
   // Features
   {
@@ -153,5 +160,21 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     category: 'Features',
     defaultValue: true,
     description: 'Dual-speed tactile haptic vibration engine.',
+  },
+  {
+    name: 'lensEffect',
+    type: 'boolean',
+    label: 'Fisheye Lens Effect',
+    category: 'Features',
+    defaultValue: false,
+    description: 'Non-linear fisheye lens distortion magnifying center spacing.',
+  },
+  {
+    name: 'accessibilityLabel',
+    type: 'readonly',
+    label: 'Accessibility Label',
+    category: 'Features',
+    defaultValue: 'Date picker',
+    description: 'Accessibility label for screen readers (VoiceOver & TalkBack).',
   },
 ];
