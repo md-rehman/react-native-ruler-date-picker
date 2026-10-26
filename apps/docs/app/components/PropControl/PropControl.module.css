@@ -2,21 +2,32 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  min-height: 28px;
+  gap: 12px;
+  min-height: 32px;
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-fast);
+}
+
+.container:hover {
+  background-color: rgba(255, 255, 255, 0.03);
 }
 
 .containerFullWidth {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 6px;
+  gap: 8px;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
 }
 
 .header {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   flex: 1;
   min-width: 0;
 }
@@ -35,14 +46,22 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  background-color: var(--color-border);
-  color: var(--color-text-secondary);
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--glass-border);
+  color: var(--color-text-muted);
   font-size: 9px;
+  font-weight: 600;
   cursor: help;
   flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.tooltip:hover {
+  color: var(--color-text-primary);
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .controlWrapper {
@@ -50,6 +69,7 @@
   align-items: center;
   justify-content: flex-end;
   flex-shrink: 0;
+  width: 120px;
 }
 
 .controlWrapperFull {
@@ -58,10 +78,11 @@
 }
 
 .readonlyValue {
+  width: 100%;
   font-family: ui-monospace, monospace;
   font-size: 0.75rem;
   padding: 3px 8px;
-  height: 26px;
+  height: 28px;
   display: flex;
   align-items: center;
   background-color: var(--color-surface);
@@ -71,38 +92,44 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  box-sizing: border-box;
 }
 
 /* Common input styles */
 .input {
   width: 100%;
-  max-width: 110px;
   padding: 4px 8px;
-  height: 26px;
+  height: 28px;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   color: var(--color-text-primary);
   font-family: inherit;
-  font-size: 0.8rem;
-  transition: border-color var(--transition-fast);
+  font-size: 0.775rem;
+  box-sizing: border-box;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
 }
 
 .input:focus {
   outline: none;
   border-color: var(--color-accent);
+  background-color: var(--color-bg);
 }
 
 .numberInput {
-  width: 72px;
+  width: 100%;
   text-align: right;
-  font-family: ui-monospace, monospace;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  box-sizing: border-box;
 }
 
 .enumSelect {
-  max-width: 115px;
-  padding: 2px 6px;
+  width: 100%;
+  height: 28px;
+  padding: 2px 8px;
   font-size: 0.775rem;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 
 /* Color Picker specific */
@@ -110,19 +137,21 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  width: 100%;
 }
 
 .colorInput {
   -webkit-appearance: none;
   border: none;
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
   padding: 0;
   cursor: pointer;
   background: none;
   overflow: hidden;
   flex-shrink: 0;
+  border: 1px solid var(--color-border);
 }
 
 .colorInput::-webkit-color-swatch-wrapper {
@@ -130,17 +159,19 @@
 }
 
 .colorInput::-webkit-color-swatch {
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border: none;
+  border-radius: inherit;
 }
 
 .colorHex {
-  width: 78px;
+  flex: 1;
+  width: auto;
   font-family: ui-monospace, monospace;
   font-size: 0.75rem;
   text-transform: uppercase;
   padding: 3px 6px;
-  height: 26px;
+  height: 28px;
+  box-sizing: border-box;
 }
 
 /* Boolean Toggle specific */
@@ -159,7 +190,7 @@
 }
 
 .toggleTrack {
-  width: 34px;
+  width: 36px;
   height: 20px;
   background-color: var(--color-border);
   border-radius: 10px;
@@ -184,5 +215,5 @@
 }
 
 .toggleInput:checked + .toggleTrack .toggleThumb {
-  transform: translateX(14px);
+  transform: translateX(16px);
 }
