@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './ModalToggle.module.css';
 
-export type ModalCategory = 'Selection' | 'Dimensions' | 'Colors' | 'Features' | 'Code';
+export type ModalCategory = 'Props' | 'Code';
 
 interface ModalToggleProps {
   visibleModals: Record<ModalCategory, boolean>;
@@ -35,7 +35,7 @@ export const ColorsIcon = () => (
   </svg>
 );
 
-export const FeaturesIcon = () => (
+export const PropsIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="4" y1="21" x2="4" y2="14"></line>
     <line x1="4" y1="10" x2="4" y2="3"></line>
@@ -48,6 +48,8 @@ export const FeaturesIcon = () => (
     <line x1="17" y1="16" x2="23" y2="16"></line>
   </svg>
 );
+
+export const FeaturesIcon = PropsIcon;
 
 export const CodeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -67,45 +69,30 @@ export default function ModalToggle({ visibleModals, onToggle, onReset }: ModalT
   return (
     <div className={styles.selector}>
       <button
-        className={`${styles.button} ${visibleModals['Selection'] ? styles.active : ''}`}
-        onClick={() => onToggle('Selection')}
-        title="Toggle Selection Settings"
+        type="button"
+        className={`${styles.button} ${visibleModals['Props'] ? styles.active : ''}`}
+        onClick={() => onToggle('Props')}
+        title="Toggle Props Inspector"
+        aria-label="Toggle Props Inspector"
       >
-        <SelectionIcon />
+        <PropsIcon />
       </button>
       <button
-        className={`${styles.button} ${visibleModals['Dimensions'] ? styles.active : ''}`}
-        onClick={() => onToggle('Dimensions')}
-        title="Toggle Dimensions Settings"
-      >
-        <DimensionsIcon />
-      </button>
-      <button
-        className={`${styles.button} ${visibleModals['Colors'] ? styles.active : ''}`}
-        onClick={() => onToggle('Colors')}
-        title="Toggle Colors Settings"
-      >
-        <ColorsIcon />
-      </button>
-      <button
-        className={`${styles.button} ${visibleModals['Features'] ? styles.active : ''}`}
-        onClick={() => onToggle('Features')}
-        title="Toggle Features Settings"
-      >
-        <FeaturesIcon />
-      </button>
-      <button
+        type="button"
         className={`${styles.button} ${visibleModals['Code'] ? styles.active : ''}`}
         onClick={() => onToggle('Code')}
         title="Toggle Live Code Editor"
+        aria-label="Toggle Live Code Editor"
       >
         <CodeIcon />
       </button>
       <div style={{ width: '1px', backgroundColor: 'var(--glass-border)', margin: '4px 2px' }} />
       <button
+        type="button"
         className={styles.button}
         onClick={onReset}
-        title="Reset all modals"
+        title="Reset modals & layout"
+        aria-label="Reset modals & layout"
       >
         <ResetIcon />
       </button>
