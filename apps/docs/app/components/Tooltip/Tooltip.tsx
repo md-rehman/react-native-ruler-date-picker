@@ -25,7 +25,7 @@ interface Coords {
   width?: number;
 }
 
-const subscribe = () => () => {};
+const subscribe = () => () => { };
 const getSnapshot = () => true;
 const getServerSnapshot = () => false;
 
@@ -202,11 +202,10 @@ export default function Tooltip({ content, children, placement: preferredPlaceme
           >
             {coords && (
               <span
-                className={`${styles.arrow} ${
-                  coords.placement === 'bottom'
+                className={`${styles.arrow} ${coords.placement === 'bottom'
                     ? styles.arrowBottom
                     : styles.arrowTop
-                }`}
+                  }`}
                 style={{ left: `${arrowLeft}px` }}
               />
             )}
