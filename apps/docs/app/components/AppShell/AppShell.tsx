@@ -17,12 +17,13 @@ import styles from './AppShell.module.css';
 export default function AppShell() {
   const [activeDevice, setActiveDevice] = useState<DeviceType>('iphone');
   const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
-  const [codeModalPresetId, setCodeModalPresetId] = useState<string>('default');
+  const [codeModalPresetId, setCodeModalPresetId] = useState<string>(EXAMPLES[0]?.id || 'sunset-amber');
   const pickerState = usePickerProps();
 
   const PROPS_PANEL_WIDTH = 360;
   const TOP_MARGIN = 80;
-  const RIGHT_MARGIN = 20;
+  const SIDE_MARGIN = 24;
+  const BOTTOM_MARGIN = 24;
 
   // 2 modes: Props mode (visual inspector) and Code mode (live editor)
   const [visibleModals, setVisibleModals] = useState<Record<ModalCategory, boolean>>({
@@ -39,16 +40,8 @@ export default function AppShell() {
     height: typeof window !== 'undefined' ? window.innerHeight : 900,
   });
 
-  // Track height & position of left modal (Examples) to synchronize right modal height and bottom margin
-  const [examplesHeight, setExamplesHeight] = useState<number>(858);
-  const [examplesPos, setExamplesPos] = useState<{ x: number; y: number }>({ x: 24, y: 80 });
-
-  const handleExamplesHeightChange = React.useCallback((height: number) => {
-    // Only capture uncollapsed height to maintain symmetric sizing
-    if (height > 200) {
-      setExamplesHeight(height);
-    }
-  }, []);
+  // Position of left modal (Examples)
+  const [examplesPos, setExamplesPos] = useState<{ x: number; y: number }>({ x: SIDE_MARGIN, y: TOP_MARGIN });
 
   // Load manual positions from localStorage on mount
   useEffect(() => {
@@ -95,7 +88,7 @@ export default function AppShell() {
   }, []);
 
   const handleOpenCodeModal = (presetId?: string) => {
-    const id = presetId || pickerState.activeExampleId || 'default';
+    const id = presetId || pickerState.activeExampleId || EXAMPLES[0]?.id || 'sunset-amber';
     const preset = EXAMPLES.find((e) => e.id === id);
     if (preset) {
       pickerState.loadPreset(preset);
@@ -138,7 +131,7 @@ export default function AppShell() {
       });
     }
     setManualPositions({});
-    setExamplesPos({ x: 24, y: 80 });
+    setExamplesPos({ x: SIDE_MARGIN, y: TOP_MARGIN });
 
     setVisibleModals({
       Props: true,
@@ -160,11 +153,10 @@ export default function AppShell() {
     []
   );
 
-  // Left modal metrics
-  const leftY = examplesPos.y;
-  const leftHeight = examplesHeight ?? 858;
-  const leftBottom = leftY + leftHeight;
-  const leftBottomMargin = Math.max(24, windowSize.height - leftBottom);
+  // Left modal metrics: always takes complete height with consistent margins from screen borders
+  const leftWidth = 300;
+  const leftY = examplesPos.y ?? TOP_MARGIN;
+  const leftHeight = Math.max(200, windowSize.height - BOTTOM_MARGIN - leftY);
 
   return (
     <div className={styles.shell}>
@@ -186,11 +178,11 @@ export default function AppShell() {
         <FloatingModal
           id="examples"
           title="Examples"
-          width={300}
-          defaultPosition={() => ({ x: 24, y: 80 })}
+          width={leftWidth}
+          height={leftHeight}
+          defaultPosition={() => ({ x: SIDE_MARGIN, y: TOP_MARGIN })}
           onPositionChange={(pos) => setExamplesPos(pos)}
           defaultDocked={typeof window !== 'undefined' && window.innerWidth < 1024 ? 'left' : 'none'}
-          onHeightChange={handleExamplesHeightChange}
         >
           <ExamplesPanel
             activeExampleId={pickerState.activeExampleId}
@@ -201,11 +193,11 @@ export default function AppShell() {
 
         {visibleModals['Props'] && (() => {
           const propsWidth = Math.min(PROPS_PANEL_WIDTH, windowSize.width - 32);
-          const defaultPropsX = Math.max(16, windowSize.width - propsWidth - RIGHT_MARGIN);
+          const defaultPropsX = Math.max(16, windowSize.width - propsWidth - SIDE_MARGIN);
           const currentPos = manualPositions['Props'] ?? { x: defaultPropsX, y: TOP_MARGIN };
 
-          // Right modal height calculated so its bottom margin EXACTLY equals leftBottomMargin
-          const targetHeight = Math.max(200, windowSize.height - leftBottomMargin - currentPos.y);
+          // Takes complete available height with consistent margin from bottom screen border
+          const targetHeight = Math.max(200, windowSize.height - BOTTOM_MARGIN - currentPos.y);
 
           return (
             <FloatingModal
@@ -229,10 +221,11 @@ export default function AppShell() {
 
         {visibleModals['Code'] && (() => {
           const codeWidth = Math.min(540, windowSize.width - 32);
-          const defaultCodeX = Math.max(16, windowSize.width - codeWidth - RIGHT_MARGIN);
+          const defaultCodeX = Math.max(16, windowSize.width - codeWidth - SIDE_MARGIN);
           const currentCodePos = manualPositions['Code'] ?? { x: defaultCodeX, y: TOP_MARGIN };
 
-          const targetHeight = Math.max(200, windowSize.height - leftBottomMargin - currentCodePos.y);
+          // Takes complete available height with consistent margin from bottom screen border
+          const targetHeight = Math.max(200, windowSize.height - BOTTOM_MARGIN - currentCodePos.y);
 
           return (
             <FloatingModal
