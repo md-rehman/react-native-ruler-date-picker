@@ -4,6 +4,7 @@ import ColorPicker from './ColorPicker';
 import NumberInput from './NumberInput';
 import EnumSelect from './EnumSelect';
 import BooleanToggle from './BooleanToggle';
+import Tooltip from '../Tooltip/Tooltip';
 import styles from './PropControl.module.css';
 
 import TickRulesEditor from './TickRulesEditor';
@@ -75,7 +76,15 @@ export default function PropControl({ definition, value, onChange }: PropControl
       <div className={styles.header}>
         <label className={styles.label} title={definition.label}>{displayLabel}</label>
         {definition.description && (
-          <span className={styles.tooltip} title={definition.description}>?</span>
+          <Tooltip content={definition.description}>
+            <button
+              type="button"
+              className={styles.tooltip}
+              aria-label={`Description for ${displayLabel}`}
+            >
+              ?
+            </button>
+          </Tooltip>
         )}
       </div>
       <div className={`${styles.controlWrapper} ${isFullWidth ? styles.controlWrapperFull : ''}`}>
