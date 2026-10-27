@@ -39,6 +39,17 @@ export default function AppShell() {
     height: typeof window !== 'undefined' ? window.innerHeight : 900,
   });
 
+  // Track height & position of left modal (Examples) to synchronize right modal height and bottom margin
+  const [examplesHeight, setExamplesHeight] = useState<number>(858);
+  const [examplesPos, setExamplesPos] = useState<{ x: number; y: number }>({ x: 24, y: 80 });
+
+  const handleExamplesHeightChange = React.useCallback((height: number) => {
+    // Only capture uncollapsed height to maintain symmetric sizing
+    if (height > 200) {
+      setExamplesHeight(height);
+    }
+  }, []);
+
   // Load manual positions from localStorage on mount
   useEffect(() => {
     const handleResize = () => {
@@ -60,6 +71,14 @@ export default function AppShell() {
       }
     });
     setManualPositions(loaded);
+
+    const storedExamples = localStorage.getItem('modal-examples');
+    if (storedExamples) {
+      try {
+        const parsed = JSON.parse(storedExamples);
+        if (parsed.position) setExamplesPos(parsed.position);
+      } catch (e) {}
+    }
 
     // Check if user redirected from InlinePlayground with custom edited code
     const incomingCode = localStorage.getItem('ruler-playground-incoming-code');
@@ -112,12 +131,14 @@ export default function AppShell() {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('modal-props');
       localStorage.removeItem('modal-code');
+      localStorage.removeItem('modal-examples');
       // Also clean up any legacy category keys
       ['selection', 'dimensions', 'colors', 'features'].forEach((cat) => {
         localStorage.removeItem(`modal-${cat}`);
       });
     }
     setManualPositions({});
+    setExamplesPos({ x: 24, y: 80 });
 
     setVisibleModals({
       Props: true,
@@ -138,6 +159,12 @@ export default function AppShell() {
     },
     []
   );
+
+  // Left modal metrics
+  const leftY = examplesPos.y;
+  const leftHeight = examplesHeight ?? 858;
+  const leftBottom = leftY + leftHeight;
+  const leftBottomMargin = Math.max(24, windowSize.height - leftBottom);
 
   return (
     <div className={styles.shell}>
@@ -161,7 +188,9 @@ export default function AppShell() {
           title="Examples"
           width={300}
           defaultPosition={() => ({ x: 24, y: 80 })}
+          onPositionChange={(pos) => setExamplesPos(pos)}
           defaultDocked={typeof window !== 'undefined' && window.innerWidth < 1024 ? 'left' : 'none'}
+          onHeightChange={handleExamplesHeightChange}
         >
           <ExamplesPanel
             activeExampleId={pickerState.activeExampleId}
@@ -175,12 +204,16 @@ export default function AppShell() {
           const defaultPropsX = Math.max(16, windowSize.width - propsWidth - RIGHT_MARGIN);
           const currentPos = manualPositions['Props'] ?? { x: defaultPropsX, y: TOP_MARGIN };
 
+          // Right modal height calculated so its bottom margin EXACTLY equals leftBottomMargin
+          const targetHeight = Math.max(200, windowSize.height - leftBottomMargin - currentPos.y);
+
           return (
             <FloatingModal
               id="props"
               title="Props"
               icon={<PropsIcon />}
               width={propsWidth}
+              height={targetHeight}
               position={currentPos}
               onPositionChange={(pos, isManual) => handlePositionChange('Props', pos, isManual)}
               onClose={() => toggleModal('Props')}
@@ -199,19 +232,22 @@ export default function AppShell() {
           const defaultCodeX = Math.max(16, windowSize.width - codeWidth - RIGHT_MARGIN);
           const currentCodePos = manualPositions['Code'] ?? { x: defaultCodeX, y: TOP_MARGIN };
 
+          const targetHeight = Math.max(200, windowSize.height - leftBottomMargin - currentCodePos.y);
+
           return (
             <FloatingModal
               id="code"
               title="Code"
               icon={<CodeIcon />}
               width={codeWidth}
+              height={targetHeight}
               position={currentCodePos}
               onPositionChange={(pos, isManual) => handlePositionChange('Code', pos, isManual)}
               defaultDocked={typeof window !== 'undefined' && window.innerWidth < 1024 ? 'right' : 'none'}
               noPadding
               onClose={() => toggleModal('Code')}
             >
-              <div style={{ height: 'calc(100vh - 140px)', width: '100%' }}>
+              <div style={{ height: '100%', width: '100%' }}>
                 <LiveCodeEditor
                   code={pickerState.code}
                   onChange={pickerState.updateFromCode}

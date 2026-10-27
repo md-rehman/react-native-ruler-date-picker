@@ -18,6 +18,7 @@
 }
 
 .header {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -100,8 +101,9 @@
 }
 
 .content {
+  flex: 1 1 auto;
+  min-height: 0;
   padding: 8px 12px 10px;
-  max-height: calc(100vh - 120px);
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
@@ -111,6 +113,10 @@
 .noPadding {
   padding: 0;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .content::-webkit-scrollbar {

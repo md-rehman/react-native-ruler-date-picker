@@ -11,6 +11,8 @@ export interface FloatingModalProps {
   icon?: React.ReactNode;
   children: React.ReactNode;
   width?: number | string;
+  height?: number | string;
+  maxHeight?: number | string;
   position?: { x: number; y: number };
   onPositionChange?: (pos: { x: number; y: number }, isManual: boolean) => void;
   onDockChange?: (docked: DockState) => void;
@@ -28,6 +30,8 @@ export default function FloatingModal({
   icon, 
   children, 
   width,
+  height,
+  maxHeight,
   position: controlledPosition,
   onPositionChange,
   onDockChange,
@@ -101,7 +105,7 @@ export default function FloatingModal({
     });
     observer.observe(modalRef.current);
     return () => observer.disconnect();
-  }, [onHeightChange, isCollapsed, docked]);
+  }, [onHeightChange, isCollapsed, docked, mounted]);
 
   // Reset handler
   useEffect(() => {
@@ -253,9 +257,16 @@ export default function FloatingModal({
         />
       )}
       <div 
+        id={id}
         ref={modalRef}
         className={`${styles.modal} glass ${isDragging ? styles.dragging : ''}`}
-        style={{ left: position.x, top: position.y, width: width ?? undefined }}
+        style={{ 
+          left: position.x, 
+          top: position.y, 
+          width: width ?? undefined,
+          height: isCollapsed ? undefined : (typeof height === 'number' ? `${height}px` : (height ?? undefined)),
+          maxHeight: isCollapsed ? undefined : (typeof maxHeight === 'number' ? `${maxHeight}px` : (maxHeight ?? `calc(100vh - ${Math.max(0, position.y)}px - 24px)`)),
+        }}
       >
       <div 
         className={`${styles.header} ${isCollapsed ? styles.headerCollapsed : ''}`} 
