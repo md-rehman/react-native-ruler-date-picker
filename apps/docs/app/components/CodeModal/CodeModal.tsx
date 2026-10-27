@@ -24,7 +24,7 @@ interface CodeModalProps {
 export default function CodeModal({
   isOpen,
   onClose,
-  activePresetId = 'default',
+  activePresetId = EXAMPLES[0]?.id || 'sunset-amber',
   currentProps,
   code: externalCode,
   updateFromCode,
