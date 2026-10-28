@@ -23,7 +23,12 @@ export default function ExampleListItem({ example, isActive, onClick, onViewCode
       }}
     >
       <div className={styles.header}>
-        <div className={styles.name}>{example.name}</div>
+        <div className={styles.titleArea}>
+          <span className={styles.name}>{example.name}</span>
+          {example.badge && (
+            <span className={styles.badge}>{example.badge}</span>
+          )}
+        </div>
         {onViewCode && (
           <button
             className={styles.codeBtn}
@@ -34,7 +39,7 @@ export default function ExampleListItem({ example, isActive, onClick, onViewCode
             title={`View code for ${example.name}`}
             aria-label={`View code for ${example.name}`}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="16 18 22 12 16 6"></polyline>
               <polyline points="8 6 2 12 8 18"></polyline>
             </svg>
