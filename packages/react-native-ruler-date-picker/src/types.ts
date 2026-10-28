@@ -139,8 +139,11 @@ export interface IndicatorConfig {
   height?: number;
   /** Color of the center indicator needle */
   color?: string;
-  /** Vertical alignment of the indicator needle in track (default: 'bottom') */
-  alignment?: 'bottom' | 'center' | 'top';
+  /**
+   * Offset [x, y] in pixels of the center needle pointer.
+   * Default: [0, 0] (anchored to bottom).
+   */
+  offset?: [number, number];
   /** Custom style for the center indicator needle */
   style?: StyleProp<ViewStyle>;
   /** Custom renderer for the center indicator */

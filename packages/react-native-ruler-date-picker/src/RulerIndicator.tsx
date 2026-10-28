@@ -7,7 +7,11 @@ export interface RulerIndicatorProps {
   width?: number;
   height?: number;
   color?: string;
-  alignment?: 'bottom' | 'center' | 'top';
+  /**
+   * Offset [x, y] in pixels of the center needle pointer.
+   * Default: [0, 0] (anchored to bottom).
+   */
+  offset?: [number, number];
   style?: StyleProp<ViewStyle>;
   render?: () => React.ReactNode;
 }
@@ -16,7 +20,7 @@ export function RulerIndicator({
   width: customWidth,
   height: customHeight,
   color: customColor,
-  alignment: customAlignment,
+  offset: customOffset,
   style,
   render,
 }: RulerIndicatorProps = {}) {
@@ -30,23 +34,19 @@ export function RulerIndicator({
   const width = customWidth ?? indicatorConfig?.width ?? DEFAULTS.indicatorWidth;
   const height = customHeight ?? indicatorConfig?.height ?? DEFAULTS.indicatorHeight;
   const color = customColor ?? indicatorConfig?.color ?? theme.indicatorColor;
-  const alignment = customAlignment ?? indicatorConfig?.alignment ?? 'bottom';
+  const offset = customOffset ?? indicatorConfig?.offset ?? [0, 0];
   const indicatorStyle = style ?? indicatorConfig?.style;
 
-  const alignmentStyle: ViewStyle =
-    alignment === 'top'
-      ? { top: 0 }
-      : alignment === 'center'
-      ? { top: '50%', transform: [{ translateY: -height / 2 }] }
-      : { bottom: 0 };
+  const [offsetX = 0, offsetY = 0] = offset;
 
   return (
     <View
       pointerEvents="none"
       style={[
         styles.indicator,
-        alignmentStyle,
         {
+          bottom: offsetY,
+          transform: [{ translateX: offsetX }],
           width,
           height,
           backgroundColor: color,
