@@ -1,3 +1,5 @@
+import { ComponentType } from './examples';
+
 export type PropType = 
   | 'number' 
   | 'color' 
@@ -21,8 +23,14 @@ export interface PropDefinition {
   description?: string;
 }
 
+export interface PropGroup {
+  id: string;
+  label: string;
+  propNames: string[];
+}
+
 export const PROP_DEFINITIONS: PropDefinition[] = [
-  // ── Selection (1-to-1 mapping with RulerDatePickerProps) ──
+  // ── Single Date Selection ──
   {
     name: 'value',
     type: 'text',
@@ -64,7 +72,47 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     description: 'Array of graduation rules or preset name (calendar, metric, minimal).',
   },
 
-  // ── Dimensions (1-to-1 mapping with RulerDatePickerProps) ──
+  // ── Range Selection (RulerDateRangePicker) ──
+  {
+    name: 'value.start',
+    type: 'text',
+    label: 'value.start',
+    category: 'Selection',
+    defaultValue: 'Today',
+    description: 'Start boundary of the selected date interval (controlled).',
+  },
+  {
+    name: 'value.end',
+    type: 'text',
+    label: 'value.end',
+    category: 'Selection',
+    defaultValue: 'Today + 7d',
+    description: 'End boundary of the selected date interval (controlled).',
+  },
+  {
+    name: 'minSpanDays',
+    type: 'number',
+    label: 'minSpanDays',
+    category: 'Selection',
+    defaultValue: 1,
+    min: 1,
+    max: 30,
+    step: 1,
+    description: 'Minimum allowed interval span in days between start and end handles.',
+  },
+  {
+    name: 'maxSpanDays',
+    type: 'number',
+    label: 'maxSpanDays',
+    category: 'Selection',
+    defaultValue: 14,
+    min: 1,
+    max: 90,
+    step: 1,
+    description: 'Maximum allowed interval span in days between start and end handles.',
+  },
+
+  // ── Dimensions ──
   {
     name: 'width',
     type: 'number',
@@ -141,7 +189,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     description: 'Vertical alignment of the center needle pointer.',
   },
 
-  // ── Colors (1-to-1 mapping with RulerTheme) ──
+  // ── Colors (Theme Tokens) ──
   {
     name: 'theme.background',
     type: 'color',
@@ -156,7 +204,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     label: 'theme.indicatorColor',
     category: 'Colors',
     defaultValue: '#3B82F6 (Light) / #60A5FA (Dark)',
-    description: 'Center indicator pointer needle color.',
+    description: 'Indicator pointer needle color.',
   },
   {
     name: 'theme.accentColor',
@@ -164,7 +212,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     label: 'theme.accentColor',
     category: 'Colors',
     defaultValue: '#3B82F6 (Light) / #60A5FA (Dark)',
-    description: 'Primary accent color for today indicator badge.',
+    description: 'Primary accent color for badges, handles, and highlights.',
   },
   {
     name: 'theme.labelColor',
@@ -187,10 +235,35 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     type: 'color',
     label: 'theme.rangeHighlightColor',
     category: 'Colors',
-    defaultValue: 'rgba(59, 130, 246, 0.15)',
-    description: 'Color for range selection connecting bar in range mode.',
+    defaultValue: 'rgba(59, 130, 246, 0.2)',
+    description: 'Color for range connecting highlight strip in range mode.',
   },
 
+  // ── Features & Flags ──
+  {
+    name: 'haptics',
+    type: 'boolean',
+    label: 'haptics',
+    category: 'Features',
+    defaultValue: true,
+    description: 'Dual-speed tactile haptic vibration engine.',
+  },
+  {
+    name: 'highlight',
+    type: 'boolean',
+    label: 'highlight',
+    category: 'Features',
+    defaultValue: true,
+    description: 'Dynamic connecting highlight strip between start and end handles in range mode.',
+  },
+  {
+    name: 'lensEffect',
+    type: 'boolean',
+    label: 'lensEffect',
+    category: 'Features',
+    defaultValue: false,
+    description: 'Non-linear fisheye lens distortion with magnified center spacing.',
+  },
   {
     name: 'header.showResetToToday',
     type: 'boolean',
@@ -208,22 +281,6 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     description: 'Text label displayed on the reset button.',
   },
   {
-    name: 'haptics',
-    type: 'boolean',
-    label: 'haptics',
-    category: 'Features',
-    defaultValue: true,
-    description: 'Dual-speed tactile haptic vibration engine.',
-  },
-  {
-    name: 'lensEffect',
-    type: 'boolean',
-    label: 'lensEffect',
-    category: 'Features',
-    defaultValue: false,
-    description: 'Non-linear fisheye lens distortion with magnified center spacing.',
-  },
-  {
     name: 'accessibilityLabel',
     type: 'text',
     label: 'accessibilityLabel',
@@ -232,3 +289,173 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     description: 'Accessibility label for screen readers (VoiceOver & TalkBack).',
   },
 ];
+
+export function getPropGroupsForComponent(componentType: ComponentType): PropGroup[] {
+  switch (componentType) {
+    case 'RulerDateRangePicker':
+    case 'RulerRangeCompound':
+    case 'useRulerDateRangePicker':
+      return [
+        {
+          id: 'range',
+          label: 'Range & Spans',
+          propNames: ['value.start', 'value.end', 'minSpanDays', 'maxSpanDays', 'minDate', 'maxDate', 'locale'],
+        },
+        {
+          id: 'dimensions',
+          label: 'Dimensions & Sizing',
+          propNames: [
+            'width',
+            'rulerHeight',
+            'tickSpacing',
+            'tickWidth',
+            'indicator.width',
+            'indicator.height',
+          ],
+        },
+        {
+          id: 'rules',
+          label: 'Graduation Rules',
+          propNames: ['ticks'],
+        },
+        {
+          id: 'colors',
+          label: 'Colors & Theme',
+          propNames: [
+            'theme.background',
+            'theme.indicatorColor',
+            'theme.accentColor',
+            'theme.rangeHighlightColor',
+            'theme.labelColor',
+            'theme.defaultTickColor',
+          ],
+        },
+        {
+          id: 'features',
+          label: 'Features & Toggles',
+          propNames: [
+            'highlight',
+            'haptics',
+            'lensEffect',
+            'accessibilityLabel',
+          ],
+        },
+      ];
+
+    case 'RulerCompound':
+      return [
+        {
+          id: 'selection',
+          label: 'Date & Selection',
+          propNames: ['value', 'minDate', 'maxDate', 'locale'],
+        },
+        {
+          id: 'dimensions',
+          label: 'Dimensions & Sizing',
+          propNames: [
+            'width',
+            'rulerHeight',
+            'tickSpacing',
+            'tickWidth',
+            'indicator.width',
+            'indicator.height',
+          ],
+        },
+        {
+          id: 'colors',
+          label: 'Colors & Theme',
+          propNames: [
+            'theme.background',
+            'theme.indicatorColor',
+            'theme.accentColor',
+            'theme.labelColor',
+            'theme.defaultTickColor',
+          ],
+        },
+        {
+          id: 'features',
+          label: 'Features & Subcomponents',
+          propNames: [
+            'haptics',
+            'header.showResetToToday',
+            'header.resetLabel',
+          ],
+        },
+      ];
+
+    case 'useRulerDatePicker':
+      return [
+        {
+          id: 'selection',
+          label: 'Hook Parameters',
+          propNames: ['value', 'minDate', 'maxDate'],
+        },
+        {
+          id: 'dimensions',
+          label: 'Dimensions & Spacing',
+          propNames: ['tickSpacing', 'rulerHeight'],
+        },
+        {
+          id: 'colors',
+          label: 'Theme & Accent',
+          propNames: [
+            'theme.background',
+            'theme.indicatorColor',
+            'theme.accentColor',
+            'theme.labelColor',
+          ],
+        },
+      ];
+
+    case 'RulerDatePicker':
+    default:
+      return [
+        {
+          id: 'selection',
+          label: 'Date & Selection',
+          propNames: ['value', 'minDate', 'maxDate', 'locale'],
+        },
+        {
+          id: 'dimensions',
+          label: 'Dimensions & Sizing',
+          propNames: [
+            'width',
+            'rulerHeight',
+            'tickSpacing',
+            'tickWidth',
+            'indicator.width',
+            'indicator.height',
+            'indicator.alignment',
+          ],
+        },
+        {
+          id: 'rules',
+          label: 'Graduation Rules',
+          propNames: ['ticks'],
+        },
+        {
+          id: 'colors',
+          label: 'Colors & Theme',
+          propNames: [
+            'theme.background',
+            'theme.indicatorColor',
+            'theme.accentColor',
+            'theme.labelColor',
+            'theme.defaultTickColor',
+            'theme.rangeHighlightColor',
+          ],
+        },
+        {
+          id: 'features',
+          label: 'Features & Toggles',
+          propNames: [
+            'haptics',
+            'lensEffect',
+            'header.showResetToToday',
+            'header.resetLabel',
+            'accessibilityLabel',
+          ],
+        },
+      ];
+  }
+}

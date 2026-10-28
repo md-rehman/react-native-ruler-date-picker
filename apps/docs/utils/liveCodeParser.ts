@@ -3,6 +3,7 @@ import { parse } from '@babel/parser';
 export interface ParseResult {
   success: boolean;
   props: Record<string, any> | null;
+  detectedComponent?: string;
   error: {
     message: string;
     line?: number;
@@ -10,34 +11,34 @@ export interface ParseResult {
   } | null;
 }
 
-/**
- * Recursively search the Babel AST for the <RulerDatePicker ... /> JSX element.
- */
-function isRulerComponentName(nameNode: any): boolean {
-  if (!nameNode) return false;
+function getRulerComponentName(nameNode: any): string | null {
+  if (!nameNode) return null;
   if (nameNode.type === 'JSXIdentifier') {
-    return [
+    if ([
       'RulerDatePicker',
       'RulerDateRangePicker',
       'RulerRoot',
       'RulerRangeRoot',
-    ].includes(nameNode.name);
+    ].includes(nameNode.name)) {
+      return nameNode.name;
+    }
   }
   if (nameNode.type === 'JSXMemberExpression') {
     const obj = nameNode.object?.name;
     const prop = nameNode.property?.name;
-    return (obj === 'Ruler' || obj === 'RulerRange') && (prop === 'Root' || prop === 'Picker');
+    if (obj === 'Ruler' && prop === 'Root') return 'RulerRoot';
+    if (obj === 'RulerRange' && prop === 'Root') return 'RulerRangeRoot';
   }
-  return false;
+  return null;
 }
 
-function findRulerElement(node: any): any {
+function findRulerElement(node: any): { element: any; componentName: string } | null {
   if (!node) return null;
-  if (
-    node.type === 'JSXElement' &&
-    isRulerComponentName(node.openingElement?.name)
-  ) {
-    return node;
+  if (node.type === 'JSXElement') {
+    const componentName = getRulerComponentName(node.openingElement?.name);
+    if (componentName) {
+      return { element: node, componentName };
+    }
   }
 
   for (const key of Object.keys(node)) {
@@ -85,7 +86,6 @@ function evaluateExpression(expr: any, sourceCode: string): any {
         DEFAULT_METRIC_TICKS: 'metric',
         DEFAULT_MINIMAL_TICKS: 'minimal',
       };
-      // eslint-disable-next-line no-new-func
       const fn = new Function(...Object.keys(scope), `return (${raw});`);
       return fn(...Object.values(scope));
     } catch {
@@ -97,7 +97,7 @@ function evaluateExpression(expr: any, sourceCode: string): any {
 }
 
 /**
- * Parses user-edited JSX or full component code string and extracts RulerDatePicker props.
+ * Parses user-edited JSX or full component code string and extracts component props.
  */
 export function parseCodeToProps(codeString: string): ParseResult {
   if (!codeString || !codeString.trim()) {
@@ -114,15 +114,16 @@ export function parseCodeToProps(codeString: string): ParseResult {
       plugins: ['jsx', 'typescript'],
     });
 
-    const rulerElement = findRulerElement(ast);
-    if (!rulerElement) {
+    const found = findRulerElement(ast);
+    if (!found) {
       return {
         success: false,
         props: null,
-        error: { message: '<RulerDatePicker /> element not found in code' },
+        error: { message: 'Ruler component element not found in code' },
       };
     }
 
+    const { element: rulerElement, componentName } = found;
     const extractedProps: Record<string, any> = {};
 
     for (const attr of rulerElement.openingElement.attributes) {
@@ -149,6 +150,7 @@ export function parseCodeToProps(codeString: string): ParseResult {
     return {
       success: true,
       props: extractedProps,
+      detectedComponent: componentName,
       error: null,
     };
   } catch (err: any) {

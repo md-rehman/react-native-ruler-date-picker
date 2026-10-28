@@ -1,13 +1,16 @@
 "use client";
 
 import { useState, useCallback, useRef } from 'react';
-import { EXAMPLES, ExamplePreset } from '../data/examples';
+import { EXAMPLES, ExamplePreset, ComponentType } from '../data/examples';
 import { generateCodeSnippet, SnippetMode } from '../utils/generateCodeSnippet';
 import { parseCodeToProps } from '../utils/liveCodeParser';
 
 const DEFAULT_TODAY_STR = new Date().toISOString().split('T')[0];
 
 export function usePickerProps() {
+  const [componentType, setComponentType] = useState<ComponentType>(
+    EXAMPLES[0].componentType || 'RulerDatePicker'
+  );
   const [props, setProps] = useState<Record<string, any>>({
     value: DEFAULT_TODAY_STR,
     ...EXAMPLES[0].props,
@@ -25,6 +28,7 @@ export function usePickerProps() {
     generateCodeSnippet({
       props: EXAMPLES[0].props,
       presetName: EXAMPLES[0].name,
+      componentType: EXAMPLES[0].componentType,
       mode: 'full',
     })
   );
@@ -33,8 +37,9 @@ export function usePickerProps() {
   const parseDebounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadPreset = useCallback((preset: ExamplePreset) => {
+    setComponentType(preset.componentType);
     const updatedProps = {
-      value: DEFAULT_TODAY_STR,
+      ...(preset.props.value !== undefined ? {} : { value: DEFAULT_TODAY_STR }),
       ...preset.props,
     };
     setProps(updatedProps);
@@ -44,6 +49,7 @@ export function usePickerProps() {
       generateCodeSnippet({
         props: preset.props,
         presetName: preset.name,
+        componentType: preset.componentType,
         mode: codeMode,
       })
     );
@@ -72,11 +78,12 @@ export function usePickerProps() {
         }
 
         // Synchronize code snippet when updated via GUI controls
-        if (name !== 'value') {
+        if (name !== 'value' && name !== 'value.start' && name !== 'value.end') {
           setCode(
             generateCodeSnippet({
               props: updated,
               presetName: 'Custom Configuration',
+              componentType,
               mode: codeMode,
             })
           );
@@ -85,12 +92,12 @@ export function usePickerProps() {
         return updated;
       });
 
-      if (name !== 'value') {
+      if (name !== 'value' && name !== 'value.start' && name !== 'value.end') {
         setActiveExampleId('custom');
         setCodeError(null);
       }
     },
-    [codeMode]
+    [codeMode, componentType]
   );
 
   const updateFromCode = useCallback((newCode: string) => {
@@ -105,10 +112,22 @@ export function usePickerProps() {
       if (res.success && res.props) {
         setCodeError(null);
         setActiveExampleId('custom');
+
+        if (res.detectedComponent) {
+          if (res.detectedComponent === 'RulerDateRangePicker') {
+            setComponentType('RulerDateRangePicker');
+          } else if (res.detectedComponent === 'RulerRoot') {
+            setComponentType('RulerCompound');
+          } else if (res.detectedComponent === 'RulerRangeRoot') {
+            setComponentType('RulerRangeCompound');
+          } else {
+            setComponentType('RulerDatePicker');
+          }
+        }
+
         setProps((prev) => ({
           ...prev,
           ...res.props,
-          // Preserve currently selected value if not overridden
           value: res.props?.value ?? prev.value,
         }));
       } else if (res.error) {
@@ -127,31 +146,36 @@ export function usePickerProps() {
             activeExampleId === 'custom'
               ? 'Custom Configuration'
               : EXAMPLES.find((e) => e.id === activeExampleId)?.name ?? 'Custom Configuration',
+          componentType,
           mode: newMode,
         })
       );
     },
-    [props, activeExampleId]
+    [props, activeExampleId, componentType]
   );
 
   const resetCode = useCallback(() => {
     const currentPreset =
       EXAMPLES.find((e) => e.id === activeExampleId) ?? EXAMPLES[0];
+    setComponentType(currentPreset.componentType);
     setCodeError(null);
     setCode(
       generateCodeSnippet({
         props: currentPreset.props,
         presetName: currentPreset.name,
+        componentType: currentPreset.componentType,
         mode: codeMode,
       })
     );
     setProps({
-      value: DEFAULT_TODAY_STR,
+      ...(currentPreset.props.value !== undefined ? {} : { value: DEFAULT_TODAY_STR }),
       ...currentPreset.props,
     });
   }, [activeExampleId, codeMode]);
 
   return {
+    componentType,
+    setComponentType,
     props,
     activeExampleId,
     loadPreset,
