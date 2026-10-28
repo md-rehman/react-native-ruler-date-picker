@@ -8,6 +8,7 @@ export type PropType =
   | 'readonly'
   | 'text'
   | 'date'
+  | 'offset'
   | 'tick-rules';
 
 export interface PropDefinition {
@@ -180,13 +181,12 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     description: 'Height of the center needle pointer in pixels.',
   },
   {
-    name: 'indicator.alignment',
-    type: 'enum',
-    label: 'indicator.alignment',
+    name: 'indicator.offset',
+    type: 'offset',
+    label: 'indicator.offset',
     category: 'Dimensions',
-    defaultValue: 'bottom',
-    options: ['bottom', 'center', 'top'],
-    description: 'Vertical alignment of the center needle pointer.',
+    defaultValue: [0, 0],
+    description: 'Offset [x, y] in pixels of the center needle pointer. Default [0, 0] anchors to the bottom.',
   },
 
   // ── Colors (Theme Tokens) ──
@@ -311,6 +311,7 @@ export function getPropGroupsForComponent(componentType: ComponentType): PropGro
             'tickWidth',
             'indicator.width',
             'indicator.height',
+            'indicator.offset',
           ],
         },
         {
@@ -425,7 +426,7 @@ export function getPropGroupsForComponent(componentType: ComponentType): PropGro
             'tickWidth',
             'indicator.width',
             'indicator.height',
-            'indicator.alignment',
+            'indicator.offset',
           ],
         },
         {

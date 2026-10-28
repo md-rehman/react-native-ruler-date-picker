@@ -145,7 +145,7 @@ export const EXAMPLE_SECTIONS: ExampleSection[] = [
           ticks: 'calendar',
           tickSpacing: 18,
           rulerHeight: 46,
-          indicator: { width: 2, height: 28, alignment: 'top' },
+          indicator: { width: 2, height: 28, offset: [0, 0] },
           header: false,
           haptics: true,
           theme: {

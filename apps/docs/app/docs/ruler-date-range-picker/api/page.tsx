@@ -170,10 +170,10 @@ export default function RulerDateRangePickerApiPage() {
       description: 'Color of the start and end handle needle bars.',
     },
     {
-      name: 'alignment',
-      type: "'bottom' | 'center' | 'top'",
-      default: "'bottom'",
-      description: 'Vertical alignment of the handle needles inside the track.',
+      name: 'offset',
+      type: '[number, number]',
+      default: '[0, 0]',
+      description: 'Offset [x, y] in pixels of the handle needles inside the track. Default [0, 0] anchors to the bottom.',
     },
     {
       name: 'style',

@@ -158,10 +158,10 @@ export default function RulerDatePickerApiPage() {
       description: 'Color of the center needle pointer.',
     },
     {
-      name: 'alignment',
-      type: "'bottom' | 'center' | 'top'",
-      default: "'bottom'",
-      description: 'Vertical alignment of the center needle pointer inside the track.',
+      name: 'offset',
+      type: '[number, number]',
+      default: '[0, 0]',
+      description: 'Offset [x, y] in pixels of the center needle pointer. Default [0, 0] anchors to the bottom.',
     },
     {
       name: 'style',

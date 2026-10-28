@@ -61,6 +61,31 @@ export default function PropControl({ definition, value, onChange }: PropControl
             options={definition.options || []}
           />
         );
+      case 'offset': {
+        const arr = Array.isArray(value) ? value : [0, 0];
+        const x = typeof arr[0] === 'number' ? arr[0] : 0;
+        const y = typeof arr[1] === 'number' ? arr[1] : 0;
+        return (
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center', width: '100%' }}>
+            <span style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', fontWeight: 600 }}>X</span>
+            <NumberInput
+              value={x}
+              onChange={(newX) => onChange([newX, y])}
+              min={-200}
+              max={200}
+              step={1}
+            />
+            <span style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', fontWeight: 600, marginLeft: 2 }}>Y</span>
+            <NumberInput
+              value={y}
+              onChange={(newY) => onChange([x, newY])}
+              min={-200}
+              max={200}
+              step={1}
+            />
+          </div>
+        );
+      }
       case 'readonly':
         return <div className={styles.readonlyValue}>{value !== undefined && value !== null ? String(value) : 'None'}</div>;
       default:

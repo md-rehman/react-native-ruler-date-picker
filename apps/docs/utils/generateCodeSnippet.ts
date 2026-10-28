@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
   } else if (cleanProps.indicator && typeof cleanProps.indicator === 'object') {
     const indEntries = Object.entries(cleanProps.indicator)
       .filter(([, v]) => v !== undefined)
-      .map(([k, v]) => `${k}: ${typeof v === 'string' ? `'${v}'` : v}`);
+      .map(([k, v]) => `${k}: ${typeof v === 'string' ? `'${v}'` : Array.isArray(v) ? JSON.stringify(v) : v}`);
     if (indEntries.length > 0) {
       propLines.push(`      indicator={{ ${indEntries.join(', ')} }}`);
     }
