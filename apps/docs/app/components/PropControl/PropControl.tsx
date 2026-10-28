@@ -69,7 +69,7 @@ export default function PropControl({ definition, value, onChange }: PropControl
   };
 
   const isFullWidth = definition.type === 'tick-rules';
-  const displayLabel = definition.label.replace(/^(theme|header)\./, '');
+  const displayLabel = definition.label.replace(/^(theme|header|value)\./, '');
 
   return (
     <div className={`${styles.container} ${isFullWidth ? styles.containerFullWidth : ''}`}>

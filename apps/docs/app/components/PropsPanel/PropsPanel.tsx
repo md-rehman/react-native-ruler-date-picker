@@ -1,12 +1,14 @@
 "use client";
 
 import React from 'react';
-import { PROP_DEFINITIONS, PropDefinition } from '../../../data/propDefinitions';
+import { PROP_DEFINITIONS, PropDefinition, getPropGroupsForComponent } from '../../../data/propDefinitions';
+import { ComponentType } from '../../../data/examples';
 import PropControl from '../PropControl/PropControl';
 import styles from './PropsPanel.module.css';
 
 interface PropsPanelProps {
   pickerProps: Record<string, any>;
+  componentType?: ComponentType;
   updateProp: (name: string, value: any) => void;
 }
 
@@ -18,71 +20,24 @@ function getPropValue(props: Record<string, any>, name: string) {
   return props[name];
 }
 
-interface PropGroup {
-  id: string;
-  label: string;
-  propNames: string[];
-}
-
-const PROP_GROUPS: PropGroup[] = [
-  {
-    id: 'selection',
-    label: 'Date & Selection',
-    propNames: ['value', 'minDate', 'maxDate', 'locale'],
-  },
-  {
-    id: 'dimensions',
-    label: 'Dimensions & Sizing',
-    propNames: [
-      'width',
-      'rulerHeight',
-      'tickSpacing',
-      'tickWidth',
-      'indicator.width',
-      'indicator.height',
-      'indicator.alignment',
-    ],
-  },
-  {
-    id: 'rules',
-    label: 'Graduation Rules',
-    propNames: ['ticks'],
-  },
-  {
-    id: 'colors',
-    label: 'Colors & Theme',
-    propNames: [
-      'theme.background',
-      'theme.indicatorColor',
-      'theme.accentColor',
-      'theme.labelColor',
-      'theme.defaultTickColor',
-      'theme.rangeHighlightColor',
-    ],
-  },
-  {
-    id: 'features',
-    label: 'Features & Toggles',
-    propNames: [
-      'haptics',
-      'lensEffect',
-      'header.showResetToToday',
-      'header.resetLabel',
-      'accessibilityLabel',
-    ],
-  },
-];
-
-export default function PropsPanel({ pickerProps, updateProp }: PropsPanelProps) {
+export default function PropsPanel({
+  pickerProps,
+  componentType = 'RulerDatePicker',
+  updateProp,
+}: PropsPanelProps) {
   const propMap = React.useMemo(() => {
     const map = new Map<string, PropDefinition>();
     PROP_DEFINITIONS.forEach((p) => map.set(p.name, p));
     return map;
   }, []);
 
+  const propGroups = React.useMemo(() => {
+    return getPropGroupsForComponent(componentType);
+  }, [componentType]);
+
   return (
     <div className={styles.container}>
-      {PROP_GROUPS.map((group) => {
+      {propGroups.map((group) => {
         const groupProps = group.propNames
           .map((name) => propMap.get(name))
           .filter((p): p is PropDefinition => Boolean(p));
