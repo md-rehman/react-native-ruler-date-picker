@@ -83,13 +83,12 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     description: 'Height of center pointer needle in pixels.',
   },
   {
-    name: 'indicator.alignment',
-    type: 'enum',
-    label: 'Indicator Alignment',
+    name: 'indicator.offset',
+    type: 'offset',
+    label: 'Indicator Offset',
     category: 'Dimensions',
-    defaultValue: 'bottom',
-    options: ['bottom', 'center', 'top'],
-    description: 'Vertical alignment of center needle pointer.',
+    defaultValue: [0, 0],
+    description: 'Offset [x, y] in pixels of the center needle pointer. Default [0, 0] anchors to the bottom.',
   },
 
   // Colors (theme.* mapping)
