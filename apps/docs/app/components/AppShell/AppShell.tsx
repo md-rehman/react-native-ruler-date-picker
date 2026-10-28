@@ -154,7 +154,7 @@ export default function AppShell() {
   );
 
   // Left modal metrics: always takes complete height with consistent margins from screen borders
-  const leftWidth = 300;
+  const leftWidth = 320;
   const leftY = examplesPos.y ?? TOP_MARGIN;
   const leftHeight = Math.max(200, windowSize.height - BOTTOM_MARGIN - leftY);
 
@@ -172,6 +172,7 @@ export default function AppShell() {
         <CentralView
           activeDevice={activeDevice}
           pickerProps={pickerState.props}
+          componentType={pickerState.componentType}
           updateProp={pickerState.updateProp}
         />
 
@@ -213,6 +214,7 @@ export default function AppShell() {
             >
               <PropsPanel
                 pickerProps={pickerState.props}
+                componentType={pickerState.componentType}
                 updateProp={pickerState.updateProp}
               />
             </FloatingModal>

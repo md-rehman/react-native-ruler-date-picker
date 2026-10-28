@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { EXAMPLES, ExamplePreset } from '../../../data/examples';
+import { EXAMPLES, EXAMPLE_SECTIONS, ExamplePreset } from '../../../data/examples';
 import { generateCodeSnippet, SnippetMode } from '../../../utils/generateCodeSnippet';
 import LiveCodeEditor from '../LiveCodeEditor/LiveCodeEditor';
 import { highlightCode } from '../../../utils/highlightCode';
@@ -85,9 +85,11 @@ export default function CodeModal({
     }
   };
 
+  const currentPreset = EXAMPLES.find((ex) => ex.id === selectedPresetId);
   const effectiveCode = externalCode || generateCodeSnippet({
     props: currentProps,
-    presetName: 'Custom Configuration',
+    presetName: currentPreset?.name ?? 'Custom Configuration',
+    componentType: currentPreset?.componentType,
     mode: currentMode,
   });
 
@@ -122,13 +124,15 @@ export default function CodeModal({
               title="Select preset configuration"
             >
               <option value="custom">⚡ Current Configuration</option>
-              <optgroup label="Presets">
-                {EXAMPLES.map((ex) => (
-                  <option key={ex.id} value={ex.id}>
-                    {ex.name}
-                  </option>
-                ))}
-              </optgroup>
+              {EXAMPLE_SECTIONS.map((sec) => (
+                <optgroup key={sec.id} label={sec.title}>
+                  {sec.items.map((ex) => (
+                    <option key={ex.id} value={ex.id}>
+                      {ex.name}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
             </select>
 
             {/* Close Button */}

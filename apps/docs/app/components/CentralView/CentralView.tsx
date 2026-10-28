@@ -11,9 +11,12 @@ const ComponentPreview: any = dynamic(
   { ssr: false }
 );
 
+import { ComponentType } from '../../../data/examples';
+
 interface CentralViewProps {
   activeDevice: DeviceType;
   pickerProps: Record<string, any>;
+  componentType?: ComponentType;
   updateProp: (name: string, value: any) => void;
 }
 
@@ -23,6 +26,7 @@ const MAX_ZOOM = 3.0;  // 300%
 export default function CentralView({
   activeDevice,
   pickerProps,
+  componentType = 'RulerDatePicker',
   updateProp,
 }: CentralViewProps) {
   const [zoom, setZoom] = useState<number>(1);
@@ -287,7 +291,7 @@ export default function CentralView({
           }}
         >
           <DeviceMockup device={activeDevice}>
-            <ComponentPreview props={pickerProps} updateProp={updateProp} />
+            <ComponentPreview props={pickerProps} componentType={componentType} updateProp={updateProp} />
           </DeviceMockup>
         </div>
       </div>
