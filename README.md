@@ -9,6 +9,7 @@ A performant, customizable horizontal ruler date picker & scroll wheel for React
 - **Windowed Rendering** — Only renders visible ticks + buffer for memory efficiency
 - **Multi-Tier Rule-Based Graduations** — Declarative tick rules (`ticks="calendar"` | `"metric"` | `"minimal"` or custom rules array)
 - **Compound Anatomy API** — Full layout flexibility with `Ruler.*` and `RulerRange.*`
+- **Date Range Selection [Experimental]** — Dual-handle date range picker with `RulerDateRangePicker`
 - **Dark Mode Support** — Auto-detects system color scheme with custom theme palette override
 
 ## 📦 Installation
@@ -74,7 +75,7 @@ export default function App() {
 | `tickWidth` | `number` | `3` | Base thickness of tick bars (px) |
 | `width` | `number` | `window width` | Viewport width of the ruler track (px) |
 | `rulerHeight` | `number` | `60` | Ruler track viewport height (px) |
-| `indicator` | `boolean \| IndicatorConfig` | `true` | Needle dimensions `{ width, height, alignment }` or custom renderer |
+| `indicator` | `boolean \| IndicatorConfig` | `true` | Needle dimensions `{ width, height, offset }` or custom renderer |
 | `header` | `boolean \| HeaderConfig` | `true` | Header display, `{ showResetToToday, resetLabel, format }`, or custom renderer |
 | `haptics` | `boolean \| HapticConfig` | `true` | Haptics toggle, `{ onTrigger }`, or velocity tuning |
 | `theme` | `RulerTheme` | auto | Color tokens (`indicatorColor`, `background`, etc.) |

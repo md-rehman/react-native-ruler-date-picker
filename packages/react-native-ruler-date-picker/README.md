@@ -9,6 +9,7 @@ A performant, customizable horizontal ruler date picker & scroll wheel for React
 - **Windowed Rendering** — Only renders visible ticks + buffer for memory efficiency
 - **Multi-Tier Rule-Based Graduations** — Declarative tick rules (`ticks="calendar"` | `"metric"` | `"minimal"` or custom rules array)
 - **Compound Anatomy API** — Full layout flexibility with `Ruler.*` and `RulerRange.*`
+- **Date Range Selection [Experimental]** — Dual-handle date range picker with `RulerDateRangePicker`
 - **Dark Mode Support** — Auto-detects system color scheme with custom theme palette override
 
 ## 📦 Installation
