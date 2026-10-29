@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExamplePreset } from '../../../data/examples';
+import { ExperimentalBadge } from '../ExperimentalBadge/ExperimentalBadge';
 import styles from './ExampleListItem.module.css';
 
 interface ExampleListItemProps {
@@ -25,9 +26,11 @@ export default function ExampleListItem({ example, isActive, onClick, onViewCode
       <div className={styles.header}>
         <div className={styles.titleArea}>
           <span className={styles.name}>{example.name}</span>
-          {example.badge && (
+          {example.isExperimental ? (
+            <ExperimentalBadge size="sm" />
+          ) : example.badge ? (
             <span className={styles.badge}>{example.badge}</span>
-          )}
+          ) : null}
         </div>
         {onViewCode && (
           <button

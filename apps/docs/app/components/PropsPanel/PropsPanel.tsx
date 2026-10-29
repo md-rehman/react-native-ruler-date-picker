@@ -37,6 +37,7 @@ export default function PropsPanel({
 
   return (
     <div className={styles.container}>
+
       {propGroups.map((group) => {
         const groupProps = group.propNames
           .map((name) => propMap.get(name))

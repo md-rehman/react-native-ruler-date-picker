@@ -63,6 +63,12 @@
   justify-content: center;
 }
 
+.badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+}
+
 .icon svg {
   width: 14px;
   height: 14px;

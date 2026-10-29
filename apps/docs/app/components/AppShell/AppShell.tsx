@@ -12,6 +12,7 @@ import { DeviceType } from '../DeviceSelector/DeviceSelector';
 import { usePickerProps } from '../../../hooks/usePickerProps';
 import { EXAMPLES } from '../../../data/examples';
 import { PropsIcon, CodeIcon, ModalCategory } from '../ModalToggle/ModalToggle';
+import { ExperimentalBadge } from '../ExperimentalBadge/ExperimentalBadge';
 import styles from './AppShell.module.css';
 
 export default function AppShell() {
@@ -200,11 +201,21 @@ export default function AppShell() {
           // Takes complete available height with consistent margin from bottom screen border
           const targetHeight = Math.max(200, windowSize.height - BOTTOM_MARGIN - currentPos.y);
 
+          const isRangeExperimental =
+            pickerState.componentType === 'RulerDateRangePicker' ||
+            pickerState.componentType === 'useRulerDateRangePicker' ||
+            pickerState.componentType === 'RulerRangeCompound';
+
           return (
             <FloatingModal
               id="props"
               title="Props"
               icon={<PropsIcon />}
+              badge={
+                isRangeExperimental ? (
+                  <ExperimentalBadge size="sm" />
+                ) : undefined
+              }
               width={propsWidth}
               height={targetHeight}
               position={currentPos}
@@ -229,11 +240,21 @@ export default function AppShell() {
           // Takes complete available height with consistent margin from bottom screen border
           const targetHeight = Math.max(200, windowSize.height - BOTTOM_MARGIN - currentCodePos.y);
 
+          const isRangeExperimental =
+            pickerState.componentType === 'RulerDateRangePicker' ||
+            pickerState.componentType === 'useRulerDateRangePicker' ||
+            pickerState.componentType === 'RulerRangeCompound';
+
           return (
             <FloatingModal
               id="code"
               title="Code"
               icon={<CodeIcon />}
+              badge={
+                isRangeExperimental ? (
+                  <ExperimentalBadge size="sm" />
+                ) : undefined
+              }
               width={codeWidth}
               height={targetHeight}
               position={currentCodePos}

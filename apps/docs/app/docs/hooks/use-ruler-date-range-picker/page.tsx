@@ -21,9 +21,14 @@ export default function UseRulerDateRangePickerPage() {
       <DocHeader
         category="Hooks"
         badge="#headless"
+        isExperimental={true}
         title="useRulerDateRangePicker"
         description="The headless engine powering RulerDateRangePicker. Coordinates dual-handle Reanimated coordinates, collision prevention, and interval clamping."
       />
+
+      <Callout type="warning" title="Experimental Headless Hook">
+        <code>useRulerDateRangePicker</code> and its return contract (<code>UseRulerDateRangePickerReturn</code>) are <strong>Experimental</strong>. Internal worklets, shared value names, and handle coordination mechanics may receive breaking adjustments in future minor updates.
+      </Callout>
 
       <section style={{ marginBottom: 40 }}>
         <h2>1. Dual-Handle Coordinate System</h2>

@@ -9,6 +9,7 @@ export interface FloatingModalProps {
   id?: string;
   title: string;
   icon?: React.ReactNode;
+  badge?: React.ReactNode;
   children: React.ReactNode;
   width?: number | string;
   height?: number | string;
@@ -28,6 +29,7 @@ export default function FloatingModal({
   id, 
   title, 
   icon, 
+  badge,
   children, 
   width,
   height,
@@ -277,6 +279,7 @@ export default function FloatingModal({
         <div className={styles.titleWrapper}>
           {icon && <span className={styles.icon}>{icon}</span>}
           <h3 className={styles.title}>{title}</h3>
+          {badge && <span className={styles.badge}>{badge}</span>}
         </div>
         <div className={styles.actions}>
            <button onClick={handleToggleCollapse} className={styles.iconBtn} title={isCollapsed ? "Expand" : "Collapse"}>

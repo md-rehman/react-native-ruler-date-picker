@@ -12,6 +12,7 @@ export interface ExamplePreset {
   description: string;
   componentType: ComponentType;
   badge?: string;
+  isExperimental?: boolean;
   props: Record<string, any>;
 }
 
@@ -20,6 +21,7 @@ export interface ExampleSection {
   title: string;
   componentType: ComponentType;
   badge?: string;
+  isExperimental?: boolean;
   items: ExamplePreset[];
 }
 
@@ -163,7 +165,7 @@ export const EXAMPLE_SECTIONS: ExampleSection[] = [
     id: 'ruler-date-range-picker',
     title: 'RulerDateRangePicker',
     componentType: 'RulerDateRangePicker',
-    badge: '#range',
+    isExperimental: true,
     items: [
       {
         id: 'range-standard',
@@ -171,6 +173,7 @@ export const EXAMPLE_SECTIONS: ExampleSection[] = [
         description: 'Dual handles with connecting highlight strip and 2 to 14-day span limits',
         componentType: 'RulerDateRangePicker',
         badge: '#range',
+        isExperimental: true,
         props: {
           value: {
             start: getTodayStr(),
@@ -199,6 +202,7 @@ export const EXAMPLE_SECTIONS: ExampleSection[] = [
         description: 'Hospitality-style booking interval with min 3-night requirement and warm theme',
         componentType: 'RulerDateRangePicker',
         badge: '#booking',
+        isExperimental: true,
         props: {
           value: {
             start: getTodayStr(),
@@ -226,6 +230,7 @@ export const EXAMPLE_SECTIONS: ExampleSection[] = [
         description: 'Range picker powered by 3-tier metric graduation scale',
         componentType: 'RulerDateRangePicker',
         badge: '#metric',
+        isExperimental: true,
         props: {
           value: {
             start: getTodayStr(),
@@ -280,7 +285,7 @@ export const EXAMPLE_SECTIONS: ExampleSection[] = [
         name: 'RulerRange (Range Compound)',
         description: 'Composable RulerRange.Root, Track, Highlight, & Indicator dual subcomponents',
         componentType: 'RulerRangeCompound',
-        badge: '#anatomy',
+        isExperimental: true,
         props: {
           value: {
             start: getTodayStr(),
@@ -332,7 +337,7 @@ export const EXAMPLE_SECTIONS: ExampleSection[] = [
         name: 'useRulerDateRangePicker',
         description: 'Headless dual-handle range tracking, active handle indicator, & span days',
         componentType: 'useRulerDateRangePicker',
-        badge: '#headless',
+        isExperimental: true,
         props: {
           value: {
             start: getTodayStr(),

@@ -35,9 +35,14 @@ export default function RulerDateRangePickerBasicPage() {
       <DocHeader
         category="RulerDateRangePicker"
         badge="#range"
+        isExperimental={true}
         title="Basic Usage"
         description="Select continuous date intervals with interactive dual handles, automatic handle switching, and dynamic connecting highlight strips."
       />
+
+      <Callout type="warning" title="Experimental Component">
+        <code>RulerDateRangePicker</code> is currently tagged as <strong>Experimental</strong>. Its API surface, prop contracts, and dual-handle physics are actively evolving and subject to breaking changes in upcoming minor releases.
+      </Callout>
 
       <section style={{ marginBottom: 40 }}>
         <h2>1. Interactive Date Range Demo</h2>

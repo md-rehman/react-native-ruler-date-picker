@@ -91,30 +91,30 @@ const STATIC_SEARCH_ITEMS: SearchItem[] = [
     keywords: ['props', 'api', 'types', 'options', 'parameters', 'reference', 'table']
   },
 
-  // RulerDateRangePicker (Range)
+  // RulerDateRangePicker (Range) [Experimental]
   {
     id: 'sec-rdrp-basic',
-    title: 'RulerDateRangePicker - Basic Usage',
-    desc: 'Dual handles, span boundaries, and range state management',
+    title: 'RulerDateRangePicker [Experimental] - Basic Usage',
+    desc: 'Dual handles, span boundaries, and range state management (Experimental)',
     category: 'Component',
     href: '/docs/ruler-date-range-picker/basic',
-    keywords: ['range', 'date-range', 'interval', 'dual', 'handles', 'span', 'booking']
+    keywords: ['range', 'date-range', 'interval', 'dual', 'handles', 'span', 'booking', 'experimental']
   },
   {
     id: 'sec-rdrp-anatomy',
-    title: 'RulerDateRangePicker - Compound Anatomy',
-    desc: 'RulerRange.Root, Track, Indicator, Highlight & Range Header',
+    title: 'RulerDateRangePicker [Experimental] - Compound Anatomy',
+    desc: 'RulerRange.Root, Track, Indicator, Highlight & Range Header (Experimental)',
     category: 'Component',
     href: '/docs/ruler-date-range-picker/anatomy',
-    keywords: ['range', 'anatomy', 'highlight', 'handles', 'compound']
+    keywords: ['range', 'anatomy', 'highlight', 'handles', 'compound', 'experimental']
   },
   {
     id: 'sec-rdrp-api',
-    title: 'RulerDateRangePicker - API Reference',
-    desc: 'DateRange types, minSpanDays, maxSpanDays & range props table',
+    title: 'RulerDateRangePicker [Experimental] - API Reference',
+    desc: 'DateRange types, minSpanDays, maxSpanDays & range props table (Experimental)',
     category: 'Section',
     href: '/docs/ruler-date-range-picker/api',
-    keywords: ['range', 'api', 'props', 'types', 'dateRange']
+    keywords: ['range', 'api', 'props', 'types', 'dateRange', 'experimental']
   },
 
   // Headless Hooks
@@ -128,11 +128,11 @@ const STATIC_SEARCH_ITEMS: SearchItem[] = [
   },
   {
     id: 'hook-use-ruler-date-range-picker',
-    title: 'useRulerDateRangePicker',
-    desc: 'Headless range physics, dual-handle shared values & collision clamping',
+    title: 'useRulerDateRangePicker [Experimental]',
+    desc: 'Headless range physics, dual-handle shared values & collision clamping (Experimental)',
     category: 'Component',
     href: '/docs/hooks/use-ruler-date-range-picker',
-    keywords: ['hook', 'range', 'handles', 'clamping', 'headless']
+    keywords: ['hook', 'range', 'handles', 'clamping', 'headless', 'experimental']
   },
   {
     id: 'hook-contexts',

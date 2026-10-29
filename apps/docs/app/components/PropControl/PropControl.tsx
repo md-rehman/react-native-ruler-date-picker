@@ -5,6 +5,7 @@ import NumberInput from './NumberInput';
 import EnumSelect from './EnumSelect';
 import BooleanToggle from './BooleanToggle';
 import Tooltip from '../Tooltip/Tooltip';
+import { ExperimentalBadge } from '../ExperimentalBadge/ExperimentalBadge';
 import styles from './PropControl.module.css';
 
 import TickRulesEditor from './TickRulesEditor';
@@ -99,7 +100,10 @@ export default function PropControl({ definition, value, onChange }: PropControl
   return (
     <div className={`${styles.container} ${isFullWidth ? styles.containerFullWidth : ''}`}>
       <div className={styles.header}>
-        <label className={styles.label} title={definition.label}>{displayLabel}</label>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+          <label className={styles.label} title={definition.label}>{displayLabel}</label>
+          {definition.isExperimental && <ExperimentalBadge size="sm" />}
+        </div>
         {definition.description && (
           <Tooltip content={definition.description}>
             <button

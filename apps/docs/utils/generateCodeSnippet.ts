@@ -132,6 +132,10 @@ export function generateCodeSnippet({
 import { StyleSheet, View } from 'react-native';
 import { RulerDateRangePicker, DateRange } from 'react-native-ruler-date-picker';
 
+/**
+ * @experimental RulerDateRangePicker is an experimental component.
+ * API surface and options are subject to breaking changes in future minor releases.
+ */
 export default function ${componentName}() {
   const [range, setRange] = useState<DateRange>({
     start: new Date(),
@@ -245,6 +249,9 @@ import {
   DateRange,
 } from 'react-native-ruler-date-picker';
 
+/**
+ * @experimental RulerRange compound primitives are currently experimental.
+ */
 export default function RulerRangeCompoundDemo() {
   const [range, setRange] = useState<DateRange>({
     start: new Date(),
@@ -338,6 +345,9 @@ const styles = StyleSheet.create({
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { useRulerDateRangePicker, formatDateString } from 'react-native-ruler-date-picker';
 
+/**
+ * @experimental useRulerDateRangePicker headless hook is currently experimental.
+ */
 export default function HeadlessRangeDemo() {
   const {
     activeHandle,

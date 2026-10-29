@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { EXAMPLE_SECTIONS, ExamplePreset } from '../../../data/examples';
 import ExampleListItem from '../ExampleListItem/ExampleListItem';
+import { ExperimentalBadge } from '../ExperimentalBadge/ExperimentalBadge';
 import styles from './ExamplesPanel.module.css';
 
 interface ExamplesPanelProps {
@@ -48,9 +49,13 @@ export default function ExamplesPanel({
                   >
                     {section.title}
                   </span>
-                  {section.badge && (
-                    <span className={styles.sectionBadge}>{section.badge}</span>
-                  )}
+                  {section.isExperimental ? (
+                    <ExperimentalBadge size="sm" />
+                  ) : section.badge ? (
+                    <span className={styles.sectionBadge}>
+                      {section.badge}
+                    </span>
+                  ) : null}
                 </div>
                 <svg
                   className={`${styles.sectionArrow} ${isOpen ? styles.sectionArrowOpen : ''}`}

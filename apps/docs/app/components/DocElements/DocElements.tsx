@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { getAdjacentPages } from '../../../data/docsNav';
 import { highlightCode } from '../../../utils/highlightCode';
+import { ExperimentalBadge } from '../ExperimentalBadge/ExperimentalBadge';
 import styles from './DocElements.module.css';
 
 // ── DocHeader ──
@@ -12,6 +13,7 @@ export interface DocHeaderProps {
   title: string;
   description: string;
   badge?: string;
+  isExperimental?: boolean;
 }
 
 export function DocHeader({
@@ -19,12 +21,16 @@ export function DocHeader({
   title,
   description,
   badge,
+  isExperimental,
 }: DocHeaderProps) {
   return (
     <header className={styles.headerContainer}>
       <div className={styles.badgeRow}>
         <span className={styles.categoryBadge}>{category}</span>
         {badge && <span className={styles.tagBadge}>{badge}</span>}
+        {isExperimental && (
+          <ExperimentalBadge showText={true} size="md" />
+        )}
       </div>
       <h1 className={styles.title}>{title}</h1>
       <p className={styles.description}>{description}</p>
@@ -146,6 +152,7 @@ export interface TableRow {
   type: string;
   default?: string;
   description: string;
+  isExperimental?: boolean;
 }
 
 export interface PropsTableProps {
@@ -167,7 +174,12 @@ export function PropsTable({ data }: PropsTableProps) {
         <tbody>
           {data.map((item) => (
             <tr key={item.name}>
-              <td className={styles.propName}>{item.name}</td>
+              <td className={styles.propName}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <span>{item.name}</span>
+                  {item.isExperimental && <ExperimentalBadge size="sm" />}
+                </div>
+              </td>
               <td className={styles.propType}>{item.type}</td>
               <td>
                 <code>{item.default && item.default !== 'undefined' ? item.default : '-'}</code>

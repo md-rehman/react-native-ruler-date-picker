@@ -3,12 +3,15 @@ export interface DocPageLink {
   title: string;
   href: string;
   badge?: string;
+  isExperimental?: boolean;
   desc?: string;
 }
 
 export interface DocNavSection {
   id: string;
   title: string;
+  badge?: string;
+  isExperimental?: boolean;
   items: DocPageLink[];
 }
 
@@ -84,6 +87,7 @@ export const DOCS_NAV_SECTIONS: DocNavSection[] = [
   {
     id: 'ruler-date-range-picker',
     title: 'RulerDateRangePicker',
+    isExperimental: true,
     items: [
       {
         id: 'rdrp-basic',
@@ -123,7 +127,7 @@ export const DOCS_NAV_SECTIONS: DocNavSection[] = [
         id: 'use-ruler-date-range-picker',
         title: 'useRulerDateRangePicker',
         href: '/docs/hooks/use-ruler-date-range-picker',
-        badge: '#headless',
+        isExperimental: true,
         desc: 'Headless range physics, collision & handles',
       },
       {

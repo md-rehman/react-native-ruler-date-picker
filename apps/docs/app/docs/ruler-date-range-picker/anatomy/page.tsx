@@ -20,9 +20,14 @@ export default function RulerDateRangePickerAnatomyPage() {
       <DocHeader
         category="RulerDateRangePicker"
         badge="#compound"
+        isExperimental={true}
         title="Compound Anatomy"
         description="Deconstruct and recombine range selection components: RulerRange.Root, Track, Highlight, Indicator, and Header."
       />
+
+      <Callout type="warning" title="Experimental Compound Primitives">
+        The <code>RulerRange</code> compound subcomponents (<code>RulerRange.Root</code>, <code>RulerRange.Track</code>, <code>RulerRange.Indicator</code>, <code>RulerRange.Highlight</code>) are <strong>Experimental</strong> and may receive breaking adjustments in future minor updates.
+      </Callout>
 
       <section style={{ marginBottom: 40 }}>
         <h2>1. The RulerRange Anatomy</h2>

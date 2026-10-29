@@ -2,6 +2,7 @@ import React from 'react';
 import type { Metadata } from 'next';
 import {
   DocHeader,
+  Callout,
   PropsTable,
   CodeBlock,
   DocPagination,
@@ -21,30 +22,35 @@ export default function RulerDateRangePickerApiPage() {
       type: 'DateRange',
       default: 'Today → Today + 7d',
       description: 'Controlled date range object: { start: Date | string, end: Date | string }.',
+      isExperimental: true,
     },
     {
       name: 'defaultValue',
       type: 'DateRange',
       default: 'Today → Today + 7d',
       description: 'Initial selected date range for uncontrolled usage.',
+      isExperimental: true,
     },
     {
       name: 'onChange',
       type: '(payload: DateRangeChangePayload) => void',
       default: '-',
       description: 'Callback fired on handle drag/snap with { startDate, endDate, dateRange, spanDays }.',
+      isExperimental: true,
     },
     {
       name: 'minSpanDays',
       type: 'number',
       default: '1',
       description: 'Minimum required distance in days between start and end handles.',
+      isExperimental: true,
     },
     {
       name: 'maxSpanDays',
       type: 'number',
       default: '-',
       description: 'Maximum allowable distance in days between start and end handles (defaults to unlimited).',
+      isExperimental: true,
     },
     {
       name: 'minDate',
@@ -99,18 +105,21 @@ export default function RulerDateRangePickerApiPage() {
       type: 'boolean | RangeHeaderConfig',
       default: 'true',
       description: 'Enable or configure the dual-date range header with custom labels and formatters.',
+      isExperimental: true,
     },
     {
       name: 'highlight',
       type: 'boolean | RangeHighlightConfig',
       default: 'true',
       description: 'Enable or configure the highlighted connecting interval strip between handles.',
+      isExperimental: true,
     },
     {
       name: 'indicator',
       type: 'boolean | RangeIndicatorConfig',
       default: 'true',
       description: 'Appearance configuration for start and end handle pins.',
+      isExperimental: true,
     },
     {
       name: 'haptics',
@@ -242,9 +251,14 @@ export default function RulerDateRangePickerApiPage() {
       <DocHeader
         category="RulerDateRangePicker"
         badge="#api"
+        isExperimental={true}
         title="API Reference"
         description="Comprehensive props reference, type definitions, and callback signatures for <RulerDateRangePicker />."
       />
+
+      <Callout type="warning" title="Experimental API Status">
+        All props, types (<code>RulerDateRangePickerProps</code>, <code>DateRange</code>, <code>DateRangeChangePayload</code>), and callbacks documented below are <strong>Experimental</strong> and may change in upcoming minor releases.
+      </Callout>
 
       <section style={{ marginBottom: 40 }}>
         <h2>Props Reference Table</h2>

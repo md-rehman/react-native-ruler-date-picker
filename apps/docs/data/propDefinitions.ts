@@ -22,6 +22,7 @@ export interface PropDefinition {
   max?: number;
   step?: number;
   description?: string;
+  isExperimental?: boolean;
 }
 
 export interface PropGroup {
@@ -81,6 +82,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     category: 'Selection',
     defaultValue: 'Today',
     description: 'Start boundary of the selected date interval (controlled).',
+    isExperimental: true,
   },
   {
     name: 'value.end',
@@ -89,6 +91,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     category: 'Selection',
     defaultValue: 'Today + 7d',
     description: 'End boundary of the selected date interval (controlled).',
+    isExperimental: true,
   },
   {
     name: 'minSpanDays',
@@ -100,6 +103,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     max: 30,
     step: 1,
     description: 'Minimum allowed interval span in days between start and end handles.',
+    isExperimental: true,
   },
   {
     name: 'maxSpanDays',
@@ -111,6 +115,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     max: 90,
     step: 1,
     description: 'Maximum allowed interval span in days between start and end handles.',
+    isExperimental: true,
   },
 
   // ── Dimensions ──
@@ -237,6 +242,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     category: 'Colors',
     defaultValue: 'rgba(59, 130, 246, 0.2)',
     description: 'Color for range connecting highlight strip in range mode.',
+    isExperimental: true,
   },
 
   // ── Features & Flags ──
@@ -255,6 +261,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
     category: 'Features',
     defaultValue: true,
     description: 'Dynamic connecting highlight strip between start and end handles in range mode.',
+    isExperimental: true,
   },
   {
     name: 'lensEffect',

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { DOCS_NAV_SECTIONS } from '../../../data/docsNav';
+import { ExperimentalBadge } from '../ExperimentalBadge/ExperimentalBadge';
 import styles from './DocsSidebar.module.css';
 
 interface DocsSidebarProps {
@@ -101,12 +102,21 @@ export default function DocsSidebar({
                     className={styles.sectionHeader}
                     aria-expanded={isOpen}
                   >
-                    <span
-                      className={styles.sectionTitle}
-                      style={{ color: hasActiveChild ? 'var(--color-accent)' : undefined }}
-                    >
-                      {section.title}
-                    </span>
+                    <div className={styles.sectionTitleRow}>
+                      <span
+                        className={styles.sectionTitle}
+                        style={{ color: hasActiveChild ? 'var(--color-accent)' : undefined }}
+                      >
+                        {section.title}
+                      </span>
+                      {section.isExperimental ? (
+                        <ExperimentalBadge size="sm" />
+                      ) : section.badge ? (
+                        <span className={styles.sectionBadge}>
+                          {section.badge}
+                        </span>
+                      ) : null}
+                    </div>
                     <svg
                       className={`${styles.sectionArrow} ${isOpen ? styles.sectionArrowOpen : ''}`}
                       xmlns="http://www.w3.org/2000/svg"
@@ -136,9 +146,13 @@ export default function DocsSidebar({
                           >
                             <div className={styles.itemHeader}>
                               <span className={styles.itemName}>{item.title}</span>
-                              {item.badge && (
-                                <span className={styles.itemBadge}>{item.badge}</span>
-                              )}
+                              {item.isExperimental ? (
+                                <ExperimentalBadge size="sm" />
+                              ) : item.badge ? (
+                                <span className={styles.itemBadge}>
+                                  {item.badge}
+                                </span>
+                              ) : null}
                             </div>
                             {item.desc && (
                               <p className={styles.itemDesc}>{item.desc}</p>
