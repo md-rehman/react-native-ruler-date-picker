@@ -1,7 +1,9 @@
 // ── Components ─────────────────────────────────────────────────────────────
 export { RulerDatePicker } from './RulerDatePicker';
+/** @experimental */
 export { RulerDateRangePicker } from './RulerDateRangePicker';
 export { Ruler } from './Ruler';
+/** @experimental */
 export { RulerRange } from './RulerRange';
 export { Tick } from './Tick';
 export { RulerLensTrack } from './RulerLensTrack';
@@ -15,6 +17,8 @@ export { RulerIndicator, type RulerIndicatorProps } from './RulerIndicator';
 export { RulerTicks, type RulerTicksProps } from './RulerTicks';
 export { RulerHeader, type RulerHeaderProps } from './RulerHeader';
 export { RulerResetButton, type RulerResetButtonProps } from './RulerResetButton';
+
+// ── Compound Subcomponents [EXPERIMENTAL] ───────────────────────────────────
 export { RulerRangeRoot, type RulerRangeRootProps } from './RulerRangeRoot';
 export { RulerRangeTrack, type RulerRangeTrackProps } from './RulerRangeTrack';
 export { RulerRangeIndicator, type RulerRangeIndicatorProps } from './RulerRangeIndicator';
@@ -23,9 +27,11 @@ export { RulerRangeHighlight, type RulerRangeHighlightProps } from './RulerRange
 
 // ── Headless Hooks & Contexts ───────────────────────────────────────────────
 export { useRulerDatePicker, type UseRulerDatePickerReturn } from './useRulerDatePicker';
+/** @experimental */
 export { useRulerDateRangePicker, type UseRulerDateRangePickerReturn } from './useRulerDateRangePicker';
 export { useHaptics } from './useHaptics';
 export { RulerContext, useRulerContext, type RulerContextValue } from './RulerContext';
+/** @experimental */
 export { RulerRangeContext, useRulerRangeContext, type RulerRangeContextValue } from './RulerRangeContext';
 
 // ── Presets & Resolvers ───────────────────────────────────────────────────

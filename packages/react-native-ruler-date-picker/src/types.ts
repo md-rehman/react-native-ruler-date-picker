@@ -269,13 +269,23 @@ export interface LensConfig {
   scaleTicks?: boolean;
 }
 
-// ── Range Picker Types ───────────────────────────────────────────────────────
+// ── Range Picker Types [EXPERIMENTAL] ────────────────────────────────────────
 
+/**
+ * Date range boundaries representation.
+ *
+ * @experimental
+ */
 export interface DateRange {
   start: Date | string;
   end: Date | string;
 }
 
+/**
+ * Payload delivered to onChange when range selection changes.
+ *
+ * @experimental
+ */
 export interface DateRangeChangePayload {
   start: Date;
   end: Date;
@@ -286,6 +296,11 @@ export interface DateRangeChangePayload {
   spanDays: number;
 }
 
+/**
+ * Context provided to custom range header render callbacks.
+ *
+ * @experimental
+ */
 export interface RangeHeaderContext {
   start: Date;
   end: Date;
@@ -294,6 +309,11 @@ export interface RangeHeaderContext {
   scrollToHandle: (handle: 'start' | 'end', animated?: boolean) => void;
 }
 
+/**
+ * Configuration options for the range header.
+ *
+ * @experimental
+ */
 export interface RangeHeaderConfig {
   /** Header container style */
   style?: StyleProp<ViewStyle>;
@@ -307,6 +327,8 @@ export interface RangeHeaderConfig {
 
 /**
  * Configuration for the date range highlight span connecting the handles.
+ *
+ * @experimental
  */
 export interface RangeHighlightConfig {
   /** Color of the range connecting highlight strip (default: theme.rangeHighlightColor) */
@@ -323,12 +345,20 @@ export interface RangeHighlightConfig {
 
 /**
  * Configuration for the center indicator needle in range mode.
+ *
+ * @experimental
  */
 export interface RangeIndicatorConfig extends Omit<IndicatorConfig, 'render'> {
   /** Custom renderer for range needle indicator receiving active handle and date */
   render?: (handle: 'start' | 'end', date: Date) => React.ReactNode;
 }
 
+/**
+ * Props for `RulerDateRangePicker`.
+ *
+ * @experimental This component and its props are experimental. The API may
+ * undergo breaking changes in future minor versions.
+ */
 export interface RulerDateRangePickerProps
   extends Omit<RulerDatePickerProps, 'value' | 'defaultValue' | 'onChange' | 'header' | 'indicator'> {
   /** Currently selected date range (controlled) */

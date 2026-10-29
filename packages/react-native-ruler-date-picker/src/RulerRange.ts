@@ -8,6 +8,8 @@ import { Tick } from './Tick';
 /**
  * Compound Anatomy API for Date Range Ruler Picker.
  *
+ * @experimental This compound API is experimental and subject to breaking changes.
+ *
  * @example
  * ```tsx
  * <RulerRange.Root value={range} onChange={setRange}>

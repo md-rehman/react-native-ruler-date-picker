@@ -7,6 +7,10 @@ import { RulerRangeTrack } from './RulerRangeTrack';
 /**
  * A performant, customizable horizontal ruler date range picker for React Native & Expo.
  *
+ * @experimental This component is experimental. The API surface, options, and physics
+ * mechanics may undergo breaking changes in future minor releases as dual-handle
+ * interactions and gestures are refined.
+ *
  * Features:
  * - Dual-handle windowed date range selection with connecting highlight strip
  * - Active handle auto-switching (tap near a handle or tap between to focus)

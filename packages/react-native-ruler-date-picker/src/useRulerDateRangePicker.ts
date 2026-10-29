@@ -29,6 +29,11 @@ import {
 } from './utils';
 import { useHaptics } from './useHaptics';
 
+/**
+ * Return interface for the `useRulerDateRangePicker` headless hook.
+ *
+ * @experimental
+ */
 export interface UseRulerDateRangePickerReturn {
   translateX: SharedValue<number>;
   panGesture: PanGesture;
@@ -62,6 +67,9 @@ export interface UseRulerDateRangePickerReturn {
 /**
  * Headless Hook for managing Date Range selection with dual pins,
  * range highlight calculations, and Reanimated 3 physics.
+ *
+ * @experimental This hook is experimental and subject to breaking changes
+ * in future minor versions.
  */
 export function useRulerDateRangePicker(
   props: RulerDateRangePickerProps = {}
