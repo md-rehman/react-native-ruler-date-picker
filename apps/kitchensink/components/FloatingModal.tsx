@@ -4,12 +4,13 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Pressable,
   Animated,
   PanResponder,
   useWindowDimensions,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Svg, { Polyline } from 'react-native-svg';
+import Svg, { Polyline, Path } from 'react-native-svg';
 import { GlassView } from './GlassView';
 import { useTheme } from '../context/ThemeContext';
 import { RADII, SPACING } from '../theme/tokens';
@@ -25,6 +26,8 @@ interface FloatingModalProps {
   defaultPosition?: { x: number; y: number };
   defaultDocked?: DockState;
   visible?: boolean;
+  fullScreen?: boolean;
+  onClose?: () => void;
 }
 
 export const FloatingModal: React.FC<FloatingModalProps> = ({
@@ -36,8 +39,10 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
   defaultPosition = { x: 20, y: 80 },
   defaultDocked = 'none',
   visible = true,
+  fullScreen = false,
+  onClose,
 }) => {
-  const { colors } = useTheme();
+  const { colors, theme } = useTheme();
   const { width: windowWidth } = useWindowDimensions();
   const modalWidth = Math.min(340, windowWidth - 40);
   const snapThreshold = 60;
@@ -57,6 +62,7 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
   }, [pan]);
 
   useEffect(() => {
+    if (fullScreen) return;
     AsyncStorage.getItem(`modal-${id}`).then((stored) => {
       if (stored) {
         try {
@@ -70,7 +76,7 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
         } catch (e) {}
       }
     });
-  }, [id, pan]);
+  }, [id, pan, fullScreen]);
 
   const saveState = (pos: { x: number; y: number }, dock: DockState, collapsed: boolean) => {
     AsyncStorage.setItem(
@@ -102,7 +108,7 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
           setSnapPreview('none');
         }
       },
-      onPanResponderRelease: (_, gestureState) => {
+      onPanResponderRelease: () => {
         pan.flattenOffset();
 
         const rawX = currentPos.current.x;
@@ -145,6 +151,55 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
 
   if (!visible) return null;
 
+  // ── Full Screen Mode with Tap Outside to Dismiss ──────────────────────────
+  if (fullScreen) {
+    return (
+      <View style={styles.fullScreenOverlay} pointerEvents="box-none">
+        {/* Backdrop for tapping outside */}
+        <Pressable
+          style={[
+            styles.backdrop,
+            { backgroundColor: theme === 'dark' ? 'rgba(0, 0, 0, 0.55)' : 'rgba(0, 0, 0, 0.3)' },
+          ]}
+          onPress={onClose}
+        />
+
+        {/* Centered Modal Card */}
+        <View style={styles.fullScreenModalCard} pointerEvents="auto">
+          <GlassView style={styles.fullScreenGlass} borderRadius={RADII.xl}>
+            <View style={styles.header}>
+              <View style={styles.titleWrapper}>
+                {icon && <View style={styles.iconContainer}>{icon}</View>}
+                <Text style={[styles.title, { color: colors.textPrimary }]} numberOfLines={1}>
+                  {title}
+                </Text>
+              </View>
+
+              {headerRight && <View style={styles.headerRightContainer}>{headerRight}</View>}
+
+              {onClose && (
+                <TouchableOpacity onPress={onClose} style={styles.closeBtn} hitSlop={10}>
+                  <Svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <Path
+                      d="M18 6L6 18M6 6l12 12"
+                      stroke={colors.textSecondary}
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </Svg>
+                </TouchableOpacity>
+              )}
+            </View>
+
+            <View style={styles.fullScreenContent}>{children}</View>
+          </GlassView>
+        </View>
+      </View>
+    );
+  }
+
+  // ── Floating Docked Tab ───────────────────────────────────────────────────
   if (docked !== 'none') {
     const isLeft = docked === 'left';
     return (
@@ -183,6 +238,7 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
     );
   }
 
+  // ── Standard Draggable Floating Modal ─────────────────────────────────────
   return (
     <>
       {snapPreview !== 'none' && (
@@ -216,6 +272,19 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
               </Text>
             </View>
             {headerRight && <View style={styles.headerRightContainer}>{headerRight}</View>}
+            {onClose && (
+              <TouchableOpacity onPress={onClose} style={styles.closeBtn} hitSlop={10}>
+                <Svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <Path
+                    d="M18 6L6 18M6 6l12 12"
+                    stroke={colors.textSecondary}
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </Svg>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity onPress={toggleCollapse} style={styles.chevronBtn} hitSlop={10}>
               <Svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                 <Polyline
@@ -271,8 +340,8 @@ const styles = StyleSheet.create({
     marginRight: SPACING.xs + 2,
   },
   title: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: '700',
     letterSpacing: -0.2,
   },
   headerRightContainer: {
@@ -280,6 +349,13 @@ const styles = StyleSheet.create({
   },
   chevronBtn: {
     padding: 4,
+    marginLeft: 2,
+  },
+  closeBtn: {
+    padding: 4,
+    marginLeft: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   content: {
     maxHeight: 420,
@@ -311,5 +387,42 @@ const styles = StyleSheet.create({
     borderRadius: RADII.lg,
     zIndex: 40,
     opacity: 0.8,
+  },
+
+  // Full Screen Mode Styles
+  fullScreenOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 150,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: SPACING.md,
+    paddingTop: SPACING.xl * 1.5,
+    paddingBottom: SPACING.lg,
+  },
+  backdrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  fullScreenModalCard: {
+    width: '100%',
+    maxWidth: 480,
+    height: '84%',
+    borderRadius: RADII.xl,
+    overflow: 'hidden',
+  },
+  fullScreenGlass: {
+    flex: 1,
+    paddingBottom: SPACING.xs,
+  },
+  fullScreenContent: {
+    flex: 1,
+    overflow: 'hidden',
   },
 });

@@ -99,12 +99,12 @@ export const AppShell: React.FC = () => {
         updateProp={updateProp}
       />
 
-      {/* Examples Modal (Floating, default open state, GlassControls in header) */}
+      {/* Examples Modal (Full screen, GlassControls in header, tap outside to close) */}
       <FloatingModal
         id="examples"
-        title="Presets"
-        defaultDocked="none"
-        defaultPosition={{ x: 20, y: 70 }}
+        title="Examples"
+        fullScreen
+        onClose={() => setShowExamples(false)}
         headerRight={<GlassControls />}
         visible={showExamples}
       >

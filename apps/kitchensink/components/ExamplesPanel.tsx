@@ -70,6 +70,7 @@ export const ExamplesPanel: React.FC<ExamplesPanelProps> = ({
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     paddingHorizontal: SPACING.md,
     paddingTop: SPACING.xs,
   },
