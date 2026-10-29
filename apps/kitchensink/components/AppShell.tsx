@@ -3,8 +3,7 @@ import { StyleSheet, View, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '../context/ThemeContext';
 import { usePickerProps } from '../hooks/usePickerProps';
-import { PROP_DEFINITIONS, Category } from '../data/propDefinitions';
-import { GridBackground } from './GridBackground';
+import { PROP_DEFINITIONS, Category, getPropGroupsForComponent } from '../data/propDefinitions';
 import { ComponentPreview } from './ComponentPreview';
 import { TopBar } from './TopBar';
 import { FloatingModal } from './FloatingModal';
@@ -18,9 +17,23 @@ import {
   FeaturesIcon,
 } from './ModalToggle';
 
+function getPropValue(props: Record<string, any>, name: string) {
+  if (name.includes('.')) {
+    const [parent, child] = name.split('.');
+    return props[parent]?.[child];
+  }
+  return props[name];
+}
+
 export const AppShell: React.FC = () => {
   const { colors } = useTheme();
-  const { props: pickerProps, activeExampleId, loadPreset, updateProp } = usePickerProps();
+  const {
+    componentType,
+    props: pickerProps,
+    activeExampleId,
+    loadPreset,
+    updateProp,
+  } = usePickerProps();
 
   const [showExamples, setShowExamples] = useState(false);
   const [visibleModals, setVisibleModals] = useState<Record<Category, boolean>>({
@@ -56,14 +69,20 @@ export const AppShell: React.FC = () => {
   };
 
   const renderCategoryContent = (category: Category) => {
-    const definitions = PROP_DEFINITIONS.filter((p) => p.category === category);
+    const propGroups = getPropGroupsForComponent(componentType);
+    const allowedPropNames = new Set(propGroups.flatMap((g) => g.propNames));
+
+    const definitions = PROP_DEFINITIONS.filter(
+      (p) => p.category === category && allowedPropNames.has(p.name)
+    );
+
     return (
       <ScrollView contentContainerStyle={styles.propScrollContent}>
         {definitions.map((def) => (
           <PropControl
             key={def.name}
             definition={def}
-            value={def.name.includes('.') ? pickerProps[def.name.split('.')[0]]?.[def.name.split('.')[1]] : pickerProps[def.name]}
+            value={getPropValue(pickerProps, def.name)}
             onChange={(val) => updateProp(def.name, val)}
           />
         ))}
@@ -74,7 +93,11 @@ export const AppShell: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* Main centered component preview */}
-      <ComponentPreview pickerProps={pickerProps} />
+      <ComponentPreview
+        pickerProps={pickerProps}
+        componentType={componentType}
+        updateProp={updateProp}
+      />
 
       {/* Examples Modal (Floating, default open state, GlassControls in header) */}
       <FloatingModal
