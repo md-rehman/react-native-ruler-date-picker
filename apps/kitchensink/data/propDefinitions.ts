@@ -1,4 +1,4 @@
-export type PropType = 'number' | 'color' | 'boolean' | 'enum' | 'readonly';
+export type PropType = 'number' | 'color' | 'boolean' | 'enum' | 'readonly' | 'offset' | 'text' | 'date' | 'tick-rules';
 export type Category = 'Selection' | 'Dimensions' | 'Colors' | 'Features';
 
 export interface PropDefinition {
