@@ -1,4 +1,16 @@
-export type PropType = 'number' | 'color' | 'boolean' | 'enum' | 'readonly' | 'offset' | 'text' | 'date' | 'tick-rules';
+import { ComponentType } from './examples';
+
+export type PropType = 
+  | 'number' 
+  | 'color' 
+  | 'boolean' 
+  | 'enum' 
+  | 'readonly'
+  | 'text'
+  | 'date'
+  | 'offset'
+  | 'tick-rules';
+
 export type Category = 'Selection' | 'Dimensions' | 'Colors' | 'Features';
 
 export interface PropDefinition {
@@ -12,47 +24,140 @@ export interface PropDefinition {
   max?: number;
   step?: number;
   description?: string;
+  isExperimental?: boolean;
+}
+
+export interface PropGroup {
+  id: string;
+  label: string;
+  propNames: string[];
 }
 
 export const PROP_DEFINITIONS: PropDefinition[] = [
-  // Selection
+  // ── Single Date Selection ──
+  {
+    name: 'value',
+    type: 'text',
+    label: 'value',
+    category: 'Selection',
+    defaultValue: 'Today',
+    description: 'Currently selected date (controlled). Accepts Date or YYYY-MM-DD string.',
+  },
+  {
+    name: 'minDate',
+    type: 'text',
+    label: 'minDate',
+    category: 'Selection',
+    defaultValue: 'Today - 365d',
+    description: 'Minimum selectable date boundary (defaults to 1 year ago).',
+  },
+  {
+    name: 'maxDate',
+    type: 'text',
+    label: 'maxDate',
+    category: 'Selection',
+    defaultValue: 'Today + 365d',
+    description: 'Maximum selectable date boundary (defaults to 1 year ahead).',
+  },
+  {
+    name: 'locale',
+    type: 'text',
+    label: 'locale',
+    category: 'Selection',
+    defaultValue: 'default',
+    description: 'BCP 47 locale string for date formatting (e.g. en-US, de-DE, ja-JP).',
+  },
   {
     name: 'ticks',
-    type: 'enum',
-    label: 'Tick Preset',
+    type: 'tick-rules',
+    label: 'ticks',
     category: 'Selection',
     defaultValue: 'calendar',
-    options: ['calendar', 'metric', 'minimal'],
-    description: 'Graduation preset rules.',
+    description: 'Array of graduation rules or preset name (calendar, metric, minimal).',
   },
 
-  // Dimensions
+  // ── Range Selection (RulerDateRangePicker) ──
+  {
+    name: 'value.start',
+    type: 'text',
+    label: 'value.start',
+    category: 'Selection',
+    defaultValue: 'Today',
+    description: 'Start boundary of the selected date interval (controlled).',
+    isExperimental: true,
+  },
+  {
+    name: 'value.end',
+    type: 'text',
+    label: 'value.end',
+    category: 'Selection',
+    defaultValue: 'Today + 7d',
+    description: 'End boundary of the selected date interval (controlled).',
+    isExperimental: true,
+  },
+  {
+    name: 'minSpanDays',
+    type: 'number',
+    label: 'minSpanDays',
+    category: 'Selection',
+    defaultValue: 1,
+    min: 1,
+    max: 30,
+    step: 1,
+    description: 'Minimum allowed interval span in days between start and end handles.',
+    isExperimental: true,
+  },
+  {
+    name: 'maxSpanDays',
+    type: 'number',
+    label: 'maxSpanDays',
+    category: 'Selection',
+    defaultValue: 14,
+    min: 1,
+    max: 90,
+    step: 1,
+    description: 'Maximum allowed interval span in days between start and end handles.',
+    isExperimental: true,
+  },
+
+  // ── Dimensions ──
+  {
+    name: 'width',
+    type: 'number',
+    label: 'width',
+    category: 'Dimensions',
+    defaultValue: 380,
+    min: 200,
+    max: 1200,
+    step: 10,
+    description: 'Viewport width of the ruler in pixels.',
+  },
   {
     name: 'tickSpacing',
     type: 'number',
-    label: 'Tick Spacing',
+    label: 'tickSpacing',
     category: 'Dimensions',
     defaultValue: 24,
     min: 10,
     max: 100,
     step: 1,
-    description: 'Distance between tick centers in pixels.',
+    description: 'Horizontal gap between tick centers in pixels.',
   },
   {
     name: 'tickWidth',
     type: 'number',
-    label: 'Tick Width',
+    label: 'tickWidth',
     category: 'Dimensions',
     defaultValue: 3,
     min: 1,
     max: 10,
     step: 1,
-    description: 'Base thickness of tick bars in pixels.',
+    description: 'Base thickness/width of tick bars in pixels.',
   },
   {
     name: 'rulerHeight',
     type: 'number',
-    label: 'Ruler Height',
+    label: 'rulerHeight',
     category: 'Dimensions',
     defaultValue: 60,
     min: 30,
@@ -63,7 +168,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
   {
     name: 'indicator.width',
     type: 'number',
-    label: 'Indicator Width',
+    label: 'indicator.width',
     category: 'Dimensions',
     defaultValue: 2,
     min: 1,
@@ -74,7 +179,7 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
   {
     name: 'indicator.height',
     type: 'number',
-    label: 'Indicator Height',
+    label: 'indicator.height',
     category: 'Dimensions',
     defaultValue: 40,
     min: 10,
@@ -85,95 +190,335 @@ export const PROP_DEFINITIONS: PropDefinition[] = [
   {
     name: 'indicator.offset',
     type: 'offset',
-    label: 'Indicator Offset',
+    label: 'indicator.offset',
     category: 'Dimensions',
     defaultValue: [0, 0],
-    description: 'Offset [x, y] in pixels of the center needle pointer. Default [0, 0] anchors to the bottom.',
+    description: 'Offset [x, y] in pixels of center needle pointer.',
   },
 
-  // Colors (theme.* mapping)
+  // ── Colors (theme.* mapping) ──
   {
     name: 'theme.background',
     type: 'color',
-    label: 'Background',
+    label: 'background',
     category: 'Colors',
+    defaultValue: 'transparent',
     description: 'Component background color token.',
   },
   {
     name: 'theme.indicatorColor',
     type: 'color',
-    label: 'Indicator Color',
+    label: 'indicatorColor',
     category: 'Colors',
-    description: 'Center indicator needle pointer color.',
+    description: 'Center indicator needle line/stroke color.',
   },
   {
     name: 'theme.accentColor',
     type: 'color',
-    label: 'Accent Color',
+    label: 'accentColor',
     category: 'Colors',
-    description: 'Color for today dot badge and accents.',
+    description: 'Active highlight, today marker, and interactive accent color.',
   },
   {
     name: 'theme.labelColor',
     type: 'color',
-    label: 'Label Color',
+    label: 'labelColor',
     category: 'Colors',
-    description: 'Color of date and year label text.',
+    description: 'Primary text label and header color.',
   },
   {
     name: 'theme.defaultTickColor',
     type: 'color',
-    label: 'Default Tick Color',
+    label: 'defaultTickColor',
     category: 'Colors',
-    description: 'Base color for unstyled tick bars.',
+    description: 'Fallback color for graduation marks that do not specify a color.',
   },
   {
     name: 'theme.rangeHighlightColor',
     type: 'color',
-    label: 'Range Highlight',
+    label: 'rangeHighlightColor',
     category: 'Colors',
-    description: 'Connecting bar highlight color for range mode.',
+    description: 'Background fill color of the connected interval strip between range handles.',
+    isExperimental: true,
   },
 
-  // Features
-  {
-    name: 'header.showResetToToday',
-    type: 'boolean',
-    label: 'Show Reset Button',
-    category: 'Features',
-    defaultValue: false,
-    description: 'Show "Today" reset pill button in header when scrolled away.',
-  },
-  {
-    name: 'header.resetLabel',
-    type: 'readonly',
-    label: 'Reset Label',
-    category: 'Features',
-    defaultValue: 'Today',
-    description: 'Custom text label for the reset button.',
-  },
+  // ── Features & Toggles ──
   {
     name: 'haptics',
     type: 'boolean',
-    label: 'Enable Haptics',
+    label: 'haptics',
     category: 'Features',
     defaultValue: true,
-    description: 'Dual-speed tactile haptic vibration engine.',
+    description: 'Enable tactile feedback ticks on scroll (iOS/Android).',
+  },
+  {
+    name: 'highlight',
+    type: 'boolean',
+    label: 'highlight',
+    category: 'Features',
+    defaultValue: true,
+    description: 'Render connection fill strip between range handles (RulerDateRangePicker).',
+    isExperimental: true,
   },
   {
     name: 'lensEffect',
     type: 'boolean',
-    label: 'Fisheye Lens Effect',
+    label: 'lensEffect',
     category: 'Features',
     defaultValue: false,
-    description: 'Non-linear fisheye lens distortion magnifying center spacing.',
+    description: 'Enable non-linear fisheye optical magnification distortion.',
+  },
+  {
+    name: 'header.showResetToToday',
+    type: 'boolean',
+    label: 'showResetToToday',
+    category: 'Features',
+    defaultValue: true,
+    description: 'Display quick "Today" return button in the header.',
+  },
+  {
+    name: 'header.resetLabel',
+    type: 'text',
+    label: 'resetLabel',
+    category: 'Features',
+    defaultValue: 'Today',
+    description: 'Custom label text for the reset button.',
   },
   {
     name: 'accessibilityLabel',
-    type: 'readonly',
-    label: 'Accessibility Label',
+    type: 'text',
+    label: 'accessibilityLabel',
     category: 'Features',
-    defaultValue: 'Date picker',
-    description: 'Accessibility label for screen readers (VoiceOver & TalkBack).',
+    defaultValue: 'Date ruler picker',
+    description: 'Screen reader accessibility label for assistive technologies.',
   },
 ];
+
+export function getPropGroupsForComponent(componentType: ComponentType): PropGroup[] {
+  switch (componentType) {
+    case 'RulerDateRangePicker':
+      return [
+        {
+          id: 'selection',
+          label: 'Range Selection',
+          propNames: ['value.start', 'value.end', 'minSpanDays', 'maxSpanDays', 'minDate', 'maxDate', 'locale'],
+        },
+        {
+          id: 'dimensions',
+          label: 'Dimensions & Sizing',
+          propNames: [
+            'width',
+            'rulerHeight',
+            'tickSpacing',
+            'tickWidth',
+            'indicator.width',
+            'indicator.height',
+            'indicator.offset',
+          ],
+        },
+        {
+          id: 'rules',
+          label: 'Graduation Rules',
+          propNames: ['ticks'],
+        },
+        {
+          id: 'colors',
+          label: 'Colors & Highlight Theme',
+          propNames: [
+            'theme.background',
+            'theme.indicatorColor',
+            'theme.accentColor',
+            'theme.labelColor',
+            'theme.defaultTickColor',
+            'theme.rangeHighlightColor',
+          ],
+        },
+        {
+          id: 'features',
+          label: 'Features & Toggles',
+          propNames: [
+            'haptics',
+            'highlight',
+            'header.showResetToToday',
+            'header.resetLabel',
+            'accessibilityLabel',
+          ],
+        },
+      ];
+
+    case 'useRulerDateRangePicker':
+      return [
+        {
+          id: 'selection',
+          label: 'Hook Parameters',
+          propNames: ['value.start', 'value.end', 'minSpanDays', 'maxSpanDays'],
+        },
+        {
+          id: 'dimensions',
+          label: 'Dimensions & Spacing',
+          propNames: ['tickSpacing', 'rulerHeight'],
+        },
+        {
+          id: 'colors',
+          label: 'Theme & Highlight',
+          propNames: [
+            'theme.background',
+            'theme.indicatorColor',
+            'theme.accentColor',
+            'theme.labelColor',
+            'theme.rangeHighlightColor',
+          ],
+        },
+      ];
+
+    case 'RulerCompound':
+      return [
+        {
+          id: 'selection',
+          label: 'Root State',
+          propNames: ['value', 'minDate', 'maxDate'],
+        },
+        {
+          id: 'dimensions',
+          label: 'Dimensions & Layout',
+          propNames: [
+            'tickSpacing',
+            'tickWidth',
+            'rulerHeight',
+            'indicator.width',
+            'indicator.height',
+          ],
+        },
+        {
+          id: 'colors',
+          label: 'Theme & Accent',
+          propNames: [
+            'theme.background',
+            'theme.indicatorColor',
+            'theme.accentColor',
+            'theme.labelColor',
+            'theme.defaultTickColor',
+          ],
+        },
+        {
+          id: 'features',
+          label: 'Features & Subcomponents',
+          propNames: [
+            'haptics',
+            'header.showResetToToday',
+            'header.resetLabel',
+          ],
+        },
+      ];
+
+    case 'RulerRangeCompound':
+      return [
+        {
+          id: 'selection',
+          label: 'Range Root State',
+          propNames: ['value.start', 'value.end', 'minSpanDays', 'maxSpanDays'],
+        },
+        {
+          id: 'dimensions',
+          label: 'Dimensions & Layout',
+          propNames: ['tickSpacing', 'rulerHeight'],
+        },
+        {
+          id: 'colors',
+          label: 'Theme & Range Styling',
+          propNames: [
+            'theme.background',
+            'theme.indicatorColor',
+            'theme.accentColor',
+            'theme.labelColor',
+            'theme.rangeHighlightColor',
+            'theme.defaultTickColor',
+          ],
+        },
+        {
+          id: 'features',
+          label: 'Features & Subcomponents',
+          propNames: [
+            'haptics',
+            'header.showResetToToday',
+            'header.resetLabel',
+          ],
+        },
+      ];
+
+    case 'useRulerDatePicker':
+      return [
+        {
+          id: 'selection',
+          label: 'Hook Parameters',
+          propNames: ['value', 'minDate', 'maxDate'],
+        },
+        {
+          id: 'dimensions',
+          label: 'Dimensions & Spacing',
+          propNames: ['tickSpacing', 'rulerHeight'],
+        },
+        {
+          id: 'colors',
+          label: 'Theme & Accent',
+          propNames: [
+            'theme.background',
+            'theme.indicatorColor',
+            'theme.accentColor',
+            'theme.labelColor',
+          ],
+        },
+      ];
+
+    case 'RulerDatePicker':
+    default:
+      return [
+        {
+          id: 'selection',
+          label: 'Date & Selection',
+          propNames: ['value', 'minDate', 'maxDate', 'locale'],
+        },
+        {
+          id: 'dimensions',
+          label: 'Dimensions & Sizing',
+          propNames: [
+            'width',
+            'rulerHeight',
+            'tickSpacing',
+            'tickWidth',
+            'indicator.width',
+            'indicator.height',
+            'indicator.offset',
+          ],
+        },
+        {
+          id: 'rules',
+          label: 'Graduation Rules',
+          propNames: ['ticks'],
+        },
+        {
+          id: 'colors',
+          label: 'Colors & Theme',
+          propNames: [
+            'theme.background',
+            'theme.indicatorColor',
+            'theme.accentColor',
+            'theme.labelColor',
+            'theme.defaultTickColor',
+            'theme.rangeHighlightColor',
+          ],
+        },
+        {
+          id: 'features',
+          label: 'Features & Toggles',
+          propNames: [
+            'haptics',
+            'lensEffect',
+            'header.showResetToToday',
+            'header.resetLabel',
+            'accessibilityLabel',
+          ],
+        },
+      ];
+  }
+}

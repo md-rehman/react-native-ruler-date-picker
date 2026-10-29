@@ -1,12 +1,25 @@
 import { useState, useCallback } from 'react';
-import { EXAMPLES, ExamplePreset } from '../data/examples';
+import { EXAMPLES, ExamplePreset, ComponentType } from '../data/examples';
+
+const DEFAULT_TODAY_STR = new Date().toISOString().split('T')[0];
 
 export function usePickerProps() {
-  const [props, setProps] = useState<Record<string, any>>(EXAMPLES[0].props);
+  const [componentType, setComponentType] = useState<ComponentType>(
+    EXAMPLES[0].componentType || 'RulerDatePicker'
+  );
+  const [props, setProps] = useState<Record<string, any>>({
+    value: DEFAULT_TODAY_STR,
+    ...EXAMPLES[0].props,
+  });
   const [activeExampleId, setActiveExampleId] = useState<string>(EXAMPLES[0].id);
 
   const loadPreset = useCallback((preset: ExamplePreset) => {
-    setProps(preset.props);
+    setComponentType(preset.componentType);
+    const updatedProps = {
+      ...(preset.props.value !== undefined ? {} : { value: DEFAULT_TODAY_STR }),
+      ...preset.props,
+    };
+    setProps(updatedProps);
     setActiveExampleId(preset.id);
   }, []);
 
@@ -29,10 +42,14 @@ export function usePickerProps() {
         [name]: value,
       };
     });
-    setActiveExampleId('custom');
+
+    if (name !== 'value' && name !== 'value.start' && name !== 'value.end') {
+      setActiveExampleId('custom');
+    }
   }, []);
 
   return {
+    componentType,
     props,
     activeExampleId,
     loadPreset,

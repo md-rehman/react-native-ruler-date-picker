@@ -1,200 +1,341 @@
+export type ComponentType =
+  | 'RulerDatePicker'
+  | 'RulerDateRangePicker'
+  | 'RulerCompound'
+  | 'RulerRangeCompound'
+  | 'useRulerDatePicker'
+  | 'useRulerDateRangePicker';
+
 export interface ExamplePreset {
   id: string;
   name: string;
   description: string;
+  componentType: ComponentType;
+  badge?: string;
+  isExperimental?: boolean;
   props: Record<string, any>;
 }
 
-export const EXAMPLES: ExamplePreset[] = [
+export interface ExampleSection {
+  id: string;
+  title: string;
+  componentType: ComponentType;
+  badge?: string;
+  isExperimental?: boolean;
+  items: ExamplePreset[];
+}
+
+const getTodayStr = () => new Date().toISOString().split('T')[0];
+const getFutureDateStr = (days: number) =>
+  new Date(Date.now() + days * 86400000).toISOString().split('T')[0];
+
+export const EXAMPLE_SECTIONS: ExampleSection[] = [
   {
-    id: 'default',
-    name: 'Midnight Slate',
-    description: 'Balanced slate navy canvas with sky blue accents',
-    props: {
-      ticks: 'calendar',
-      tickSpacing: 24,
-      rulerHeight: 60,
-      indicator: { width: 2, height: 40 },
-      header: true,
-      haptics: true,
-      theme: {
-        background: '#0F172A',
-        indicatorColor: '#38BDF8',
-        accentColor: '#38BDF8',
-        labelColor: '#F8FAFC',
-        defaultTickColor: '#334155',
-      },
-    },
-  },
-  {
-    id: 'neon-cyber',
-    name: 'Cyber Neon',
-    description: 'Deep obsidian with electric emerald highlights',
-    props: {
-      ticks: 'calendar',
-      tickSpacing: 28,
-      rulerHeight: 65,
-      indicator: { width: 3, height: 45 },
-      header: { showResetToToday: true },
-      haptics: true,
-      theme: {
-        background: '#09090B',
-        indicatorColor: '#4ADE80',
-        accentColor: '#22C55E',
-        labelColor: '#F4F4F5',
-        defaultTickColor: '#27272A',
-      },
-    },
-  },
-  {
-    id: 'sunset-amber',
-    name: 'Sunset Amber',
-    description: 'Rich warm dark grey with fiery amber accents',
-    props: {
-      ticks: 'calendar',
-      tickSpacing: 26,
-      rulerHeight: 60,
-      indicator: { width: 2, height: 40 },
-      header: true,
-      haptics: true,
-      theme: {
-        background: '#18181B',
-        indicatorColor: '#F59E0B',
-        accentColor: '#F59E0B',
-        labelColor: '#FAFAFA',
-        defaultTickColor: '#3F3F46',
-      },
-    },
-  },
-  {
-    id: 'nordic-frost',
-    name: 'Nordic Frost',
-    description: 'Crisp arctic light canvas with refined royal blue',
-    props: {
-      ticks: 'calendar',
-      tickSpacing: 22,
-      rulerHeight: 60,
-      indicator: { width: 2, height: 40 },
-      header: { showResetToToday: true },
-      haptics: true,
-      theme: {
-        background: '#F8FAFC',
-        indicatorColor: '#2563EB',
-        accentColor: '#2563EB',
-        labelColor: '#0F172A',
-        defaultTickColor: '#CBD5E1',
-      },
-    },
-  },
-  {
-    id: 'indigo-luxe',
-    name: 'Indigo Luxe',
-    description: 'Sleek executive dark grey with glowing indigo accents',
-    props: {
-      ticks: 'calendar',
-      tickSpacing: 20,
-      rulerHeight: 55,
-      indicator: { width: 2, height: 35 },
-      header: { showResetToToday: true },
-      haptics: true,
-      theme: {
-        background: '#111827',
-        indicatorColor: '#818CF8',
-        accentColor: '#6366F1',
-        labelColor: '#F9FAFB',
-        defaultTickColor: '#374151',
-      },
-    },
-  },
-  {
-    id: 'monochrome-pro',
-    name: 'Monochrome Pro',
-    description: 'Ultra-clean high-contrast pitch black & white',
-    props: {
-      ticks: 'calendar',
-      tickSpacing: 24,
-      rulerHeight: 60,
-      indicator: { width: 2, height: 40 },
-      header: true,
-      haptics: true,
-      theme: {
-        background: '#000000',
-        indicatorColor: '#FFFFFF',
-        accentColor: '#FFFFFF',
-        labelColor: '#FFFFFF',
-        defaultTickColor: '#27272A',
-      },
-    },
-  },
-  {
-    id: 'metric-timeline',
-    name: 'Metric Graduation (3 Tiers)',
-    description: 'Precision metric graduation ruler (10-day, 5-day, and daily ticks)',
-    props: {
-      ticks: 'metric',
-      tickSpacing: 22,
-      rulerHeight: 60,
-      indicator: { width: 2, height: 40 },
-      header: { showResetToToday: true },
-      haptics: true,
-      theme: {
-        background: '#0F172A',
-        indicatorColor: '#38BDF8',
-        accentColor: '#38BDF8',
-        labelColor: '#94A3B8',
-        defaultTickColor: '#334155',
-      },
-    },
-  },
-  {
-    id: 'calendar-custom-rules',
-    name: 'Custom Tick Rules (4 Tiers)',
-    description: 'Bespoke rule array: 1st of month tall, weekends amber, weekly blue, daily short',
-    props: {
-      ticks: [
-        {
-          condition: 'monthly',
-          height: 32,
-          width: 4,
-          color: '#38BDF8',
-          label: {
-            format: (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-            color: '#38BDF8',
-            fontWeight: 'bold',
+    id: 'ruler-date-picker',
+    title: 'RulerDatePicker',
+    componentType: 'RulerDatePicker',
+    badge: '#single',
+    items: [
+      {
+        id: 'sunset-amber',
+        name: 'Sunset Amber',
+        description: 'Signature warm design with glowing amber accents',
+        componentType: 'RulerDatePicker',
+        badge: '#signature',
+        props: {
+          ticks: 'calendar',
+          tickSpacing: 26,
+          rulerHeight: 60,
+          indicator: { width: 2, height: 40 },
+          header: true,
+          haptics: true,
+          theme: {
+            background: 'transparent',
+            indicatorColor: '#F59E0B',
+            accentColor: '#F59E0B',
           },
         },
-        {
-          condition: 'weekly',
-          height: 24,
-          width: 3,
-          color: '#818CF8',
-          label: true,
-        },
-        {
-          condition: { dayOfWeek: [0, 6] },
-          height: 18,
-          width: 2.5,
-          color: '#F59E0B',
-        },
-        {
-          condition: 'daily',
-          height: 12,
-          width: 2,
-          color: '#334155',
-        },
-      ],
-      tickSpacing: 26,
-      rulerHeight: 65,
-      indicator: { width: 2, height: 40 },
-      header: { showResetToToday: true },
-      haptics: true,
-      theme: {
-        background: '#090D16',
-        indicatorColor: '#38BDF8',
-        accentColor: '#38BDF8',
-        labelColor: '#CBD5E1',
-        defaultTickColor: '#334155',
       },
-    },
+      {
+        id: 'calendar-custom-rules',
+        name: 'Custom Tick Rules (4 Tiers)',
+        description: 'Bespoke multi-tier rules with weekend amber highlights and custom labels',
+        componentType: 'RulerDatePicker',
+        badge: '#rules',
+        props: {
+          ticks: [
+            {
+              condition: 'monthly',
+              height: 32,
+              width: 4,
+              color: '#38BDF8',
+              label: {
+                color: '#38BDF8',
+                fontWeight: 'bold',
+              },
+            },
+            {
+              condition: 'weekly',
+              height: 24,
+              width: 3,
+              color: '#818CF8',
+              label: true,
+            },
+            {
+              condition: { dayOfWeek: [0, 6] },
+              height: 18,
+              width: 2.5,
+              color: '#F59E0B',
+            },
+            {
+              condition: 'daily',
+              height: 12,
+              width: 2,
+            },
+          ],
+          tickSpacing: 26,
+          rulerHeight: 65,
+          indicator: { width: 2, height: 40 },
+          header: { showResetToToday: true },
+          haptics: true,
+          theme: {
+            background: 'transparent',
+            indicatorColor: '#38BDF8',
+            accentColor: '#38BDF8',
+          },
+        },
+      },
+      {
+        id: 'lens-distortion',
+        name: 'Lens Distortion Effect',
+        description: 'Non-linear fisheye optical magnification centered on needle pointer',
+        componentType: 'RulerDatePicker',
+        badge: '⚡ Fisheye',
+        props: {
+          ticks: 'calendar',
+          tickSpacing: 22,
+          rulerHeight: 64,
+          lensEffect: {
+            magnification: 1.8,
+            radius: 3,
+            scaleTicks: false,
+          },
+          indicator: { width: 2, height: 42 },
+          header: { showResetToToday: true },
+          haptics: true,
+          theme: {
+            background: 'transparent',
+            indicatorColor: '#38BDF8',
+            accentColor: '#38BDF8',
+          },
+        },
+      },
+      {
+        id: 'compact-minimal',
+        name: 'Compact Minimal (Card / Sheet)',
+        description: 'Low-profile 46px compact ruler for cards and bottom sheets',
+        componentType: 'RulerDatePicker',
+        badge: '#minimal',
+        props: {
+          ticks: 'calendar',
+          tickSpacing: 18,
+          rulerHeight: 46,
+          indicator: { width: 2, height: 28, offset: [0, 0] },
+          header: false,
+          haptics: true,
+          theme: {
+            background: 'transparent',
+            indicatorColor: '#A78BFA',
+            accentColor: '#A78BFA',
+          },
+        },
+      },
+    ],
+  },
+  {
+    id: 'ruler-date-range-picker',
+    title: 'RulerDateRangePicker',
+    componentType: 'RulerDateRangePicker',
+    isExperimental: true,
+    items: [
+      {
+        id: 'range-standard',
+        name: 'Standard Date Range',
+        description: 'Dual handles with connecting highlight strip and 2 to 14-day span limits',
+        componentType: 'RulerDateRangePicker',
+        badge: '#range',
+        isExperimental: true,
+        props: {
+          value: {
+            start: getTodayStr(),
+            end: getFutureDateStr(7),
+          },
+          minSpanDays: 2,
+          maxSpanDays: 14,
+          tickSpacing: 26,
+          rulerHeight: 64,
+          haptics: true,
+          highlight: true,
+          theme: {
+            background: 'transparent',
+            indicatorColor: '#A78BFA',
+            accentColor: '#A78BFA',
+            rangeHighlightColor: 'rgba(167, 139, 250, 0.22)',
+          },
+        },
+      },
+      {
+        id: 'range-vacation',
+        name: 'Vacation Booking (Amber)',
+        description: 'Hospitality-style booking interval with min 3-night requirement and warm theme',
+        componentType: 'RulerDateRangePicker',
+        badge: '#booking',
+        isExperimental: true,
+        props: {
+          value: {
+            start: getTodayStr(),
+            end: getFutureDateStr(5),
+          },
+          minSpanDays: 3,
+          maxSpanDays: 30,
+          tickSpacing: 25,
+          rulerHeight: 66,
+          haptics: true,
+          highlight: true,
+          theme: {
+            background: 'transparent',
+            indicatorColor: '#F59E0B',
+            accentColor: '#F59E0B',
+            rangeHighlightColor: 'rgba(245, 158, 11, 0.22)',
+          },
+        },
+      },
+      {
+        id: 'range-metric',
+        name: 'Metric Range Graduation',
+        description: 'Range picker powered by 3-tier metric graduation scale',
+        componentType: 'RulerDateRangePicker',
+        badge: '#metric',
+        isExperimental: true,
+        props: {
+          value: {
+            start: getTodayStr(),
+            end: getFutureDateStr(10),
+          },
+          ticks: 'metric',
+          minSpanDays: 1,
+          maxSpanDays: 20,
+          tickSpacing: 22,
+          rulerHeight: 60,
+          haptics: true,
+          highlight: true,
+          theme: {
+            background: 'transparent',
+            indicatorColor: '#10B981',
+            accentColor: '#10B981',
+            rangeHighlightColor: 'rgba(16, 185, 129, 0.22)',
+          },
+        },
+      },
+    ],
+  },
+  {
+    id: 'compound-components',
+    title: 'Compound Anatomy',
+    componentType: 'RulerCompound',
+    badge: '#compound',
+    items: [
+      {
+        id: 'compound-single',
+        name: 'Ruler (Single Compound)',
+        description: 'Composable Ruler.Root, Track, Indicator, Header, & ResetButton hierarchy',
+        componentType: 'RulerCompound',
+        badge: '#anatomy',
+        props: {
+          tickSpacing: 26,
+          rulerHeight: 64,
+          haptics: true,
+          theme: {
+            background: 'transparent',
+            indicatorColor: '#38BDF8',
+            accentColor: '#38BDF8',
+          },
+        },
+      },
+      {
+        id: 'compound-range',
+        name: 'RulerRange (Range Compound)',
+        description: 'Composable RulerRange.Root, Track, Highlight, & Indicator dual subcomponents',
+        componentType: 'RulerRangeCompound',
+        isExperimental: true,
+        props: {
+          value: {
+            start: getTodayStr(),
+            end: getFutureDateStr(6),
+          },
+          minSpanDays: 2,
+          maxSpanDays: 14,
+          tickSpacing: 26,
+          rulerHeight: 64,
+          haptics: true,
+          theme: {
+            background: 'transparent',
+            indicatorColor: '#F59E0B',
+            accentColor: '#F59E0B',
+            rangeHighlightColor: 'rgba(245, 158, 11, 0.25)',
+          },
+        },
+      },
+    ],
+  },
+  {
+    id: 'headless-hooks',
+    title: 'Headless Hooks',
+    componentType: 'useRulerDatePicker',
+    badge: '#headless',
+    items: [
+      {
+        id: 'hook-single',
+        name: 'useRulerDatePicker',
+        description: 'Headless single-date physics, gesture binding, velocity decay, and custom UI',
+        componentType: 'useRulerDatePicker',
+        badge: '#headless',
+        props: {
+          tickSpacing: 24,
+          rulerHeight: 56,
+          theme: {
+            background: 'transparent',
+            indicatorColor: '#38BDF8',
+            accentColor: '#38BDF8',
+          },
+        },
+      },
+      {
+        id: 'hook-range',
+        name: 'useRulerDateRangePicker',
+        description: 'Headless dual-handle range tracking, active handle indicator, & span days',
+        componentType: 'useRulerDateRangePicker',
+        isExperimental: true,
+        props: {
+          value: {
+            start: getTodayStr(),
+            end: getFutureDateStr(5),
+          },
+          minSpanDays: 2,
+          maxSpanDays: 20,
+          tickSpacing: 24,
+          rulerHeight: 56,
+          theme: {
+            background: 'transparent',
+            indicatorColor: '#10B981',
+            accentColor: '#10B981',
+            rangeHighlightColor: 'rgba(16, 185, 129, 0.22)',
+          },
+        },
+      },
+    ],
   },
 ];
+
+// Flat list for easy lookup by ID
+export const EXAMPLES: ExamplePreset[] = EXAMPLE_SECTIONS.flatMap((sec) => sec.items);
