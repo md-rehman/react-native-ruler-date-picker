@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/md-rehman/react-native-ruler-date-picker/main/apps/docs/public/logo.svg" width="96" height="96" alt="react-native-ruler-date-picker logo" />
+  <img src="https://raw.githubusercontent.com/md-rehman/react-native-ruler-date-picker/dev/apps/docs/public/logo.svg" width="96" height="96" alt="react-native-ruler-date-picker logo" />
 </p>
 
 <h1 align="center">react-native-ruler-date-picker</h1>
