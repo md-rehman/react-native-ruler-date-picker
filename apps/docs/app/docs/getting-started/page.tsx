@@ -71,36 +71,44 @@ npm install react-native-ruler-date-picker react-native-reanimated react-native-
 yarn add react-native-ruler-date-picker react-native-reanimated react-native-gesture-handler
 
 # Using Expo
-npx expo install react-native-reanimated react-native-gesture-handler`}
+npx expo install react-native-ruler-date-picker react-native-reanimated react-native-gesture-handler`}
         />
       </section>
 
       <section style={{ marginBottom: 40 }}>
         <h2>2. Configure Peer Dependencies</h2>
 
-        <h3>Babel Configuration</h3>
+        <Callout type="info" title="Already using React Navigation or Expo Router?">
+          If your project already has <code>react-native-reanimated</code> and <code>GestureHandlerRootView</code> configured at your root, you can skip this section and jump straight to <strong>Step 4: Minimal Working Example</strong>!
+        </Callout>
+
+        <h3 style={{ marginTop: 24 }}>Babel Configuration</h3>
         <p>
-          Add the Reanimated Babel plugin to your <code>babel.config.js</code>. Ensure it is listed as the <strong>very last</strong> plugin:
+          For bare React Native CLI apps, add the Reanimated Babel plugin to your <code>babel.config.js</code>. Ensure it is listed as the <strong>very last</strong> plugin:
         </p>
 
         <CodeBlock
           title="babel.config.js"
           language="javascript"
           code={`module.exports = {
-  presets: ['module:@react-native/babel-preset'], // or 'babel-preset-expo'
+  presets: ['module:@react-native/babel-preset'],
   plugins: [
     'react-native-reanimated/plugin', // MUST be last plugin
   ],
 };`}
         />
 
-        <h3>GestureHandlerRootView</h3>
+        <Callout type="tip" title="Expo Projects (SDK 50+)">
+          In Expo managed workflows using <code>babel-preset-expo</code>, the Reanimated Babel plugin is automatically applied out of the box — no manual changes to <code>babel.config.js</code> are required unless you have a custom Babel configuration.
+        </Callout>
+
+        <h3 style={{ marginTop: 24 }}>GestureHandlerRootView</h3>
         <p>
-          Wrap your app root component with <code>GestureHandlerRootView</code>:
+          Wrap your application root component with <code>GestureHandlerRootView</code> so gestures and pan physics function properly across iOS and Android:
         </p>
 
         <CodeBlock
-          title="App.tsx"
+          title="App.tsx (Standard React Native / Expo)"
           language="tsx"
           code={`import React from 'react';
 import { StyleSheet } from 'react-native';
@@ -120,9 +128,37 @@ const styles = StyleSheet.create({
 });`}
         />
 
-        <Callout type="tip" title="Expo Projects">
-          In Expo managed workflows (SDK 50+), <code>react-native-gesture-handler</code> and <code>react-native-reanimated</code> work out of the box after adding the plugin to <code>babel.config.js</code>.
-        </Callout>
+        <p style={{ marginTop: 16 }}>
+          Or if you are using <strong>Expo Router</strong>, wrap your root layout in <code>app/_layout.tsx</code>:
+        </p>
+
+        <CodeBlock
+          title="app/_layout.tsx (Expo Router)"
+          language="tsx"
+          code={`import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Slot } from 'expo-router';
+import { StyleSheet } from 'react-native';
+
+export default function RootLayout() {
+  return (
+    <GestureHandlerRootView style={styles.container}>
+      <Slot />
+    </GestureHandlerRootView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+});`}
+        />
+
+        <div style={{ marginTop: 20 }}>
+          <Callout type="tip" title="Reset Metro Cache After Installing">
+            Whenever you install Reanimated or modify your Babel configuration, always restart Metro with cache cleared to avoid stale bundle errors:
+            <br />
+            <code>npx expo start -c</code> &nbsp;or&nbsp; <code>npm start -- --reset-cache</code>
+          </Callout>
+        </div>
       </section>
 
       <section style={{ marginBottom: 40 }}>
@@ -160,6 +196,10 @@ export default function DatePickerScreen() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.selectedText}>
+        Selected: {date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+      </Text>
+
       <RulerDatePicker
         value={date}
         onChange={(selectedDate, dateString) => {
@@ -177,7 +217,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#0F172A',
+  },
+  selectedText: {
+    color: '#F8FAFC',
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 24,
   },
 });`}
         />
