@@ -8,6 +8,7 @@ import {
   DocPagination,
 } from '../../../components/DocElements/DocElements';
 import InlinePlayground from '../../../components/InlinePlayground/InlinePlayground';
+import type { TickRule } from 'react-native-ruler-date-picker';
 
 export const metadata: Metadata = {
   title: 'Primitives (Ticks & LensTicks) | react-native-ruler-date-picker',
@@ -19,34 +20,46 @@ export default function PrimitivesPage() {
 
   const customRuleJsx = `<RulerDatePicker
   value={selectedDate}
-  onChange={setSelectedDate}
+  onChange={(date) => setSelectedDate(date)}
   tickSpacing={28}
   ticks={[
-    // Major 1st-of-month milestone: Tall line + Month abbreviation label
+    // 1st of month: Tall cyan line + Month abbreviation label
     {
-      condition: { dayOfMonth: 1 },
+      condition: 'monthly',
       height: 36,
-      width: 3,
+      width: 3.5,
       color: '#38BDF8',
       label: {
-        text: (ctx) => ctx.date.toLocaleDateString('en-US', { month: 'short' }),
-        position: 'bottom',
+        format: (date) => date.toLocaleDateString('en-US', { month: 'short' }),
         color: '#38BDF8',
+        fontWeight: '700',
       },
     },
-    // Weekend dot indicator
+    // Weekend dot badge (Sundays & Saturdays)
     {
-      condition: { dayOfWeek: 0 },
-      height: 22,
-      width: 2,
-      dot: { size: 4, color: '#F59E0B', position: 'top' },
+      condition: { dayOfWeek: [0, 6] },
+      height: 24,
+      width: 2.5,
+      color: '#F59E0B',
+      dot: { size: 4, color: '#F59E0B' },
     },
-    // Every 5 days
+    // Every 5 days: Medium graduation mark with day number
     {
       condition: { interval: 5 },
       height: 20,
       width: 2,
       color: '#64748B',
+      label: {
+        format: (date) => String(date.getDate()),
+        color: '#94A3B8',
+      },
+    },
+    // Catch-all daily fallback
+    {
+      condition: 'daily',
+      height: 12,
+      width: 2,
+      color: '#334155',
     },
   ]}
 />`;
@@ -73,7 +86,7 @@ export default function PrimitivesPage() {
       <section style={{ marginBottom: 40 }}>
         <h2>2. Interactive Rule Customization</h2>
         <p>
-          Every tick graduation is styled by evaluating an array of declarative <code>TickRule</code> objects against a <code>TickContext</code>.
+          Every tick graduation is styled by evaluating an array of declarative <code>TickRule</code> objects against a <code>TickContext</code>. The rules are matched from top to bottom (first matching rule wins).
         </p>
 
         <InlinePlayground
@@ -128,19 +141,20 @@ export default function PrimitivesPage() {
             {
               name: 'condition',
               type: 'TickCondition',
-              description: 'Criteria determining whether this rule applies: interval, dayOfMonth, dayOfWeek, or month.',
+              default: "'daily'",
+              description: "Matching predicate: 'daily' | 'weekly' | 'monthly' | 'yearly' | { interval: number } | { dayOfWeek: number[] } | ((ctx: TickContext) => boolean). Omit for fallback match.",
             },
             {
               name: 'height',
               type: 'number',
-              default: '20',
-              description: 'Height in pixels of the vertical graduation line.',
+              default: '12',
+              description: 'Height in pixels of the vertical graduation mark.',
             },
             {
               name: 'width',
               type: 'number',
-              default: '2',
-              description: 'Width in pixels of the graduation line.',
+              default: '3',
+              description: 'Width/thickness in pixels of the graduation line.',
             },
             {
               name: 'color',
@@ -149,21 +163,80 @@ export default function PrimitivesPage() {
               description: 'Color of the graduation tick line.',
             },
             {
-              name: 'dot',
-              type: 'TickDotConfig',
-              description: 'Optional circular dot marker: { size, color, position: "top" | "bottom" }.',
+              name: 'label',
+              type: 'boolean | TickLabelConfig',
+              default: 'undefined',
+              description: 'Date label configuration or true for day number. Config: { format?: (date, ctx) => string, color?: string, fontSize?: number, fontWeight?: string }.',
             },
             {
-              name: 'label',
-              type: 'TickLabelConfig',
-              description: 'Optional text label: { text: string | ((ctx) => string), color, position: "top" | "bottom" }.',
+              name: 'dot',
+              type: 'boolean | TickDotConfig',
+              default: 'undefined',
+              description: 'Circular badge indicator. Config: { size?: number, color?: string } or true for default 6px dot.',
+            },
+            {
+              name: 'render',
+              type: '(ctx: TickContext) => React.ReactNode',
+              default: 'undefined',
+              description: 'Custom React Native renderer replacing the default tick bar, label, and dot for complete rendering freedom.',
             },
           ]}
         />
       </section>
 
       <section style={{ marginBottom: 40 }}>
-        <h2>5. The LensTick Primitive</h2>
+        <h2>5. Custom Predicate & Custom Render</h2>
+        <p>
+          For advanced requirements, you can pass a custom function to <code>condition</code> to evaluate arbitrary calendar math, or provide a <code>render</code> function to replace the native graduation with custom icons or badges:
+        </p>
+
+        <CodeBlock
+          title="CustomTickExample.tsx"
+          language="tsx"
+          code={`import React from 'react';
+import { View, Text } from 'react-native';
+import type { TickRule } from 'react-native-ruler-date-picker';
+
+export const customRules: TickRule[] = [
+  // 1. Custom Predicate: Highlight paydays (15th & month-end)
+  {
+    condition: (ctx) => {
+      const day = ctx.date.getDate();
+      const lastDay = new Date(ctx.date.getFullYear(), ctx.date.getMonth() + 1, 0).getDate();
+      return day === 15 || day === lastDay;
+    },
+    height: 32,
+    color: '#10B981',
+    dot: { size: 5, color: '#10B981' },
+    label: {
+      format: () => 'Payday',
+      color: '#10B981',
+      fontWeight: '700',
+    },
+  },
+
+  // 2. Custom Render: Render weekday initials with custom layout
+  {
+    condition: 'weekly',
+    height: 24,
+    render: (ctx) => (
+      <View style={{ alignItems: 'center' }}>
+        <Text style={{ color: ctx.isSelected ? '#38BDF8' : '#64748B', fontSize: 11, fontWeight: '600' }}>
+          {ctx.date.toLocaleDateString('en-US', { weekday: 'narrow' })}
+        </Text>
+        <View style={{ width: 2, height: 16, backgroundColor: ctx.isSelected ? '#38BDF8' : '#475569', marginTop: 4 }} />
+      </View>
+    ),
+  },
+
+  // 3. Daily base fallback
+  { condition: 'daily', height: 12 },
+];`}
+        />
+      </section>
+
+      <section style={{ marginBottom: 40 }}>
+        <h2>6. The LensTick Primitive</h2>
         <p>
           When <code>lensEffect</code> is enabled, standard <code>Tick</code> components are replaced with <code>LensTick</code>.
         </p>
