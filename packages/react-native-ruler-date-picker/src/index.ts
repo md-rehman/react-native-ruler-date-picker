@@ -24,6 +24,7 @@ export { RulerRangeTrack, type RulerRangeTrackProps } from './RulerRangeTrack';
 export { RulerRangeIndicator, type RulerRangeIndicatorProps } from './RulerRangeIndicator';
 export { RulerRangeHeader, type RulerRangeHeaderProps } from './RulerRangeHeader';
 export { RulerRangeHighlight, type RulerRangeHighlightProps } from './RulerRangeHighlight';
+export { RulerRangeTicks, type RulerRangeTicksProps } from './RulerRangeTicks';
 
 // ── Headless Hooks & Contexts ───────────────────────────────────────────────
 export { useRulerDatePicker, type UseRulerDatePickerReturn } from './useRulerDatePicker';

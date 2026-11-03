@@ -3,6 +3,7 @@ import { RulerRangeTrack } from './RulerRangeTrack';
 import { RulerRangeHeader } from './RulerRangeHeader';
 import { RulerRangeIndicator } from './RulerRangeIndicator';
 import { RulerRangeHighlight } from './RulerRangeHighlight';
+import { RulerRangeTicks } from './RulerRangeTicks';
 import { Tick } from './Tick';
 
 /**
@@ -16,7 +17,7 @@ import { Tick } from './Tick';
  *   <RulerRange.Header />
  *   <RulerRange.Track>
  *     <RulerRange.Indicator />
- *     <RulerRange.Highlight />
+ *     <RulerRange.Ticks />
  *   </RulerRange.Track>
  * </RulerRange.Root>
  * ```
@@ -27,5 +28,6 @@ export const RulerRange = {
   Indicator: RulerRangeIndicator,
   Header: RulerRangeHeader,
   Highlight: RulerRangeHighlight,
+  Ticks: RulerRangeTicks,
   Tick: Tick,
 };

@@ -12,6 +12,7 @@ import { useRulerRangeContext } from './RulerRangeContext';
 import type { RangeHeaderContext } from './types';
 
 export interface RulerRangeHeaderProps {
+  children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   dateStyle?: StyleProp<TextStyle>;
   format?: (date: Date) => string;
@@ -19,6 +20,7 @@ export interface RulerRangeHeaderProps {
 }
 
 export function RulerRangeHeader({
+  children,
   style,
   dateStyle,
   format: customFormat,
@@ -34,6 +36,12 @@ export function RulerRangeHeader({
     headerConfig,
     locale = 'default',
   } = useRulerRangeContext();
+
+  const headerStyle = style ?? headerConfig?.style;
+
+  if (children) {
+    return <View style={[styles.headerContainer, headerStyle]}>{children}</View>;
+  }
 
   const customRenderer = render ?? headerConfig?.render;
   if (customRenderer) {
@@ -65,7 +73,6 @@ export function RulerRangeHeader({
         day: 'numeric',
       });
 
-  const headerStyle = style ?? headerConfig?.style;
   const resolvedDateStyle = dateStyle ?? headerConfig?.dateStyle;
 
   return (

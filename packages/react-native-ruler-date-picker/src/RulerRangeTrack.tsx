@@ -1,11 +1,9 @@
 import React from 'react';
 import { View, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { GestureDetector } from 'react-native-gesture-handler';
 import { useRulerRangeContext } from './RulerRangeContext';
-import { RulerRangeHighlight } from './RulerRangeHighlight';
 import { RulerRangeIndicator } from './RulerRangeIndicator';
-import { Tick } from './Tick';
+import { RulerRangeTicks } from './RulerRangeTicks';
 
 export interface RulerRangeTrackProps {
   style?: StyleProp<ViewStyle>;
@@ -13,44 +11,17 @@ export interface RulerRangeTrackProps {
 }
 
 export function RulerRangeTrack({ style, children }: RulerRangeTrackProps = {}) {
-  const {
-    panGesture,
-    translateX,
-    visibleTicks,
-    tickSpacing,
-    rulerHeight,
-    width,
-  } = useRulerRangeContext();
-
-  const animatedStyle = useAnimatedStyle(
-    () => ({
-      transform: [{ translateX: translateX.value }],
-    }),
-    [translateX]
-  );
+  const { panGesture, rulerHeight, width } = useRulerRangeContext();
 
   return (
     <GestureDetector gesture={panGesture}>
       <View style={[styles.rulerContainer, { width, height: rulerHeight }, style]}>
-        {/* Center Indicator pointing at active handle */}
-        <RulerRangeIndicator />
-
-        <Animated.View style={[styles.ticksWrapper, { left: width / 2 }, animatedStyle]}>
-          {/* Highlight Span */}
-          <RulerRangeHighlight />
-
-          {/* Ticks */}
-          {visibleTicks.map((tick) => (
-            <Tick
-              key={tick.offset}
-              tick={tick}
-              tickSpacing={tickSpacing}
-              rulerHeight={rulerHeight}
-            />
-          ))}
-
-          {children}
-        </Animated.View>
+        {children ?? (
+          <>
+            <RulerRangeIndicator />
+            <RulerRangeTicks />
+          </>
+        )}
       </View>
     </GestureDetector>
   );
@@ -64,9 +35,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
   },
-  ticksWrapper: {
-    position: 'absolute',
-    height: '100%',
-    width: 0,
-  },
 });
+
