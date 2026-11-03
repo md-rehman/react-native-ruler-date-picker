@@ -3,18 +3,26 @@ import { View, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 import { useRulerContext } from './RulerContext';
 
+import { RulerIndicator } from './RulerIndicator';
+import { RulerTicks } from './RulerTicks';
+
 export interface RulerTrackProps {
   children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
 }
 
-export function RulerTrack({ children, style }: RulerTrackProps) {
+export function RulerTrack({ children, style }: RulerTrackProps = {}) {
   const { panGesture, rulerHeight, width } = useRulerContext();
 
   return (
     <GestureDetector gesture={panGesture}>
       <View style={[styles.rulerContainer, { width, height: rulerHeight }, style]}>
-        {children}
+        {children ?? (
+          <>
+            <RulerIndicator />
+            <RulerTicks />
+          </>
+        )}
       </View>
     </GestureDetector>
   );

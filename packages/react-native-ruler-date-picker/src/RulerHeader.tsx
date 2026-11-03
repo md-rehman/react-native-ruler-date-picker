@@ -4,6 +4,7 @@ import { useRulerContext } from './RulerContext';
 import { RulerResetButton } from './RulerResetButton';
 
 export interface RulerHeaderProps {
+  children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   dateStyle?: StyleProp<TextStyle>;
   yearStyle?: StyleProp<TextStyle>;
@@ -18,6 +19,7 @@ export interface RulerHeaderProps {
 }
 
 export function RulerHeader({
+  children,
   style,
   dateStyle,
   yearStyle,
@@ -34,6 +36,12 @@ export function RulerHeader({
     headerConfig,
     locale = 'default',
   } = useRulerContext();
+
+  const headerStyle = style ?? headerConfig?.style;
+
+  if (children) {
+    return <View style={[styles.headerContainer, headerStyle]}>{children}</View>;
+  }
 
   const customRenderer = render ?? headerConfig?.render;
   if (customRenderer) {
@@ -55,7 +63,6 @@ export function RulerHeader({
   const currentYear = new Date().getFullYear();
   const showYear = !formatFn && displayYear !== currentYear;
 
-  const headerStyle = style ?? headerConfig?.style;
   const resolvedDateStyle = dateStyle ?? headerConfig?.dateStyle;
   const resolvedYearStyle = yearStyle ?? headerConfig?.yearStyle;
 

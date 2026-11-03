@@ -10,12 +10,14 @@ import {
 import { useRulerContext } from './RulerContext';
 
 export interface RulerResetButtonProps {
+  children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   label?: string;
 }
 
 export function RulerResetButton({
+  children,
   style,
   textStyle,
   label = 'Today',
@@ -28,15 +30,17 @@ export function RulerResetButton({
       onPress={() => resetToToday(true)}
       style={[styles.resetBtn, style]}
     >
-      <Text
-        style={[
-          styles.resetText,
-          { color: theme.accentColor },
-          textStyle,
-        ]}
-      >
-        {label}
-      </Text>
+      {children ?? (
+        <Text
+          style={[
+            styles.resetText,
+            { color: theme.accentColor },
+            textStyle,
+          ]}
+        >
+          {label}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 }

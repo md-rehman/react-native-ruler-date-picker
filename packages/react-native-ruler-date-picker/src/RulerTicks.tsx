@@ -32,7 +32,9 @@ export function RulerTicks({ style, renderTick }: RulerTicksProps = {}) {
     >
       {visibleTicks.map((tick) =>
         renderTick ? (
-          renderTick(tick, tickSpacing, rulerHeight)
+          <React.Fragment key={tick.offset}>
+            {renderTick(tick, tickSpacing, rulerHeight)}
+          </React.Fragment>
         ) : (
           <Tick
             key={tick.offset}
