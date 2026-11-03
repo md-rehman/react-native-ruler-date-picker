@@ -4,6 +4,7 @@ import { useRulerContext } from './RulerContext';
 import { DEFAULTS } from './defaults';
 
 export interface RulerIndicatorProps {
+  children?: React.ReactNode;
   width?: number;
   height?: number;
   color?: string;
@@ -17,6 +18,7 @@ export interface RulerIndicatorProps {
 }
 
 export function RulerIndicator({
+  children,
   width: customWidth,
   height: customHeight,
   color: customColor,
@@ -27,17 +29,31 @@ export function RulerIndicator({
   const { indicatorConfig, theme } = useRulerContext();
 
   const customRenderer = render ?? indicatorConfig?.render;
-  if (customRenderer) {
-    return <>{customRenderer()}</>;
+  const offset = customOffset ?? indicatorConfig?.offset ?? [0, 0];
+  const [offsetX = 0, offsetY = 0] = offset;
+  const indicatorStyle = style ?? indicatorConfig?.style;
+
+  if (children || customRenderer) {
+    return (
+      <View
+        pointerEvents="none"
+        style={[
+          styles.indicator,
+          {
+            bottom: offsetY,
+            transform: [{ translateX: offsetX }],
+          },
+          indicatorStyle,
+        ]}
+      >
+        {children ?? customRenderer?.()}
+      </View>
+    );
   }
 
   const width = customWidth ?? indicatorConfig?.width ?? DEFAULTS.indicatorWidth;
   const height = customHeight ?? indicatorConfig?.height ?? DEFAULTS.indicatorHeight;
   const color = customColor ?? indicatorConfig?.color ?? theme.indicatorColor;
-  const offset = customOffset ?? indicatorConfig?.offset ?? [0, 0];
-  const indicatorStyle = style ?? indicatorConfig?.style;
-
-  const [offsetX = 0, offsetY = 0] = offset;
 
   return (
     <View
@@ -62,5 +78,7 @@ const styles = StyleSheet.create({
   indicator: {
     position: 'absolute',
     zIndex: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

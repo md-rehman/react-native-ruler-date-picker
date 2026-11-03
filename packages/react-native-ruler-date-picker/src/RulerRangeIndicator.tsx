@@ -12,11 +12,13 @@ export interface RulerRangeIndicatorProps {
    * Default: [0, 0] (anchored to bottom).
    */
   offset?: [number, number];
+  children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   render?: (handle: 'start' | 'end', date: Date) => React.ReactNode;
 }
 
 export function RulerRangeIndicator({
+  children,
   width: customWidth,
   height: customHeight,
   color: customColor,
@@ -28,17 +30,31 @@ export function RulerRangeIndicator({
 
   const activeDate = activeHandle === 'start' ? startDate : endDate;
   const customRenderer = render ?? indicatorConfig?.render;
-  if (customRenderer) {
-    return <>{customRenderer(activeHandle, activeDate)}</>;
+  const offset = customOffset ?? indicatorConfig?.offset ?? [0, 0];
+  const [offsetX = 0, offsetY = 0] = offset;
+  const indicatorStyle = style ?? indicatorConfig?.style;
+
+  if (children || customRenderer) {
+    return (
+      <View
+        pointerEvents="none"
+        style={[
+          styles.indicator,
+          {
+            bottom: offsetY,
+            transform: [{ translateX: offsetX }],
+          },
+          indicatorStyle,
+        ]}
+      >
+        {children ?? customRenderer?.(activeHandle, activeDate)}
+      </View>
+    );
   }
 
   const width = customWidth ?? indicatorConfig?.width ?? DEFAULTS.indicatorWidth;
   const height = customHeight ?? indicatorConfig?.height ?? DEFAULTS.indicatorHeight;
   const color = customColor ?? indicatorConfig?.color ?? theme.indicatorColor;
-  const offset = customOffset ?? indicatorConfig?.offset ?? [0, 0];
-  const indicatorStyle = style ?? indicatorConfig?.style;
-
-  const [offsetX = 0, offsetY = 0] = offset;
 
   return (
     <View
@@ -63,5 +79,7 @@ const styles = StyleSheet.create({
   indicator: {
     position: 'absolute',
     zIndex: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
