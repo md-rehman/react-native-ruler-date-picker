@@ -36,6 +36,85 @@ export default function RulerDatePickerAnatomyPage() {
   </View>
 </Ruler.Root>`;
 
+  const diamondNeedleJsx = `<Ruler.Root
+  value={selectedDate}
+  onChange={setSelectedDate}
+  tickSpacing={28}
+>
+  <Ruler.Header showResetToToday={false} />
+
+  <Ruler.Track>
+    <Ruler.Indicator style={{ bottom: 18 }}>
+      <View
+        style={{
+          width: 14,
+          height: 14,
+          backgroundColor: '#38BDF8',
+          transform: [{ rotate: '45deg' }],
+          borderRadius: 3,
+          shadowColor: '#38BDF8',
+          shadowOpacity: 0.8,
+          shadowRadius: 8,
+        }}
+      />
+    </Ruler.Indicator>
+    <Ruler.Ticks />
+  </Ruler.Track>
+</Ruler.Root>`;
+
+  const arrowNeedleJsx = `<Ruler.Root
+  value={selectedDate}
+  onChange={setSelectedDate}
+  tickSpacing={28}
+>
+  <Ruler.Header showResetToToday={false} />
+
+  <Ruler.Track>
+    {/* Downward triangle pointer mounted at the top */}
+    <Ruler.Indicator style={{ top: 2 }}>
+      <View
+        style={{
+          width: 0,
+          height: 0,
+          borderLeftWidth: 8,
+          borderRightWidth: 8,
+          borderTopWidth: 12,
+          borderLeftColor: 'transparent',
+          borderRightColor: 'transparent',
+          borderTopColor: '#EC4899',
+        }}
+      />
+    </Ruler.Indicator>
+    <Ruler.Ticks />
+  </Ruler.Track>
+</Ruler.Root>`;
+
+  const pillNeedleJsx = `<Ruler.Root
+  value={selectedDate}
+  onChange={setSelectedDate}
+  tickSpacing={28}
+>
+  <Ruler.Header showResetToToday={false} />
+
+  <Ruler.Track>
+    {/* Emerald glowing capsule needle */}
+    <Ruler.Indicator style={{ bottom: 8 }}>
+      <View
+        style={{
+          width: 6,
+          height: 44,
+          backgroundColor: '#10B981',
+          borderRadius: 3,
+          shadowColor: '#10B981',
+          shadowOpacity: 0.9,
+          shadowRadius: 8,
+        }}
+      />
+    </Ruler.Indicator>
+    <Ruler.Ticks />
+  </Ruler.Track>
+</Ruler.Root>`;
+
   return (
     <div>
       <DocHeader
@@ -97,7 +176,7 @@ export default function RulerDatePickerAnatomyPage() {
               <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: 4, background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', fontWeight: 700 }}>Center Pin</span>
             </div>
             <p style={{ margin: 0, color: 'var(--color-text-secondary)', fontSize: '0.9rem', lineHeight: 1.55 }}>
-              The fixed center alignment cursor needle. Customizable via <code>width</code>, <code>height</code>, <code>color</code>, or by supplying a completely custom React component via children.
+              The fixed center alignment cursor needle. Customizable via <code>width</code>, <code>height</code>, <code>color</code>, <code>offset</code>, or by supplying any custom React component directly as <code>children</code>.
             </p>
           </div>
 
@@ -137,31 +216,51 @@ export default function RulerDatePickerAnatomyPage() {
       </section>
 
       <section style={{ marginBottom: 40 }}>
-        <h2>3. Custom Indicator Example</h2>
+        <h2>3. Custom Indicator Examples</h2>
         <p>
-          Replace the standard needle with a custom diamond or beacon pin:
+          Because <code>&lt;Ruler.Indicator&gt;</code> supports <code>children</code>, you can render any arbitrary React Native component as the needle cursor. The indicator automatically centers your element along the active graduation axis.
         </p>
 
-        <CodeBlock
-          title="CustomNeedle.tsx"
-          language="tsx"
-          code={`<Ruler.Root value={selectedDate} onChange={setSelectedDate}>
-  <Ruler.Track>
-    <Ruler.Indicator>
-      <View style={{
-        width: 14,
-        height: 14,
-        backgroundColor: '#38BDF8',
-        transform: [{ rotate: '45deg' }],
-        borderRadius: 3,
-        shadowColor: '#38BDF8',
-        shadowOpacity: 0.6,
-        shadowRadius: 8,
-      }} />
-    </Ruler.Indicator>
-    <Ruler.Ticks />
-  </Ruler.Track>
-</Ruler.Root>`}
+        <h3 style={{ marginTop: 24 }}>A. Diamond Beacon Indicator</h3>
+        <p>
+          A tilted square rotated 45° with an electric cyan drop-glow:
+        </p>
+
+        <InlinePlayground
+          title="Custom Diamond Beacon Needle"
+          type="custom-indicator"
+          jsxCode={diamondNeedleJsx}
+          props={{
+            tickSpacing: 28,
+          }}
+        />
+
+        <h3 style={{ marginTop: 32 }}>B. Downward Arrow Pointer</h3>
+        <p>
+          An inverted triangle anchored at the top of the track (<code>style=&#123;&#123; top: 2 &#125;&#125;</code>) pointing directly downward into the active graduation tick:
+        </p>
+
+        <InlinePlayground
+          title="Downward Arrow Pointer"
+          type="custom-arrow"
+          jsxCode={arrowNeedleJsx}
+          props={{
+            tickSpacing: 28,
+          }}
+        />
+
+        <h3 style={{ marginTop: 32 }}>C. Glowing Capsule Pin</h3>
+        <p>
+          A bold, rounded capsule needle with an emerald glow:
+        </p>
+
+        <InlinePlayground
+          title="Glowing Capsule Pin"
+          type="custom-pill"
+          jsxCode={pillNeedleJsx}
+          props={{
+            tickSpacing: 28,
+          }}
         />
       </section>
 

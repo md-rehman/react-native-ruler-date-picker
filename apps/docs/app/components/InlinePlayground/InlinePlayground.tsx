@@ -22,7 +22,7 @@ import styles from './InlinePlayground.module.css';
 
 export interface InlinePlaygroundProps {
   title?: string;
-  type?: 'single' | 'range' | 'lens' | 'compound';
+  type?: 'single' | 'range' | 'lens' | 'compound' | 'custom-indicator' | 'custom-arrow' | 'custom-pill';
   props?: Record<string, any>;
   jsxCode: string;
 }
@@ -163,6 +163,134 @@ export default function InlinePlayground({
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: 14 }}>
                 <RulerResetButton />
               </div>
+            </RulerRoot>
+          </View>
+        </GestureHandlerRootView>
+      );
+    }
+
+    if (type === 'custom-indicator') {
+      return (
+        <GestureHandlerRootView style={rnStyles.root}>
+          <View
+            style={rnStyles.container}
+            onLayout={(e) => {
+              const w = e.nativeEvent.layout.width;
+              if (w > 0) setPreviewWidth(w);
+            }}
+          >
+            <RulerRoot
+              value={selectedDate}
+              width={effectiveWidth}
+              onChange={(date, str) => {
+                setSelectedDate(date);
+                setDateString(str);
+              }}
+              {...parsedProps}
+            >
+              <RulerHeader showResetToToday={false} />
+              <RulerTrack>
+                <RulerIndicator style={{ bottom: 18 }}>
+                  <View
+                    style={{
+                      width: 14,
+                      height: 14,
+                      backgroundColor: '#38BDF8',
+                      transform: [{ rotate: '45deg' }],
+                      borderRadius: 3,
+                      shadowColor: '#38BDF8',
+                      shadowOpacity: 0.8,
+                      shadowRadius: 8,
+                    }}
+                  />
+                </RulerIndicator>
+                <RulerTicks />
+              </RulerTrack>
+            </RulerRoot>
+          </View>
+        </GestureHandlerRootView>
+      );
+    }
+
+    if (type === 'custom-arrow') {
+      return (
+        <GestureHandlerRootView style={rnStyles.root}>
+          <View
+            style={rnStyles.container}
+            onLayout={(e) => {
+              const w = e.nativeEvent.layout.width;
+              if (w > 0) setPreviewWidth(w);
+            }}
+          >
+            <RulerRoot
+              value={selectedDate}
+              width={effectiveWidth}
+              onChange={(date, str) => {
+                setSelectedDate(date);
+                setDateString(str);
+              }}
+              {...parsedProps}
+            >
+              <RulerHeader showResetToToday={false} />
+              <RulerTrack>
+                <RulerIndicator style={{ top: 2 }}>
+                  <View
+                    style={{
+                      width: 0,
+                      height: 0,
+                      borderLeftWidth: 8,
+                      borderRightWidth: 8,
+                      borderTopWidth: 12,
+                      borderLeftColor: 'transparent',
+                      borderRightColor: 'transparent',
+                      borderTopColor: '#EC4899',
+                    }}
+                  />
+                </RulerIndicator>
+                <RulerTicks />
+              </RulerTrack>
+            </RulerRoot>
+          </View>
+        </GestureHandlerRootView>
+      );
+    }
+
+    if (type === 'custom-pill') {
+      return (
+        <GestureHandlerRootView style={rnStyles.root}>
+          <View
+            style={rnStyles.container}
+            onLayout={(e) => {
+              const w = e.nativeEvent.layout.width;
+              if (w > 0) setPreviewWidth(w);
+            }}
+          >
+            <RulerRoot
+              value={selectedDate}
+              width={effectiveWidth}
+              onChange={(date, str) => {
+                setSelectedDate(date);
+                setDateString(str);
+              }}
+              {...parsedProps}
+            >
+              <RulerHeader showResetToToday={false} />
+              <RulerTrack>
+                <RulerIndicator style={{ bottom: 8 }}>
+                  <View
+                    style={{
+                      width: 6,
+                      height: 44,
+                      backgroundColor: '#10B981',
+                      borderRadius: 3,
+                      shadowColor: '#10B981',
+                      shadowOpacity: 0.9,
+                      shadowRadius: 8,
+                    }}
+                  />
+                </RulerIndicator>
+                <RulerTicks />
+              </RulerTrack>
             </RulerRoot>
           </View>
         </GestureHandlerRootView>
