@@ -8,6 +8,8 @@ import {
   DocPagination,
 } from '../../../components/DocElements/DocElements';
 
+import InlinePlayground from '../../../components/InlinePlayground/InlinePlayground';
+
 export const metadata: Metadata = {
   title: 'useRulerDatePicker Hook | react-native-ruler-date-picker',
   description: 'Headless hook managing Reanimated 3 decay physics, snapping, and tick windowing.',
@@ -15,6 +17,62 @@ export const metadata: Metadata = {
 
 export default function UseRulerDatePickerPage() {
   const currentHref = '/docs/hooks/use-ruler-date-picker';
+
+  const headlessJsx = `import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { GestureDetector } from 'react-native-gesture-handler';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import { useRulerDatePicker, Tick } from 'react-native-ruler-date-picker';
+
+export function CustomRuler() {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const {
+    panGesture,
+    translateX,
+    selectedDateStr,
+    visibleTicks,
+    tickSpacing,
+    rulerHeight,
+    width,
+    resetToToday,
+    theme,
+  } = useRulerDatePicker({
+    value: selectedDate,
+    tickSpacing: 28,
+    onChange: (date) => setSelectedDate(date),
+  });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.label}>Selected: {selectedDateStr}</Text>
+
+      <GestureDetector gesture={panGesture}>
+        <View style={[styles.viewport, { height: rulerHeight }]}>
+          <View style={styles.centerPin} />
+          <Animated.View style={[{ left: width / 2 }, styles.ticksTrack, animatedStyle]}>
+            {visibleTicks.map((tick) => (
+              <Tick
+                key={tick.offset}
+                tick={tick}
+                tickSpacing={tickSpacing}
+                rulerHeight={rulerHeight}
+              />
+            ))}
+          </Animated.View>
+        </View>
+      </GestureDetector>
+
+      <TouchableOpacity onPress={() => resetToToday(true)} style={styles.button}>
+        <Text style={styles.buttonText}>Today</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}`;
 
   return (
     <div>
@@ -31,46 +89,14 @@ export default function UseRulerDatePickerPage() {
           If our pre-packaged compound components do not match your exact creative vision (e.g. a vertical timeline, a circular dial, or a carousel overlay), <code>useRulerDatePicker</code> gives you raw physics and windowing math with zero layout assumptions.
         </p>
 
-        <CodeBlock
-          title="HeadlessExample.tsx"
-          language="tsx"
-          code={`import React from 'react';
-import { View, Text } from 'react-native';
-import { GestureDetector } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
-import { useRulerDatePicker } from 'react-native-ruler-date-picker';
-
-export function CustomRuler() {
-  const {
-    panGesture,
-    scrollX,
-    activeDateString,
-    scrollToDate,
-    resetToToday,
-    visibleIndices,
-  } = useRulerDatePicker({
-    initialDate: new Date(),
-    tickSpacing: 30,
-    onChange: (date, str) => console.log('Active Date:', str),
-  });
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: scrollX.value }],
-  }));
-
-  return (
-    <View>
-      <Text>Active Date: {activeDateString}</Text>
-      <GestureDetector gesture={panGesture}>
-        <Animated.View style={[{ flexDirection: 'row' }, animatedStyle]}>
-          {visibleIndices.map((idx) => (
-            <View key={idx} style={{ width: 30, height: 40, borderLeftWidth: 1 }} />
-          ))}
-        </Animated.View>
-      </GestureDetector>
-    </View>
-  );
-}`}
+        <InlinePlayground
+          title="Headless Hook Preview (useRulerDatePicker)"
+          type="headless"
+          jsxCode={headlessJsx}
+          props={{
+            tickSpacing: 28,
+            rulerHeight: 64,
+          }}
         />
       </section>
 

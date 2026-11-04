@@ -29,6 +29,17 @@ export default function RulerDatePickerLensPage() {
   rulerHeight={70}
 />`;
 
+  const compoundLensJsx = `<Ruler.Root
+  value={selectedDate}
+  onChange={setSelectedDate}
+  lensEffect
+  tickSpacing={24}
+  rulerHeight={70}
+>
+  <Ruler.Header />
+  <Ruler.LensTrack />
+</Ruler.Root>`;
+
   return (
     <div>
       <DocHeader
@@ -116,14 +127,14 @@ export default function RulerDatePickerLensPage() {
           If composing your ruler with compound subcomponents, use <code>&lt;RulerLensTrack /&gt;</code> instead of standard <code>&lt;RulerTrack /&gt;</code>:
         </p>
 
-        <CodeBlock
-          title="CompoundLens.tsx"
-          language="tsx"
-          code={`<Ruler.Root value={selectedDate} onChange={setSelectedDate} lensEffect>
-  <Ruler.Header />
-  {/* Dedicated lens track handles optical distortion */}
-  <Ruler.LensTrack />
-</Ruler.Root>`}
+        <InlinePlayground
+          title="Compound Lens Track Composition"
+          type="compound-lens"
+          jsxCode={compoundLensJsx}
+          props={{
+            tickSpacing: 24,
+            rulerHeight: 70,
+          }}
         />
 
         <Callout type="tip" title="High-Performance 60 FPS Math">

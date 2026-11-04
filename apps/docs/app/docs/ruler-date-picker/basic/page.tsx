@@ -29,6 +29,28 @@ export default function RulerDatePickerBasicPage() {
   header={{ showResetToToday: true }}
 />`;
 
+  const boundedPickerJsx = `<RulerDatePicker
+  value={selectedDate}
+  onChange={setSelectedDate}
+  minDate="2026-06-01"
+  maxDate="2026-08-31"
+  tickSpacing={26}
+  rulerHeight={64}
+/>`;
+
+  const customIndicatorJsx = `<RulerDatePicker
+  value={selectedDate}
+  onChange={setSelectedDate}
+  tickSpacing={32}
+  rulerHeight={72}
+  indicator={{
+    width: 3,
+    height: 48,
+    borderRadius: 2,
+    color: '#0A84FF',
+  }}
+/>`;
+
   return (
     <div>
       <DocHeader
@@ -95,17 +117,18 @@ export default function MyScreen() {
           Constrain selectable dates by supplying <code>minDate</code> and <code>maxDate</code> as either <code>Date</code> instances or <code>YYYY-MM-DD</code> strings:
         </p>
 
-        <CodeBlock
-          title="BoundedPicker.tsx"
-          language="tsx"
-          code={`<RulerDatePicker
-  value={selectedDate}
-  onChange={setSelectedDate}
-  minDate="2026-06-01"
-  maxDate="2026-08-31"
-/>`}
+        <InlinePlayground
+          title="Bounded Date Limits"
+          type="single"
+          jsxCode={boundedPickerJsx}
+          props={{
+            minDate: new Date(Date.now() - 7 * 86400000),
+            maxDate: new Date(Date.now() + 14 * 86400000),
+            tickSpacing: 26,
+            rulerHeight: 64,
+          }}
         />
-        <p>
+        <p style={{ marginTop: 16 }}>
           When the user scrolls past boundary limits, inertial physics smoothly dampens and snaps back to the allowable edge.
         </p>
       </section>
@@ -116,21 +139,20 @@ export default function MyScreen() {
           Adjust horizontal spacing between graduation marks with <code>tickSpacing</code>, overall viewport height with <code>rulerHeight</code>, and needle dimensions via <code>indicator</code>:
         </p>
 
-        <CodeBlock
-          title="CustomIndicator.tsx"
-          language="tsx"
-          code={`<RulerDatePicker
-  value={selectedDate}
-  onChange={setSelectedDate}
-  tickSpacing={32}
-  rulerHeight={72}
-  indicator={{
-    width: 3,
-    height: 48,
-    borderRadius: 2,
-    color: '#0A84FF',
-  }}
-/>`}
+        <InlinePlayground
+          title="Custom Needle & Spacing"
+          type="single"
+          jsxCode={customIndicatorJsx}
+          props={{
+            tickSpacing: 32,
+            rulerHeight: 72,
+            indicator: {
+              width: 3,
+              height: 48,
+              borderRadius: 2,
+              color: '#0A84FF',
+            },
+          }}
         />
       </section>
 

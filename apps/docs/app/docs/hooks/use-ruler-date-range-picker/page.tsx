@@ -8,6 +8,8 @@ import {
   DocPagination,
 } from '../../../components/DocElements/DocElements';
 
+import InlinePlayground from '../../../components/InlinePlayground/InlinePlayground';
+
 export const metadata: Metadata = {
   title: 'useRulerDateRangePicker Hook | react-native-ruler-date-picker',
   description: 'Headless hook managing dual-handle date range physics, active handle switching, and span constraints.',
@@ -15,6 +17,72 @@ export const metadata: Metadata = {
 
 export default function UseRulerDateRangePickerPage() {
   const currentHref = '/docs/hooks/use-ruler-date-range-picker';
+
+  const headlessRangeJsx = `import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { GestureDetector } from 'react-native-gesture-handler';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import { useRulerDateRangePicker, Tick } from 'react-native-ruler-date-picker';
+
+export function CustomRangeView() {
+  const [range, setRange] = useState({
+    start: new Date(),
+    end: new Date(Date.now() + 6 * 86400000),
+  });
+
+  const {
+    panGesture,
+    translateX,
+    startDateStr,
+    endDateStr,
+    spanDays,
+    activeHandle,
+    scrollToHandle,
+    visibleTicks,
+    tickSpacing,
+    rulerHeight,
+    startOffset,
+    endOffset,
+  } = useRulerDateRangePicker({
+    value: range,
+    minSpanDays: 2,
+    maxSpanDays: 21,
+    onChange: ({ startDate, endDate }) => setRange({ start: startDate, end: endDate }),
+  });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
+  const highlightLeft = startOffset * tickSpacing - tickSpacing / 2;
+  const highlightWidth = Math.max(tickSpacing, (endOffset - startOffset + 1) * tickSpacing);
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => scrollToHandle('start', true)} style={styles.pill}>
+          <Text style={styles.pillText}>START: {startDateStr}</Text>
+        </TouchableOpacity>
+        <Text style={styles.spanText}>➔ {spanDays} days</Text>
+        <TouchableOpacity onPress={() => scrollToHandle('end', true)} style={styles.pill}>
+          <Text style={styles.pillText}>END: {endDateStr}</Text>
+        </TouchableOpacity>
+      </View>
+
+      <GestureDetector gesture={panGesture}>
+        <View style={[styles.viewport, { height: rulerHeight }]}>
+          <View style={styles.activePin} />
+          <Animated.View style={styles.track, animatedStyle}>
+            <View style={[styles.highlight, { left: highlightLeft, width: highlightWidth }]} />
+            {visibleTicks.map((tick) => (
+              <Tick key={tick.offset} tick={tick} tickSpacing={tickSpacing} rulerHeight={rulerHeight} />
+            ))}
+          </Animated.View>
+        </View>
+      </GestureDetector>
+    </View>
+  );
+}`;
 
   return (
     <div>
@@ -36,38 +104,16 @@ export default function UseRulerDateRangePickerPage() {
           Managing two interactive draggable handles on an infinite or bounded ruler requires continuous collision detection and handle focus toggling. <code>useRulerDateRangePicker</code> handles this under the hood using native worklets:
         </p>
 
-        <CodeBlock
-          title="HeadlessRange.tsx"
-          language="tsx"
-          code={`import React from 'react';
-import { View } from 'react-native';
-import { useRulerDateRangePicker } from 'react-native-ruler-date-picker';
-
-export function CustomRangeView() {
-  const {
-    startOffset,
-    endOffset,
-    activeHandle,
-    setActiveHandle,
-    setRange,
-    startDate,
-    endDate,
-    days,
-  } = useRulerDateRangePicker({
-    initialRange: { start: new Date(), end: new Date(Date.now() + 7 * 86400000) },
-    minSpanDays: 2,
-    maxSpanDays: 21,
-    onChange: ({ startDate, endDate }) => {
-      console.log('Selected Interval:', startDate, endDate);
-    },
-  });
-
-  return (
-    <View>
-      {/* Build custom dual-slider or calendar visualization */}
-    </View>
-  );
-}`}
+        <InlinePlayground
+          title="Headless Range Hook Preview"
+          type="headless-range"
+          jsxCode={headlessRangeJsx}
+          props={{
+            minSpanDays: 2,
+            maxSpanDays: 21,
+            tickSpacing: 28,
+            rulerHeight: 64,
+          }}
         />
       </section>
 

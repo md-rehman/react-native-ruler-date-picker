@@ -7,6 +7,8 @@ import {
   DocPagination,
 } from '../../../components/DocElements/DocElements';
 
+import InlinePlayground from '../../../components/InlinePlayground/InlinePlayground';
+
 export const metadata: Metadata = {
   title: 'RulerDateRangePicker - Compound Anatomy | react-native-ruler-date-picker',
   description: 'Compound subcomponents breakdown: RulerRange.Root, RulerRange.Track, RulerRange.Indicator, and RulerRange.Highlight.',
@@ -14,6 +16,24 @@ export const metadata: Metadata = {
 
 export default function RulerDateRangePickerAnatomyPage() {
   const currentHref = '/docs/ruler-date-range-picker/anatomy';
+
+  const rangeCompoundJsx = `<RulerRange.Root
+  value={{
+    start: new Date(),
+    end: new Date(Date.now() + 7 * 86400000),
+  }}
+  onChange={({ startDate, endDate }) => {
+    console.log('Selected Interval:', startDate, endDate);
+  }}
+  tickSpacing={26}
+  rulerHeight={64}
+>
+  <RulerRange.Header />
+  <RulerRange.Track>
+    <RulerRange.Indicator />
+    <RulerRange.Ticks />
+  </RulerRange.Track>
+</RulerRange.Root>`;
 
   return (
     <div>
@@ -35,32 +55,14 @@ export default function RulerDateRangePickerAnatomyPage() {
           Similar to <code>Ruler</code>, <code>RulerRange</code> provides an inverted compound API enabling custom handle styles, headers, and highlight animations:
         </p>
 
-        <CodeBlock
-          title="CustomRangeComposition.tsx"
-          language="tsx"
-          code={`import React, { useState } from 'react';
-import { RulerRange, DateRange } from 'react-native-ruler-date-picker';
-
-export default function CustomRange() {
-  const [range, setRange] = useState<DateRange>({
-    start: new Date(),
-    end: new Date(Date.now() + 7 * 86400000),
-  });
-
-  return (
-    <RulerRange.Root value={range} onChange={({ dateRange }) => setRange(dateRange)}>
-      {/* 1. Live range title & duration counter */}
-      <RulerRange.Header />
-
-      {/* 2. Interactive track with start/end handles and highlight strip */}
-      <RulerRange.Track>
-        <RulerRange.Highlight />
-        <RulerRange.Indicator handle="start" />
-        <RulerRange.Indicator handle="end" />
-      </RulerRange.Track>
-    </RulerRange.Root>
-  );
-}`}
+        <InlinePlayground
+          title="Interactive Range Compound Composition"
+          type="range-compound"
+          jsxCode={rangeCompoundJsx}
+          props={{
+            tickSpacing: 26,
+            rulerHeight: 64,
+          }}
         />
       </section>
 
