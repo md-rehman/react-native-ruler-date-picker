@@ -2,8 +2,19 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { View as RNViewComponent, StyleSheet, type ViewProps } from 'react-native';
+import {
+  View as RNViewComponent,
+  Text as RNTextComponent,
+  TouchableOpacity as RNTouchableOpacityComponent,
+  StyleSheet,
+  type ViewProps,
+  type TextProps,
+  type TouchableOpacityProps,
+} from 'react-native';
+
 const View = RNViewComponent as unknown as React.ComponentType<ViewProps>;
+const Text = RNTextComponent as unknown as React.ComponentType<TextProps>;
+const TouchableOpacity = RNTouchableOpacityComponent as unknown as React.ComponentType<TouchableOpacityProps>;
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   RulerDatePicker,
@@ -14,15 +25,43 @@ import {
   RulerTicks,
   RulerHeader,
   RulerResetButton,
+  RulerLensTrack,
+  RulerRangeRoot,
+  RulerRangeTrack,
+  RulerRangeIndicator,
+  RulerRangeTicks,
+  RulerRangeHeader,
+  useRulerDatePicker,
+  useRulerDateRangePicker,
+  useRulerContext,
+  useRulerRangeContext,
+  Tick as RNTickComponent,
   formatDateString,
 } from 'react-native-ruler-date-picker';
+
+const Tick = RNTickComponent as unknown as React.ComponentType<any>;
+import { GestureDetector } from 'react-native-gesture-handler';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { highlightCode } from '../../../utils/highlightCode';
 import { parseCodeToProps } from '../../../utils/liveCodeParser';
 import styles from './InlinePlayground.module.css';
 
 export interface InlinePlaygroundProps {
   title?: string;
-  type?: 'single' | 'range' | 'lens' | 'compound' | 'custom-indicator' | 'custom-arrow' | 'custom-pill';
+  type?:
+    | 'single'
+    | 'range'
+    | 'lens'
+    | 'compound'
+    | 'custom-indicator'
+    | 'custom-arrow'
+    | 'custom-pill'
+    | 'headless'
+    | 'headless-range'
+    | 'range-compound'
+    | 'compound-lens'
+    | 'context'
+    | 'range-context';
   props?: Record<string, any>;
   jsxCode: string;
 }
@@ -36,8 +75,14 @@ export default function InlinePlayground({
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [code, setCode] = useState<string>(jsxCode);
-  const [parsedProps, setParsedProps] = useState<Record<string, any>>(initialProps);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [parsedProps, setParsedProps] = useState<Record<string, any>>(() => {
+    const res = parseCodeToProps(jsxCode);
+    return {
+      ...initialProps,
+      ...(res.success && res.props ? res.props : {}),
+    };
+  });
   const [dateString, setDateString] = useState<string>('');
   const [range, setRange] = useState<{ start: Date; end: Date }>(() => ({
     start: new Date(),
@@ -57,8 +102,12 @@ export default function InlinePlayground({
   // Update code when jsxCode prop changes
   useEffect(() => {
     setCode(jsxCode);
-    setParsedProps(initialProps);
-  }, [jsxCode, initialProps]);
+    const res = parseCodeToProps(jsxCode);
+    setParsedProps({
+      ...initialProps,
+      ...(res.success && res.props ? res.props : {}),
+    });
+  }, [jsxCode]);
 
   // Handle live code edits
   const handleCodeChange = useCallback((newCode: string) => {
@@ -81,7 +130,11 @@ export default function InlinePlayground({
 
   const handleResetCode = () => {
     setCode(jsxCode);
-    setParsedProps(initialProps);
+    const res = parseCodeToProps(jsxCode);
+    setParsedProps({
+      ...initialProps,
+      ...(res.success && res.props ? res.props : {}),
+    });
   };
 
   const handleCopy = async () => {
@@ -137,6 +190,10 @@ export default function InlinePlayground({
     }
 
     if (type === 'compound') {
+      const showHeaderReset = parsedProps.headerShowReset ?? false;
+      const headerResetLabel = parsedProps.headerResetLabel;
+      const resetBtnLabel = parsedProps.resetButtonLabel ?? parsedProps.buttonLabel ?? 'Jump to Today';
+
       return (
         <GestureHandlerRootView style={rnStyles.root}>
           <View
@@ -155,13 +212,17 @@ export default function InlinePlayground({
               }}
               {...parsedProps}
             >
-              <RulerHeader showResetToToday={false} />
+              <RulerHeader showResetToToday={showHeaderReset} resetLabel={headerResetLabel} />
               <RulerTrack>
-                <RulerIndicator />
+                <RulerIndicator style={parsedProps.indicatorStyle} />
                 <RulerTicks />
               </RulerTrack>
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: 14 }}>
-                <RulerResetButton />
+                <RulerResetButton
+                  label={resetBtnLabel}
+                  style={parsedProps.resetButtonStyle}
+                  textStyle={parsedProps.resetButtonTextStyle}
+                />
               </div>
             </RulerRoot>
           </View>
@@ -190,17 +251,18 @@ export default function InlinePlayground({
             >
               <RulerHeader showResetToToday={false} />
               <RulerTrack>
-                <RulerIndicator style={{ bottom: 18 }}>
+                <RulerIndicator style={parsedProps.indicatorStyle ?? { bottom: 18 }}>
                   <View
                     style={{
                       width: 14,
                       height: 14,
-                      backgroundColor: '#38BDF8',
-                      transform: [{ rotate: '45deg' }],
+                      backgroundColor: parsedProps.customColor ?? '#38BDF8',
+                      transform: [{ rotate: parsedProps.customRotate ?? '45deg' }],
                       borderRadius: 3,
-                      shadowColor: '#38BDF8',
+                      shadowColor: parsedProps.customColor ?? '#38BDF8',
                       shadowOpacity: 0.8,
                       shadowRadius: 8,
+                      ...(parsedProps.customStyle ?? {}),
                     }}
                   />
                 </RulerIndicator>
@@ -233,7 +295,7 @@ export default function InlinePlayground({
             >
               <RulerHeader showResetToToday={false} />
               <RulerTrack>
-                <RulerIndicator style={{ top: 2 }}>
+                <RulerIndicator style={parsedProps.indicatorStyle ?? { top: 2 }}>
                   <View
                     style={{
                       width: 0,
@@ -243,7 +305,8 @@ export default function InlinePlayground({
                       borderTopWidth: 12,
                       borderLeftColor: 'transparent',
                       borderRightColor: 'transparent',
-                      borderTopColor: '#EC4899',
+                      borderTopColor: parsedProps.customColor ?? '#EC4899',
+                      ...(parsedProps.customStyle ?? {}),
                     }}
                   />
                 </RulerIndicator>
@@ -276,22 +339,162 @@ export default function InlinePlayground({
             >
               <RulerHeader showResetToToday={false} />
               <RulerTrack>
-                <RulerIndicator style={{ bottom: 8 }}>
+                <RulerIndicator style={parsedProps.indicatorStyle ?? { bottom: 8 }}>
                   <View
                     style={{
                       width: 6,
                       height: 44,
-                      backgroundColor: '#10B981',
+                      backgroundColor: parsedProps.customColor ?? '#10B981',
                       borderRadius: 3,
-                      shadowColor: '#10B981',
+                      shadowColor: parsedProps.customColor ?? '#10B981',
                       shadowOpacity: 0.9,
                       shadowRadius: 8,
+                      ...(parsedProps.customStyle ?? {}),
                     }}
                   />
                 </RulerIndicator>
                 <RulerTicks />
               </RulerTrack>
             </RulerRoot>
+          </View>
+        </GestureHandlerRootView>
+      );
+    }
+
+    if (type === 'headless') {
+      return (
+        <GestureHandlerRootView style={rnStyles.root}>
+          <View
+            style={rnStyles.container}
+            onLayout={(e) => {
+              const w = e.nativeEvent.layout.width;
+              if (w > 0) setPreviewWidth(w);
+            }}
+          >
+            <HeadlessPickerDemo
+              width={effectiveWidth}
+              tickSpacing={parsedProps.tickSpacing ?? 28}
+              rulerHeight={parsedProps.rulerHeight ?? 64}
+              buttonLabel={parsedProps.buttonLabel ?? 'Today'}
+            />
+          </View>
+        </GestureHandlerRootView>
+      );
+    }
+
+    if (type === 'headless-range') {
+      return (
+        <GestureHandlerRootView style={rnStyles.root}>
+          <View
+            style={rnStyles.container}
+            onLayout={(e) => {
+              const w = e.nativeEvent.layout.width;
+              if (w > 0) setPreviewWidth(w);
+            }}
+          >
+            <HeadlessRangeDemo
+              width={effectiveWidth}
+              tickSpacing={parsedProps.tickSpacing ?? 28}
+              rulerHeight={parsedProps.rulerHeight ?? 64}
+              minSpanDays={parsedProps.minSpanDays ?? 2}
+              maxSpanDays={parsedProps.maxSpanDays ?? 21}
+            />
+          </View>
+        </GestureHandlerRootView>
+      );
+    }
+
+    if (type === 'range-compound') {
+      return (
+        <GestureHandlerRootView style={rnStyles.root}>
+          <View
+            style={rnStyles.container}
+            onLayout={(e) => {
+              const w = e.nativeEvent.layout.width;
+              if (w > 0) setPreviewWidth(w);
+            }}
+          >
+            <RulerRangeRoot
+              value={range}
+              width={effectiveWidth}
+              onChange={({ startDate, endDate }) => {
+                setRange({ start: startDate, end: endDate });
+              }}
+              {...parsedProps}
+            >
+              <RulerRangeHeader />
+              <RulerRangeTrack>
+                <RulerRangeIndicator />
+                <RulerRangeTicks />
+              </RulerRangeTrack>
+            </RulerRangeRoot>
+          </View>
+        </GestureHandlerRootView>
+      );
+    }
+
+    if (type === 'compound-lens') {
+      return (
+        <GestureHandlerRootView style={rnStyles.root}>
+          <View
+            style={rnStyles.container}
+            onLayout={(e) => {
+              const w = e.nativeEvent.layout.width;
+              if (w > 0) setPreviewWidth(w);
+            }}
+          >
+            <RulerRoot
+              value={selectedDate}
+              width={effectiveWidth}
+              onChange={(date, str) => {
+                setSelectedDate(date);
+                setDateString(str);
+              }}
+              lensEffect
+              {...parsedProps}
+            >
+              <RulerHeader
+                showResetToToday={parsedProps.headerShowReset ?? false}
+                resetLabel={parsedProps.headerResetLabel}
+              />
+              <RulerLensTrack />
+            </RulerRoot>
+          </View>
+        </GestureHandlerRootView>
+      );
+    }
+
+    if (type === 'context') {
+      return (
+        <GestureHandlerRootView style={rnStyles.root}>
+          <View
+            style={rnStyles.container}
+            onLayout={(e) => {
+              const w = e.nativeEvent.layout.width;
+              if (w > 0) setPreviewWidth(w);
+            }}
+          >
+            <CustomContextDemo
+              width={effectiveWidth}
+              buttonLabel={parsedProps.buttonLabel ?? 'Reset'}
+              {...parsedProps}
+            />
+          </View>
+        </GestureHandlerRootView>
+      );
+    }
+
+    if (type === 'range-context') {
+      return (
+        <GestureHandlerRootView style={rnStyles.root}>
+          <View
+            style={rnStyles.container}
+            onLayout={(e) => {
+              const w = e.nativeEvent.layout.width;
+              if (w > 0) setPreviewWidth(w);
+            }}
+          >
+            <CustomRangeContextDemo width={effectiveWidth} {...parsedProps} />
           </View>
         </GestureHandlerRootView>
       );
@@ -456,6 +659,301 @@ export default function InlinePlayground({
   );
 }
 
+function HeadlessPickerDemo({
+  width,
+  tickSpacing = 28,
+  rulerHeight = 60,
+  buttonLabel = 'Today',
+}: {
+  width: number;
+  tickSpacing?: number;
+  rulerHeight?: number;
+  buttonLabel?: string;
+}) {
+  const [date, setDate] = useState<Date>(new Date());
+  const ruler = useRulerDatePicker({
+    value: date,
+    width,
+    tickSpacing,
+    rulerHeight,
+    onChange: (d) => setDate(d),
+  });
+
+  const animatedStyle = useAnimatedStyle(
+    () => ({
+      transform: [{ translateX: ruler.translateX.value }],
+    }),
+    [ruler.translateX]
+  );
+
+  return (
+    <View style={rnStyles.headlessWrapper}>
+      <View style={rnStyles.headlessHeader}>
+        <Text style={rnStyles.headlessSublabel}>ACTIVE DATE</Text>
+        <Text style={[rnStyles.headlessDate, { color: ruler.theme.accentColor }]}>
+          {ruler.selectedDateStr}
+        </Text>
+      </View>
+
+      <GestureDetector gesture={ruler.panGesture as any}>
+        <View style={[rnStyles.headlessTrack, { width, height: ruler.rulerHeight }]}>
+          <View
+            pointerEvents="none"
+            style={[
+              rnStyles.headlessNeedle,
+              { backgroundColor: ruler.theme.accentColor },
+            ]}
+          />
+
+          <Animated.View
+            style={[
+              rnStyles.ticksWrapper,
+              { left: width / 2 },
+              animatedStyle,
+            ]}
+          >
+            {ruler.visibleTicks.map((tick) => (
+              <Tick
+                key={tick.offset}
+                tick={tick}
+                tickSpacing={ruler.tickSpacing}
+                rulerHeight={ruler.rulerHeight}
+              />
+            ))}
+          </Animated.View>
+        </View>
+      </GestureDetector>
+
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => ruler.resetToToday(true)}
+        style={[rnStyles.headlessResetBtn, { backgroundColor: `${ruler.theme.accentColor}18` }]}
+      >
+        <Text style={[rnStyles.headlessResetText, { color: ruler.theme.accentColor }]}>
+          {buttonLabel}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+function HeadlessRangeDemo({
+  width,
+  tickSpacing = 28,
+  rulerHeight = 60,
+  minSpanDays = 2,
+  maxSpanDays = 21,
+}: {
+  width: number;
+  tickSpacing?: number;
+  rulerHeight?: number;
+  minSpanDays?: number;
+  maxSpanDays?: number;
+}) {
+  const [range, setRange] = useState({
+    start: new Date(),
+    end: new Date(Date.now() + 6 * 86400000),
+  });
+
+  const rangeRuler = useRulerDateRangePicker({
+    value: range,
+    width,
+    tickSpacing,
+    rulerHeight,
+    minSpanDays,
+    maxSpanDays,
+    onChange: ({ startDate, endDate }) => {
+      setRange({ start: startDate, end: endDate });
+    },
+  });
+
+  const animatedStyle = useAnimatedStyle(
+    () => ({
+      transform: [{ translateX: rangeRuler.translateX.value }],
+    }),
+    [rangeRuler.translateX]
+  );
+
+  const highlightLeft = rangeRuler.startOffset * rangeRuler.tickSpacing - rangeRuler.tickSpacing / 2;
+  const highlightWidth = Math.max(
+    rangeRuler.tickSpacing,
+    (rangeRuler.endOffset - rangeRuler.startOffset + 1) * rangeRuler.tickSpacing
+  );
+
+  return (
+    <View style={rnStyles.headlessWrapper}>
+      <View style={rnStyles.headlessRangeHeader}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => rangeRuler.scrollToHandle('start', true)}
+          style={[
+            rnStyles.headlessHandlePill,
+            rangeRuler.activeHandle === 'start' && {
+              borderColor: rangeRuler.theme.accentColor,
+              backgroundColor: `${rangeRuler.theme.accentColor}20`,
+            },
+          ]}
+        >
+          <Text style={rnStyles.headlessPillSub}>START</Text>
+          <Text
+            style={[
+              rnStyles.headlessPillDate,
+              { color: rangeRuler.activeHandle === 'start' ? rangeRuler.theme.accentColor : '#8E8E93' },
+            ]}
+          >
+            {rangeRuler.startDateStr}
+          </Text>
+        </TouchableOpacity>
+
+        <View style={rnStyles.headlessSpanBadge}>
+          <Text style={[rnStyles.headlessSpanText, { color: rangeRuler.theme.accentColor }]}>
+            ➔ {rangeRuler.spanDays} days
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => rangeRuler.scrollToHandle('end', true)}
+          style={[
+            rnStyles.headlessHandlePill,
+            rangeRuler.activeHandle === 'end' && {
+              borderColor: rangeRuler.theme.accentColor,
+              backgroundColor: `${rangeRuler.theme.accentColor}20`,
+            },
+          ]}
+        >
+          <Text style={rnStyles.headlessPillSub}>END</Text>
+          <Text
+            style={[
+              rnStyles.headlessPillDate,
+              { color: rangeRuler.activeHandle === 'end' ? rangeRuler.theme.accentColor : '#8E8E93' },
+            ]}
+          >
+            {rangeRuler.endDateStr}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <GestureDetector gesture={rangeRuler.panGesture as any}>
+        <View style={[rnStyles.headlessTrack, { width, height: rangeRuler.rulerHeight }]}>
+          <View
+            pointerEvents="none"
+            style={[
+              rnStyles.headlessNeedle,
+              { backgroundColor: rangeRuler.theme.accentColor },
+            ]}
+          />
+
+          <Animated.View
+            style={[
+              rnStyles.ticksWrapper,
+              { left: width / 2 },
+              animatedStyle,
+            ]}
+          >
+            <View
+              pointerEvents="none"
+              style={[
+                rnStyles.highlightStrip,
+                {
+                  left: highlightLeft,
+                  width: highlightWidth,
+                  height: rangeRuler.rulerHeight,
+                  backgroundColor: rangeRuler.theme.rangeHighlightColor,
+                },
+              ]}
+            />
+            {rangeRuler.visibleTicks.map((tick) => (
+              <Tick
+                key={tick.offset}
+                tick={tick}
+                tickSpacing={rangeRuler.tickSpacing}
+                rulerHeight={rangeRuler.rulerHeight}
+              />
+            ))}
+          </Animated.View>
+        </View>
+      </GestureDetector>
+    </View>
+  );
+}
+
+function ContextHeaderConsumer({ buttonLabel = 'Reset' }: { buttonLabel?: string }) {
+  const { selectedDateStr, resetToToday, theme } = useRulerContext();
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', paddingHorizontal: 24, marginBottom: 14 }}>
+      <View>
+        <Text style={{ fontSize: 10, fontWeight: '700', color: '#8E8E93', letterSpacing: 0.5, marginBottom: 2 }}>ACTIVE DATE</Text>
+        <Text style={{ color: theme.accentColor, fontWeight: '700', fontSize: 16 }}>{selectedDateStr}</Text>
+      </View>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => resetToToday(true)}
+        style={{ paddingVertical: 5, paddingHorizontal: 14, borderRadius: 14, backgroundColor: `${theme.accentColor}18` }}
+      >
+        <Text style={{ color: theme.accentColor, fontWeight: '600', fontSize: 12 }}>{buttonLabel}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+function CustomContextDemo({
+  width,
+  buttonLabel,
+  ...props
+}: {
+  width: number;
+  buttonLabel?: string;
+  [key: string]: any;
+}) {
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  return (
+    <RulerRoot value={selectedDate} width={width} onChange={setSelectedDate} {...props}>
+      <ContextHeaderConsumer buttonLabel={buttonLabel} />
+      <RulerTrack>
+        <RulerIndicator />
+        <RulerTicks />
+      </RulerTrack>
+    </RulerRoot>
+  );
+}
+
+function RangeDurationConsumer() {
+  const { spanDays, startDateStr, endDateStr, theme } = useRulerRangeContext();
+  return (
+    <View style={{ alignItems: 'center', marginBottom: 14 }}>
+      <Text style={{ color: theme.accentColor, fontWeight: '800', fontSize: 17 }}>
+        {spanDays} {spanDays === 1 ? 'Night' : 'Nights'} Selected
+      </Text>
+      <Text style={{ color: '#8E8E93', fontSize: 12, marginTop: 3 }}>
+        {startDateStr} ➔ {endDateStr}
+      </Text>
+    </View>
+  );
+}
+
+function CustomRangeContextDemo({ width, ...props }: { width: number; [key: string]: any }) {
+  const [range, setRange] = useState({
+    start: new Date(),
+    end: new Date(Date.now() + 7 * 86400000),
+  });
+
+  return (
+    <RulerRangeRoot
+      value={range}
+      width={width}
+      onChange={({ startDate, endDate }) => setRange({ start: startDate, end: endDate })}
+      {...props}
+    >
+      <RangeDurationConsumer />
+      <RulerRangeTrack>
+        <RulerRangeIndicator />
+        <RulerRangeTicks />
+      </RulerRangeTrack>
+    </RulerRangeRoot>
+  );
+}
+
 const rnStyles = StyleSheet.create({
   root: {
     width: '100%',
@@ -468,5 +966,94 @@ const rnStyles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  headlessWrapper: {
+    width: '100%',
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  headlessHeader: {
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  headlessSublabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#8E8E93',
+    letterSpacing: 0.5,
+    marginBottom: 2,
+  },
+  headlessDate: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  headlessTrack: {
+    position: 'relative',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  headlessNeedle: {
+    position: 'absolute',
+    bottom: 0,
+    width: 3,
+    height: 38,
+    borderRadius: 1.5,
+    zIndex: 10,
+  },
+  ticksWrapper: {
+    position: 'absolute',
+    height: '100%',
+    width: 0,
+  },
+  highlightStrip: {
+    position: 'absolute',
+    bottom: 0,
+    borderRadius: 8,
+    zIndex: 1,
+  },
+  headlessResetBtn: {
+    marginTop: 14,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 16,
+  },
+  headlessResetText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  headlessRangeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    marginBottom: 14,
+  },
+  headlessHandlePill: {
+    paddingVertical: 5,
+    paddingHorizontal: 14,
+    borderRadius: 18,
+    borderWidth: 1.5,
+    borderColor: 'transparent',
+    alignItems: 'center',
+  },
+  headlessPillSub: {
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    color: '#8E8E93',
+    marginBottom: 2,
+  },
+  headlessPillDate: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  headlessSpanBadge: {
+    alignItems: 'center',
+  },
+  headlessSpanText: {
+    fontSize: 12,
+    fontWeight: '700',
   },
 });
