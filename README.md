@@ -8,6 +8,10 @@
   A performant, customizable horizontal ruler date picker & scroll wheel for React Native and Expo. Powered by 60 FPS Reanimated 3 physics and dual-speed haptic feedback.
 </p>
 
+<p align="center">
+  <a href="https://github.com/md-rehman/react-native-ruler-date-picker"><strong>Documentation & Interactive Demos »</strong></a>
+</p>
+
 ## ✨ Features
 
 - **60 FPS Physics** — Reanimated 3 decay animations with snap-to-tick alignment
@@ -42,27 +46,159 @@ Optional (for haptic feedback):
 npx expo install expo-haptics
 ```
 
+### Configure Peer Dependencies
+
+#### 1. Babel Configuration
+For bare React Native CLI apps, add the Reanimated Babel plugin to your `babel.config.js` as the **very last** plugin:
+
+```javascript
+module.exports = {
+  presets: ['module:@react-native/babel-preset'],
+  plugins: [
+    'react-native-reanimated/plugin', // MUST be last plugin
+  ],
+};
+```
+
+> **Note for Expo (SDK 50+)**: In managed Expo workflows using `babel-preset-expo`, the Reanimated Babel plugin is included automatically.
+
+#### 2. GestureHandlerRootView
+Wrap your application root component with `GestureHandlerRootView` so gestures and pan physics function properly:
+
+```tsx
+import React from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import MainScreen from './MainScreen';
+
+export default function App() {
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <MainScreen />
+    </GestureHandlerRootView>
+  );
+}
+```
+
+> If using **Expo Router**, wrap your root layout in `app/_layout.tsx`.
+
 ## 🚀 Quick Start
 
 ```tsx
 import React, { useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { RulerDatePicker } from 'react-native-ruler-date-picker';
 
 export default function App() {
   const [date, setDate] = useState(new Date());
 
   return (
-    <RulerDatePicker
-      value={date}
-      onChange={(newDate, dateString) => {
-        setDate(newDate);
-        console.log('Selected:', dateString); // "2026-08-07"
-      }}
-      header={{ showResetToToday: true }}
-    />
+    <View style={styles.container}>
+      <Text style={styles.label}>
+        Selected: {date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+      </Text>
+
+      <RulerDatePicker
+        value={date}
+        onChange={(newDate, dateString) => {
+          setDate(newDate);
+          console.log('Selected Date:', dateString); // "YYYY-MM-DD"
+        }}
+        ticks="calendar"
+        header={{ showResetToToday: true }}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#0F172A',
+  },
+  label: {
+    color: '#F8FAFC',
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 24,
+  },
+});
+```
+
+## 📅 Date Range Selection [Experimental]
+
+Select a range with start and end handles using `RulerDateRangePicker`:
+
+```tsx
+import React, { useState } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { RulerDateRangePicker, DateRange } from 'react-native-ruler-date-picker';
+
+export default function RangeBookingScreen() {
+  const [range, setRange] = useState<DateRange>({
+    start: new Date(),
+    end: new Date(Date.now() + 5 * 86400000), // +5 days
+  });
+
+  return (
+    <View style={styles.container}>
+      <RulerDateRangePicker
+        value={range}
+        onChange={({ startDate, endDate, dateRange }) => {
+          setRange(dateRange);
+          console.log('Selected range:', startDate, '→', endDate);
+        }}
+        minSpanDays={1}
+        maxSpanDays={30}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#0F172A',
+  },
+});
+```
+
+## 🧩 Compound Anatomy API
+
+For full layout flexibility, compose custom pickers with `Ruler.*`:
+
+```tsx
+import React, { useState } from 'react';
+import { View } from 'react-native';
+import { Ruler } from 'react-native-ruler-date-picker';
+
+export default function CustomAnatomy() {
+  const [date, setDate] = useState(new Date());
+
+  return (
+    <Ruler.Root value={date} onChange={setDate} tickSpacing={28}>
+      {/* 1. Header with custom placement */}
+      <Ruler.Header showResetToToday={false} />
+
+      {/* 2. Scroll arena containing needle & graduation ticks */}
+      <Ruler.Track>
+        <Ruler.Indicator />
+        <Ruler.Ticks />
+      </Ruler.Track>
+
+      {/* 3. Standalone Reset button */}
+      <View style={{ alignItems: 'center', marginTop: 12 }}>
+        <Ruler.ResetButton label="Jump to Today" />
+      </View>
+    </Ruler.Root>
   );
 }
 ```
+
+For range pickers, use `RulerRange.*` (`RulerRange.Root`, `RulerRange.Header`, `RulerRange.Track`, `RulerRange.Ticks`, and `RulerRange.Indicator`).
 
 ## 📐 API Reference
 
@@ -70,25 +206,26 @@ export default function App() {
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `value` | `Date \| string` | `undefined` | Currently selected date (controlled) |
-| `defaultValue` | `Date \| string` | `today` | Initial selected date (uncontrolled) |
-| `onChange` | `(date: Date, dateString: string) => void` | `undefined` | Called when selected date changes |
-| `minDate` | `Date \| string` | `-365 days` | Minimum selectable date boundary |
-| `maxDate` | `Date \| string` | `+365 days` | Maximum selectable date boundary |
-| `locale` | `string` | `'default'` | BCP 47 locale for date formatting |
-| `ticks` | `TickRule[] \| 'calendar' \| 'metric' \| 'minimal'` | `'calendar'` | Graduation rules or preset name |
-| `tickSpacing` | `number` | `24` | Gap between tick centers (px) |
-| `tickWidth` | `number` | `3` | Base thickness of tick bars (px) |
-| `width` | `number` | `window width` | Viewport width of the ruler track (px) |
-| `rulerHeight` | `number` | `60` | Ruler track viewport height (px) |
-| `indicator` | `boolean \| IndicatorConfig` | `true` | Needle dimensions `{ width, height, offset }` or custom renderer |
-| `header` | `boolean \| HeaderConfig` | `true` | Header display, `{ showResetToToday, resetLabel, format }`, or custom renderer |
-| `haptics` | `boolean \| HapticConfig` | `true` | Haptics toggle, `{ onTrigger }`, or velocity tuning |
-| `theme` | `RulerTheme` | auto | Color tokens (`indicatorColor`, `background`, etc.) |
-| `style` | `StyleProp<ViewStyle>` | `undefined` | Container view style (`height`, `margin`, etc.) |
-| `lensEffect` | `boolean \| LensConfig` | `false` | Fisheye lens distortion magnifying center spacing |
-| `accessibilityLabel` | `string` | `'Date picker'` | Accessibility label for screen readers |
-| `debounceMs` | `number` | `100` | Debounce before firing `onChange` during scroll |
+| `value` | `Date \| string` | `new Date() (Today)` | Currently selected date (controlled). Accepts Date or "YYYY-MM-DD". |
+| `defaultValue` | `Date \| string` | `new Date() (Today)` | Initial selected date for uncontrolled mode. |
+| `onChange` | `(date: Date, dateString: string) => void` | `undefined` | Called when scrolling stops and snaps to a date. |
+| `minDate` | `Date \| string` | `Today - 365 days` | Minimum selectable date boundary. |
+| `maxDate` | `Date \| string` | `Today + 365 days` | Maximum selectable date boundary. |
+| `locale` | `string` | `'default'` | BCP 47 locale tag (e.g. "en-US", "de-DE", "ja-JP") for date formatting. |
+| `ticks` | `TickRule[] \| 'calendar' \| 'metric' \| 'minimal'` | `'calendar'` | Graduation rules array or preset name. |
+| `tickSpacing` | `number` | `24` | Gap in pixels between consecutive tick graduation marks. |
+| `tickWidth` | `number` | `3` | Base thickness in pixels for tick graduation bars. |
+| `width` | `number` | `window width` | Viewport track width in pixels. Defaults to device window width. |
+| `rulerHeight` | `number` | `60` | Height in pixels of the interactive ruler tick viewport track. |
+| `header` | `boolean \| HeaderConfig` | `true` | Top date header display, config options, or custom renderer. |
+| `indicator` | `boolean \| IndicatorConfig` | `true` | Center needle indicator display, dimensions, or custom renderer. |
+| `haptics` | `boolean \| HapticConfig` | `true` | Dual-speed tactile vibration toggle or custom trigger callback. |
+| `lensEffect` | `boolean \| LensConfig` | `false` | Optical fisheye lens distortion magnifying center spacing. |
+| `theme` | `RulerTheme` | `auto (system)` | Color theme tokens overriding default Light/Dark color scheme. |
+| `style` | `StyleProp<ViewStyle>` | `undefined` | Container view style applied to outer root component. |
+| `debounceMs` | `number` | `100` | Debounce duration in milliseconds for `onChange` during fast scroll. |
+| `testID` | `string` | `undefined` | Identifier for automated testing and inspection. |
+| `accessibilityLabel` | `string` | `'Date picker'` | Screen reader accessibility label for assistive technologies. |
 
 ## 🎨 Theming
 
