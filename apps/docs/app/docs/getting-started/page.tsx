@@ -54,24 +54,36 @@ export default function GettingStartedPage() {
 
       <section style={{ marginBottom: 40 }}>
         <h2>1. Installation</h2>
+
+        <CodeBlock
+          title="Terminal"
+          language="bash"
+          code={`npm install react-native-ruler-date-picker
+# or
+yarn add react-native-ruler-date-picker
+# or
+pnpm add react-native-ruler-date-picker`}
+        />
+
+        <h3 style={{ marginTop: 24 }}>Peer Dependencies</h3>
         <p>
-          Install <code>react-native-ruler-date-picker</code> along with its peer dependencies:
+          Make sure you have these installed in your project:
         </p>
 
         <CodeBlock
           title="Terminal"
           language="bash"
-          code={`# Using pnpm
-pnpm add react-native-ruler-date-picker react-native-reanimated react-native-gesture-handler
+          code={`npm install react-native-reanimated react-native-gesture-handler`}
+        />
 
-# Using npm
-npm install react-native-ruler-date-picker react-native-reanimated react-native-gesture-handler
+        <p style={{ marginTop: 16 }}>
+          Optional (for haptic feedback):
+        </p>
 
-# Using yarn
-yarn add react-native-ruler-date-picker react-native-reanimated react-native-gesture-handler
-
-# Using Expo
-npx expo install react-native-ruler-date-picker react-native-reanimated react-native-gesture-handler`}
+        <CodeBlock
+          title="Terminal"
+          language="bash"
+          code={`npx expo install expo-haptics`}
         />
       </section>
 
