@@ -1,0 +1,123 @@
+.device {
+  position: relative;
+  background-color: #000;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5), 0 10px 40px rgba(0, 0, 0, 0.3);
+  transition: all var(--transition-slow);
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-bg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* iPhone 15 Pro Max style */
+.iphone {
+  width: 380px;
+  height: 820px;
+  border-radius: 54px;
+  border: 12px solid #1a1a1a;
+}
+
+.iphone .island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 35px;
+  background-color: #000;
+  border-radius: 20px;
+  z-index: 10;
+}
+
+.iphone .screen {
+  border-radius: 42px;
+}
+
+/* Android (Pixel) style */
+.android {
+  width: 380px;
+  height: 820px;
+  border-radius: 36px;
+  border: 8px solid #2d2d2d;
+}
+
+.android .punchhole {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 24px;
+  background-color: #000;
+  border-radius: 50%;
+  z-index: 10;
+}
+
+.android .screen {
+  border-radius: 28px;
+}
+
+/* Web Browser style */
+.web {
+  width: 800px;
+  height: 600px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.browserBar {
+  height: 40px;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.browserDots {
+  display: flex;
+  gap: 8px;
+}
+
+.browserDots span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.browserDots span:nth-child(1) { background-color: #ff5f56; }
+.browserDots span:nth-child(2) { background-color: #ffbd2e; }
+.browserDots span:nth-child(3) { background-color: #27c93f; }
+
+.addressBar {
+  flex: 1;
+  height: 24px;
+  background-color: var(--color-bg);
+  border-radius: 6px;
+  margin: 0 16px;
+  max-width: 400px;
+}
+
+.web .screen {
+  flex: 1;
+  border-radius: 0 0 12px 12px;
+}
+
+/* Responsive scaling */
+@media (max-width: 1440px) {
+  .web { width: 700px; height: 500px; }
+  .iphone, .android { transform: scale(0.9); }
+}
+
+@media (max-width: 768px) {
+  .web { width: 100%; height: 400px; }
+  .iphone, .android { transform: scale(0.7); }
+}

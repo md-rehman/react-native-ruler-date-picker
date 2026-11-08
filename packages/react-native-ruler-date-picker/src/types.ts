@@ -1,102 +1,173 @@
 import type React from 'react';
+import type { StyleProp, ViewStyle, TextStyle } from 'react-native';
 
-export interface RulerDatePickerProps {
-  // ── Selection & Bounds ─────────────────────────────────────
-  /** The currently selected date. Accepts a Date object or a YYYY-MM-DD string. */
-  selectedDate: Date | string;
+// ── Tick System Types ────────────────────────────────────────────────────────
+
+/**
+ * Context provided to each tick rule during evaluation.
+ */
+export interface TickContext {
+  /** The Date represented by this tick */
+  date: Date;
+  /** Day offset relative to reference time (0 = today) */
+  offset: number;
+  /** True if this date is today */
+  isToday: boolean;
+  /** True if this date matches the currently selected date */
+  isSelected: boolean;
+  /** True if this date falls within the selected range (range picker mode) */
+  isInRange?: boolean;
+}
+
+/**
+ * Predicate condition determining when a tick rule matches.
+ */
+export type TickCondition =
+  | 'daily'                     // Matches every day (base / fallback)
+  | 'weekly'                    // Every 7th day relative to reference
+  | 'monthly'                   // 1st day of each month
+  | 'yearly'                    // Jan 1st of each year
+  | { interval: number }        // Every N days (offset % interval === 0)
+  | { dayOfWeek: number[] }     // Days of week: 0 = Sun, 1 = Mon, ..., 6 = Sat
+  | ((ctx: TickContext) => boolean); // Custom predicate callback
+
+/**
+ * Configuration for tick date labels.
+ */
+export interface TickLabelConfig {
+  /** Custom label text formatter */
+  format?: (date: Date, ctx: TickContext) => string;
+  /** Text color override */
+  color?: string;
+  /** Font size in pixels (default: 10) */
+  fontSize?: number;
+  /** Font weight */
+  fontWeight?: TextStyle['fontWeight'];
+}
+
+/**
+ * Configuration for the dot indicator (e.g. today dot or milestone badge).
+ */
+export interface TickDotConfig {
+  /** Dot diameter in pixels (default: 6) */
+  size?: number;
+  /** Dot fill color */
+  color?: string;
+}
+
+/**
+ * Complete declarative definition for a tick variant.
+ * Evaluated top-to-bottom; first matching rule is applied.
+ */
+export interface TickRule {
   /**
-   * Called when the user scrolls to a new date.
-   * Provides both the Date object and the formatted YYYY-MM-DD string.
+   * When this rule applies.
+   * If omitted, this rule matches unconditionally (serves as the fallback).
    */
-  onSelectDate: (date: Date, dateString: string) => void;
-  /** Minimum selectable date. Defaults to 365 days before today. */
-  minDate?: Date;
-  /** Maximum selectable date. Defaults to 365 days after today. */
-  maxDate?: Date;
+  condition?: TickCondition;
 
-  // ── Label & Highlight Rules ────────────────────────────────
-  /**
-   * Controls which ticks show a date label.
-   * - `'daily'` — every tick gets a label
-   * - `'weekly'` (default) — every 7th day
-   * - `'monthly'` — 1st of each month
-   * - `(date: Date) => boolean` — custom callback
-   */
-  labelInterval?: 'daily' | 'weekly' | 'monthly' | ((date: Date) => boolean);
-  /** Days of the week to visually highlight. 0 = Sunday, 6 = Saturday. e.g. [0, 6] for weekends. */
-  highlightDays?: number[];
+  /** Height of the tick bar in pixels */
+  height: number;
 
-  // ── Tick Dimensions ────────────────────────────────────────
-  /** Gap between ticks in pixels. Default: 24 */
-  tickSpacing?: number;
-  /** Height of small (unlabeled) ticks in pixels. Default: 12 */
-  tickHeight?: number;
-  /** Height of tall (labeled) ticks in pixels. Default: 24 */
-  tickTallHeight?: number;
-  /** Width of each tick bar in pixels. Default: 4 */
-  tickThickness?: number;
+  /** Width/thickness of the tick bar in pixels (defaults to tickWidth or 3) */
+  width?: number;
 
-  // ── Tick Colors (small & large independently) ──────────────
-  /** Color of small (unlabeled) ticks. */
-  tickColor?: string;
-  /** Color of tall (labeled) ticks. Falls back to tickColor if not specified. */
-  tickTallColor?: string;
+  /** Color of the tick bar */
+  color?: string;
 
-  // ── Label & Accent Colors ─────────────────────────────────
-  /** Color of date label text beneath labeled ticks. */
-  labelColor?: string;
-  /** Color of the today dot indicator and reset button text. */
-  accentColor?: string;
-  /** Color of the center selection indicator line. */
+  /** Label configuration or boolean (true uses day number) */
+  label?: boolean | TickLabelConfig;
+
+  /** Dot badge indicator (e.g., today marker) */
+  dot?: boolean | TickDotConfig;
+
+  /** Custom React component render override for this tick */
+  render?: (ctx: TickContext) => React.ReactNode;
+}
+
+/**
+ * Resolved visual attributes for rendering a single tick.
+ */
+export interface ResolvedTick {
+  offset: number;
+  date: Date;
+  dateStr: string;
+  height: number;
+  width: number;
+  color: string;
+  labelText?: string;
+  labelColor: string;
+  labelFontSize: number;
+  labelFontWeight: TextStyle['fontWeight'];
+  hasDot: boolean;
+  dotSize: number;
+  dotColor: string;
+  customRender?: (ctx: TickContext) => React.ReactNode;
+  isToday: boolean;
+  isSelected: boolean;
+  isInRange: boolean;
+}
+
+// ── Theming & Styling ────────────────────────────────────────────────────────
+
+export interface RulerTheme {
+  /** Background color of the picker component */
+  background?: string;
+  /** Color of the center selection needle */
   indicatorColor?: string;
-  /** Background color of the entire component. Default: transparent */
-  backgroundColor?: string;
+  /** Primary accent color (used for today dot, active labels, etc.) */
+  accentColor?: string;
+  /** Default label text color */
+  labelColor?: string;
+  /** Default tick bar color when not overridden by a rule */
+  defaultTickColor?: string;
+  /** Color for range selection connecting bar in range mode */
+  rangeHighlightColor?: string;
+}
 
-  // ── Layout Dimensions ─────────────────────────────────────
-  /** Total component height in pixels. Default: 120 */
+export type ResolvedRulerTheme = Required<RulerTheme>;
+
+// ── Single Picker Props ──────────────────────────────────────────────────────
+
+/**
+ * Configuration for the center alignment needle indicator.
+ */
+export interface IndicatorConfig {
+  /** Width of the center indicator needle in pixels (default: 2) */
+  width?: number;
+  /** Height of the center indicator needle in pixels (default: 40) */
   height?: number;
-  /** Height of the ruler track area in pixels. Default: 60 */
-  rulerHeight?: number;
-  /** Width of the center selection indicator bar in pixels. Default: 2 */
-  indicatorWidth?: number;
-  /** Height of the center selection indicator bar in pixels. Default: 40 */
-  indicatorHeight?: number;
-  /** Diameter of the today dot indicator in pixels. Default: 6 */
-  todayDotSize?: number;
-  /** Font size of tick date labels in pixels. Default: 10 */
-  labelFontSize?: number;
-
-  // ── Performance Tuning ────────────────────────────────────
-  /** Number of off-screen ticks to render as buffer on each side. Default: 10 */
-  bufferTicks?: number;
-  /** Debounce interval in ms before calling onSelectDate. Default: 100 */
-  updateDebounceMs?: number;
-
-  // ── Haptic Tuning ─────────────────────────────────────────
-  /** Enable or disable haptic feedback. Default: true */
-  enableHaptics?: boolean;
+  /** Color of the center indicator needle */
+  color?: string;
   /**
-   * Custom haptic trigger callback. When provided, overrides the default
-   * expo-haptics implementation. Receives the haptic mode:
-   * - `'tick'` — single discrete haptic (slow scrolling)
-   * - `'continuous'` — continuous buzz (fast scrolling)
+   * Offset [x, y] in pixels of the center needle pointer.
+   * Default: [0, 0] (anchored to bottom).
    */
-  onHapticTrigger?: (mode: 'tick' | 'continuous') => void;
-  /** Number of ticks crossed per frame to trigger fast/continuous haptic mode. Default: 1 */
-  fastSwipeTickThreshold?: number;
-  /** Interval in ms between haptic pulses in continuous mode. Default: 20 */
-  continuousHapticIntervalMs?: number;
+  offset?: [number, number];
+  /** Custom style for the center indicator needle */
+  style?: StyleProp<ViewStyle>;
+  /** Custom renderer for the center indicator */
+  render?: () => React.ReactNode;
+}
 
-  // ── Reset Control ─────────────────────────────────────────
-  /** Show a "Today" reset button when not on today's date. Default: false */
+/**
+ * Configuration for the date picker header.
+ */
+export interface HeaderConfig {
+  /** Show "Today" reset button when not on today (default: false) */
   showResetToToday?: boolean;
-
-  // ── Custom Renderers ──────────────────────────────────────
-  /**
-   * Custom header renderer. When provided, replaces the default date header.
-   * Receives the selected date, whether it's today, and a function to reset to today.
-   */
-  renderHeader?: (
+  /** Text label for the reset button (default: 'Today') */
+  resetLabel?: string;
+  /** Header container style */
+  style?: StyleProp<ViewStyle>;
+  /** Header date label style */
+  dateStyle?: StyleProp<TextStyle>;
+  /** Header year label style */
+  yearStyle?: StyleProp<TextStyle>;
+  /** Custom date format function for the header text */
+  format?: (date: Date) => string;
+  /** Custom header renderer replacing the default header */
+  render?: (
     selectedDate: Date,
     isToday: boolean,
     resetToToday: () => void
@@ -104,26 +175,207 @@ export interface RulerDatePickerProps {
 }
 
 /**
- * Internal type for resolved color values.
- * @internal
+ * Configuration for tactile haptic feedback.
  */
-export interface ResolvedColors {
-  tickColor: string;
-  tickTallColor: string;
-  labelColor: string;
-  accentColor: string;
-  indicatorColor: string;
-  backgroundColor: string;
+export interface HapticConfig {
+  /** Whether haptics are enabled (default: true) */
+  enabled?: boolean;
+  /** Custom haptic callback (e.g. for Expo Haptics) */
+  onTrigger?: (mode: 'tick' | 'continuous') => void;
+  /** Speed threshold (ticks/frame) to trigger continuous buzz mode (default: 1) */
+  fastSwipeTickThreshold?: number;
+  /** Pulse interval in ms during continuous haptic mode (default: 20) */
+  continuousHapticIntervalMs?: number;
+}
+
+export interface RulerDatePickerProps {
+  // ── Value & Selection ──
+  /** Currently selected date (controlled). Accepts Date or YYYY-MM-DD string. */
+  value?: Date | string;
+  /** Initial selected date (uncontrolled). Accepts Date or YYYY-MM-DD string. */
+  defaultValue?: Date | string;
+  /** Called when user scrolls to a date */
+  onChange?: (date: Date, dateString: string) => void;
+  /** Minimum selectable date */
+  minDate?: Date | string;
+  /** Maximum selectable date */
+  maxDate?: Date | string;
+  /** BCP 47 locale string for date formatting (default: system 'default') */
+  locale?: string;
+
+  // ── Tick Configuration ──
+  /** Array of tick rules or a preset name ('calendar' | 'metric' | 'minimal') */
+  ticks?: TickRule[] | 'calendar' | 'metric' | 'minimal';
+  /** Distance in pixels between tick centers (default: 24) */
+  tickSpacing?: number;
+  /** Base width of tick bars in pixels (default: 3) */
+  tickWidth?: number;
+
+  // ── Dimensions & Theming ──
+  /** Width of the ruler viewport track in pixels (default: window width) */
+  width?: number;
+  /** Height of the ruler track area in pixels (default: 60) */
+  rulerHeight?: number;
+  /** Color theme overrides (background, indicatorColor, accentColor, labelColor, etc.) */
+  theme?: RulerTheme;
+  /** Container style */
+  style?: StyleProp<ViewStyle>;
+
+  // ── Indicator, Header, & Haptics (Consolidated APIs) ──
+  /** Center indicator needle configuration or boolean toggle (default: true) */
+  indicator?: boolean | IndicatorConfig;
+  /** Header configuration or boolean toggle (default: true) */
+  header?: boolean | HeaderConfig;
+  /** Haptics configuration or boolean toggle (default: true) */
+  haptics?: boolean | HapticConfig;
+
+  // ── Fisheye Lens Effect ──
+  /**
+   * Enable non-linear fisheye lens distortion where tick spacing is wider near the center
+   * needle and gradually flattens out to standard spacing away from the center.
+   * Can be true (for default configuration) or a custom LensConfig object.
+   */
+  lensEffect?: boolean | LensConfig;
+
+  // ── Performance ──
+  /** Debounce ms for onChange during scrolling (default: 100) */
+  debounceMs?: number;
+
+  /** Test ID for automated tests */
+  testID?: string;
+  /** Accessibility label for assistive technologies / screen readers */
+  accessibilityLabel?: string;
+}
+
+// ── Fisheye Lens Types ───────────────────────────────────────────────────────
+
+export interface LensConfig {
+  /**
+   * Spacing magnification factor at the center needle.
+   * (e.g. 1.6 means 60% wider spacing at the needle).
+   * Default: 1.6
+   */
+  magnification?: number;
+  /**
+   * Radius in pixels around the center needle over which the magnification
+   * smoothly transitions back to standard linear spacing.
+   * Default: 60
+   */
+  radius?: number;
+  /**
+   * Whether to subtly scale tick bar height and label prominence near the center.
+   * Default: true
+   */
+  scaleTicks?: boolean;
+}
+
+// ── Range Picker Types [EXPERIMENTAL] ────────────────────────────────────────
+
+/**
+ * Date range boundaries representation.
+ *
+ * @experimental
+ */
+export interface DateRange {
+  start: Date | string;
+  end: Date | string;
 }
 
 /**
- * Internal tick data used for rendering.
- * @internal
+ * Payload delivered to onChange when range selection changes.
+ *
+ * @experimental
  */
-export interface TickData {
-  offset: number;
-  isLabeled: boolean;
-  isToday: boolean;
-  isHighlighted: boolean;
-  dateStr: string;
+export interface DateRangeChangePayload {
+  start: Date;
+  end: Date;
+  startDate: Date;
+  endDate: Date;
+  startString: string;
+  endString: string;
+  spanDays: number;
+}
+
+/**
+ * Context provided to custom range header render callbacks.
+ *
+ * @experimental
+ */
+export interface RangeHeaderContext {
+  start: Date;
+  end: Date;
+  spanDays: number;
+  activeHandle: 'start' | 'end';
+  scrollToHandle: (handle: 'start' | 'end', animated?: boolean) => void;
+}
+
+/**
+ * Configuration options for the range header.
+ *
+ * @experimental
+ */
+export interface RangeHeaderConfig {
+  /** Header container style */
+  style?: StyleProp<ViewStyle>;
+  /** Header date label style */
+  dateStyle?: StyleProp<TextStyle>;
+  /** Custom date format function for start/end labels */
+  format?: (date: Date) => string;
+  /** Custom header renderer replacing default range header */
+  render?: (context: RangeHeaderContext) => React.ReactNode;
+}
+
+/**
+ * Configuration for the date range highlight span connecting the handles.
+ *
+ * @experimental
+ */
+export interface RangeHighlightConfig {
+  /** Color of the range connecting highlight strip (default: theme.rangeHighlightColor) */
+  color?: string;
+  /** Custom style for the range highlight span */
+  style?: StyleProp<ViewStyle>;
+  /** Custom renderer for the range highlight span */
+  render?: (
+    startOffset: number,
+    endOffset: number,
+    tickSpacing: number
+  ) => React.ReactNode;
+}
+
+/**
+ * Configuration for the center indicator needle in range mode.
+ *
+ * @experimental
+ */
+export interface RangeIndicatorConfig extends Omit<IndicatorConfig, 'render'> {
+  /** Custom renderer for range needle indicator receiving active handle and date */
+  render?: (handle: 'start' | 'end', date: Date) => React.ReactNode;
+}
+
+/**
+ * Props for `RulerDateRangePicker`.
+ *
+ * @experimental This component and its props are experimental. The API may
+ * undergo breaking changes in future minor versions.
+ */
+export interface RulerDateRangePickerProps
+  extends Omit<RulerDatePickerProps, 'value' | 'defaultValue' | 'onChange' | 'header' | 'indicator'> {
+  /** Currently selected date range (controlled) */
+  value?: DateRange;
+  /** Initial selected date range (uncontrolled) */
+  defaultValue?: DateRange;
+  /** Called when the selected range changes */
+  onChange?: (range: DateRangeChangePayload) => void;
+  /** Header configuration or boolean toggle (default: true) */
+  header?: boolean | RangeHeaderConfig;
+  /** Center indicator needle configuration or boolean toggle (default: true) */
+  indicator?: boolean | RangeIndicatorConfig;
+  /** Range connecting highlight strip configuration or boolean toggle (default: true) */
+  highlight?: boolean | RangeHighlightConfig;
+
+  /** Minimum selectable span in days (default: 1) */
+  minSpanDays?: number;
+  /** Maximum selectable span in days */
+  maxSpanDays?: number;
 }

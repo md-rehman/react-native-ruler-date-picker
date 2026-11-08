@@ -1,6 +1,6 @@
 import { useColorScheme } from 'react-native';
-import { LIGHT_COLORS, DARK_COLORS, MS_PER_DAY, DEFAULT_DAY_RANGE } from './defaults';
-import type { RulerDatePickerProps, ResolvedColors } from './types';
+import { LIGHT_THEME, DARK_THEME, MS_PER_DAY, DEFAULT_DAY_RANGE } from './defaults';
+import type { RulerTheme, ResolvedRulerTheme } from './types';
 
 /**
  * Formats a Date object as a local YYYY-MM-DD string,
@@ -14,78 +14,56 @@ export function formatDateString(date: Date = new Date()): string {
 }
 
 /**
+ * Normalizes a Date or string to a local midnight Date object.
+ * Parses YYYY-MM-DD explicitly as local midnight to avoid UTC timezone shifts,
+ * and guards against Invalid Dates.
+ */
+export function normalizeDate(input?: Date | string): Date {
+  let d: Date;
+  if (!input) {
+    d = new Date();
+  } else if (typeof input === 'string') {
+    const parts = input.trim().split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      d = new Date(year, month, day);
+    } else {
+      d = new Date(input);
+    }
+  } else {
+    d = new Date(input.getTime());
+  }
+
+  if (isNaN(d.getTime())) {
+    d = new Date();
+  }
+
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+/**
  * Converts a Date or YYYY-MM-DD string to a day offset relative to a reference time.
  */
 export function dateToDayOffset(
   date: Date | string,
   referenceTime: number
 ): number {
-  const d = typeof date === 'string' ? new Date(date) : new Date(date);
-  d.setHours(0, 0, 0, 0);
+  const d = normalizeDate(date);
   return Math.round((d.getTime() - referenceTime) / MS_PER_DAY);
 }
 
 /**
- * Converts a day offset back to a Date object.
+ * Converts a day offset back to a Date object at local midnight.
+ * Uses native calendar math (setDate) to avoid Daylight Saving Time (DST) 23h/25h hour drift.
  */
 export function dayOffsetToDate(offset: number, referenceTime: number): Date {
-  return new Date(referenceTime + offset * MS_PER_DAY);
-}
-
-/**
- * Resolves user-provided color props against the system color scheme defaults.
- * User-provided values always take precedence.
- */
-export function useResolvedColors(
-  props: Pick<
-    RulerDatePickerProps,
-    | 'tickColor'
-    | 'tickTallColor'
-    | 'labelColor'
-    | 'accentColor'
-    | 'indicatorColor'
-    | 'backgroundColor'
-  >
-): ResolvedColors {
-  const scheme = useColorScheme();
-  const palette = scheme === 'dark' ? DARK_COLORS : LIGHT_COLORS;
-
-  return {
-    tickColor: props.tickColor ?? palette.tickColor,
-    tickTallColor: props.tickTallColor ?? props.tickColor ?? palette.tickTallColor,
-    labelColor: props.labelColor ?? palette.labelColor,
-    accentColor: props.accentColor ?? palette.accentColor,
-    indicatorColor: props.indicatorColor ?? palette.indicatorColor,
-    backgroundColor: props.backgroundColor ?? palette.backgroundColor,
-  };
-}
-
-/**
- * Determines whether a date should display a label based on the labelInterval setting.
- */
-export function shouldShowLabel(
-  date: Date,
-  labelInterval: RulerDatePickerProps['labelInterval'],
-  todayTime: number
-): boolean {
-  if (!labelInterval || labelInterval === 'weekly') {
-    // Default: every 7th day relative to today (matches original Friday-style spacing)
-    const dayOffset = Math.round(
-      (date.getTime() - todayTime) / MS_PER_DAY
-    );
-    return dayOffset % 7 === 0;
-  }
-
-  if (labelInterval === 'daily') {
-    return true;
-  }
-
-  if (labelInterval === 'monthly') {
-    return date.getDate() === 1;
-  }
-
-  // Custom callback
-  return labelInterval(date);
+  const d = new Date(referenceTime);
+  d.setDate(d.getDate() + offset);
+  d.setHours(0, 0, 0, 0);
+  return d;
 }
 
 /**
@@ -93,23 +71,44 @@ export function shouldShowLabel(
  */
 export function computeDayRange(
   todayTime: number,
-  minDate?: Date,
-  maxDate?: Date
+  minDate?: Date | string,
+  maxDate?: Date | string
 ): { minOffset: number; maxOffset: number } {
   let minOffset = -DEFAULT_DAY_RANGE;
   let maxOffset = DEFAULT_DAY_RANGE;
 
   if (minDate) {
-    const d = new Date(minDate);
-    d.setHours(0, 0, 0, 0);
+    const d = normalizeDate(minDate);
     minOffset = Math.round((d.getTime() - todayTime) / MS_PER_DAY);
   }
 
   if (maxDate) {
-    const d = new Date(maxDate);
-    d.setHours(0, 0, 0, 0);
+    const d = normalizeDate(maxDate);
     maxOffset = Math.round((d.getTime() - todayTime) / MS_PER_DAY);
   }
 
+  if (minOffset > maxOffset) {
+    const temp = minOffset;
+    minOffset = maxOffset;
+    maxOffset = temp;
+  }
+
   return { minOffset, maxOffset };
+}
+
+/**
+ * Resolves user-provided theme against the system color scheme defaults (Light/Dark).
+ */
+export function useResolvedTheme(theme?: RulerTheme): ResolvedRulerTheme {
+  const scheme = useColorScheme();
+  const palette = scheme === 'dark' ? DARK_THEME : LIGHT_THEME;
+
+  return {
+    background: theme?.background ?? palette.background,
+    indicatorColor: theme?.indicatorColor ?? palette.indicatorColor,
+    accentColor: theme?.accentColor ?? palette.accentColor,
+    labelColor: theme?.labelColor ?? palette.labelColor,
+    defaultTickColor: theme?.defaultTickColor ?? palette.defaultTickColor,
+    rangeHighlightColor: theme?.rangeHighlightColor ?? palette.rangeHighlightColor,
+  };
 }

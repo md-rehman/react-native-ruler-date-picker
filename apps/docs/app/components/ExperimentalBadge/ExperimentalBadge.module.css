@@ -1,0 +1,112 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 2px 4px;
+  border-radius: 5px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.32);
+  color: #f59e0b;
+  cursor: pointer;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.badge:hover,
+.badgeHovered {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: rgba(245, 158, 11, 0.55);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
+  gap: 4px;
+  padding: 2px 7px;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #f59e0b;
+  transition: transform 0.2s ease;
+}
+
+.badge:hover .icon,
+.badgeHovered .icon {
+  transform: scale(1.08);
+}
+
+.label {
+  display: inline-block;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  line-height: 1;
+  color: #f59e0b;
+  white-space: nowrap;
+  transition: max-width 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+}
+
+.badge:hover .label,
+.badgeHovered .label {
+  max-width: 100px;
+  opacity: 1;
+}
+
+/* ── Static Text Variant (used for DocHeader) ── */
+.badgeStatic {
+  gap: 5px;
+  padding: 3px 8px;
+  font-size: 0.72rem;
+}
+
+.badgeStatic .label {
+  max-width: 100px;
+  opacity: 1;
+}
+
+/* Size Variants */
+.sizeSm {
+  padding: 1px 3px;
+  border-radius: 4px;
+}
+
+.sizeSm:hover,
+.sizeSm.badgeHovered {
+  padding: 1px 6px;
+  gap: 3px;
+}
+
+.sizeSm .label {
+  font-size: 0.6rem;
+  letter-spacing: 0.5px;
+}
+
+.sizeSm:hover .label,
+.sizeSm.badgeHovered .label {
+  max-width: 100px;
+  opacity: 1;
+}
+
+.sizeLg {
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.sizeLg:hover {
+  padding: 4px 10px;
+  gap: 6px;
+}
+
+.sizeLg .label {
+  font-size: 0.72rem;
+  letter-spacing: 0.8px;
+}
