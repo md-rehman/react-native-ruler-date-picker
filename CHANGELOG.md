@@ -5,13 +5,14 @@ All notable changes to `react-native-ruler-date-picker` will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.0] - 2026-10-29
+## [0.2.0] - 2026-11-08
 
 ### Added
 - **`RulerDateRangePicker` & `useRulerDateRangePicker` (Experimental)**: Dual-handle horizontal date range selection with configurable `minSpanDays`, `maxSpanDays`, active handle tracking, and connected highlight strip.
 - **Compound Anatomy Components**: Composable primitive subcomponents allowing full layout customization:
   - Single date: `RulerRoot`, `RulerHeader`, `RulerTrack`, `RulerIndicator`, `RulerTicks`, `RulerResetButton`.
-  - Range date: `RulerRangeRoot`, `RulerRangeHeader`, `RulerRangeTrack`, `RulerRangeIndicator`, `RulerRangeHighlight`.
+  - Range date: `RulerRangeRoot`, `RulerRangeHeader`, `RulerRangeTrack`, `RulerRangeIndicator`, `RulerRangeHighlight`, `RulerRangeTicks`.
+- **Custom Indicator Needle Rendering**: Added support for passing custom React elements as children directly inside `RulerIndicator` and `RulerRangeIndicator` (custom icons, badges, or pointers).
 - **Headless Hooks**: `useRulerDatePicker` and `useRulerDateRangePicker` exposing gesture physics, velocity decay, snap calculations, tick windowing, and haptic triggers for custom UI.
 - **Rule-Based Tick Graduation (`TickRule[]`)**: Declarative graduation rule system with built-in presets (`'calendar'`, `'metric'`, `'minimal'`) and condition predicates (`daily`, `weekly`, `monthly`, `{ dayOfWeek }`) with custom widths, heights, colors, dots, and label formatters.
 - **Non-Linear Fisheye Lens Distortion (`lensEffect`)**: Optical magnification centered around the indicator needle with configurable `magnification`, `radius`, and `scaleTicks`.
@@ -19,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Internationalization (`locale`)**: BCP 47 locale formatting support across headers and graduation labels (e.g. `en-US`, `de-DE`, `ja-JP`).
 - **Accessibility**: Screen reader support with `accessibilityLabel`, `accessibilityRole="adjustable"`, and increment/decrement accessibility actions.
 - **Custom Experimental Badge & Icon**: Custom Erlenmeyer flask SVG icon with hover-expansion across documentation, interactive playground, and native Kitchensink app.
-- **Comprehensive Documentation & Live Playground (`apps/docs`)**: Multi-page documentation routes, interactive playground with Monaco editor, live code AST synchronization, and code snippet generation.
+- **Comprehensive Documentation & Live Playground (`apps/docs`)**: Multi-page documentation routes, interactive playground with Monaco editor, live code AST synchronization, live in-situ `InlinePlayground` on guide pages, and code snippet generation.
 - **Revamped Kitchensink App (`apps/kitchensink`)**: Full-screen Examples modal with backdrop dismiss, categorized multi-component preview, and dynamic light/dark theme adaptation directly on the canvas grid.
 
 ### Changed
