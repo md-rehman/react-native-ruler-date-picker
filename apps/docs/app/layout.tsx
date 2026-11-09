@@ -8,10 +8,10 @@ export const metadata: Metadata = {
   description: "A performant, customizable horizontal ruler date picker & scroll wheel for React Native and Expo. Powered by 60 FPS Reanimated 3 physics and dual-speed haptic feedback.",
   icons: {
     icon: [
-      { url: '/icon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.ico' }
+      { url: '/react-native-ruler-date-picker/icon.svg', type: 'image/svg+xml' },
+      { url: '/react-native-ruler-date-picker/favicon.ico' }
     ],
-    apple: '/icon.svg',
+    apple: '/react-native-ruler-date-picker/icon.svg',
   },
 };
 
