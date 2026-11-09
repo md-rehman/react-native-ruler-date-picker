@@ -1,5 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  basePath: '/react-native-ruler-date-picker',
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/react-native-ruler-date-picker',
+        basePath: false,
+        permanent: false,
+      },
+    ];
+  },
   eslint: { ignoreDuringBuilds: true },
   transpilePackages: [
     'react-native-reanimated',
