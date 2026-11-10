@@ -9,10 +9,31 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/md-rehman/react-native-ruler-date-picker"><strong>Documentation & Interactive Demos »</strong></a>
+  <a href="https://www.npmjs.com/package/react-native-ruler-date-picker"><img src="https://img.shields.io/npm/v/react-native-ruler-date-picker?style=flat-square&color=38BDF8" alt="npm version" /></a>
+  <a href="https://md-rehman.dev/react-native-ruler-date-picker"><img src="https://img.shields.io/badge/docs-md--rehman.dev-0284c7?style=flat-square" alt="documentation" /></a>
+  <a href="https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6"><img src="https://img.shields.io/badge/snack-try_on_device-000000?style=flat-square&logo=expo&logoColor=white" alt="expo snack" /></a>
+  <a href="https://github.com/md-rehman/react-native-ruler-date-picker/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="license" /></a>
+</p>
+
+<p align="center">
+  <a href="https://md-rehman.dev/react-native-ruler-date-picker"><strong>Explore Documentation & Interactive Demos »</strong></a>
   &nbsp;•&nbsp;
   <a href="https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6"><strong>Try Live Snack on Phone 📱 »</strong></a>
 </p>
+
+## 📖 Documentation & Guides
+
+Explore comprehensive guides, props tables, code recipes, and interactive web playgrounds:
+
+👉 **[https://md-rehman.dev/react-native-ruler-date-picker](https://md-rehman.dev/react-native-ruler-date-picker)**
+
+- 🚀 [Quickstart & Getting Started](https://md-rehman.dev/react-native-ruler-date-picker/docs/getting-started)
+- 🎛️ [Interactive Playground](https://md-rehman.dev/react-native-ruler-date-picker/playground)
+- 📐 [Ruler Date Picker Anatomy & API](https://md-rehman.dev/react-native-ruler-date-picker/docs/ruler-date-picker/api)
+- 📅 [Date Range Picker Anatomy & API](https://md-rehman.dev/react-native-ruler-date-picker/docs/ruler-date-range-picker/api)
+- 🎨 [Theming & Dark Mode](https://md-rehman.dev/react-native-ruler-date-picker/docs/introduction/theming)
+- 📳 [Haptic Feedback System](https://md-rehman.dev/react-native-ruler-date-picker/docs/introduction/haptics)
+- 🔍 [Lens Magnification Effect](https://md-rehman.dev/react-native-ruler-date-picker/docs/ruler-date-picker/lens-effect)
 
 ## 📱 Interactive Live Demo
 

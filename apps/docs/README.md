@@ -1,4 +1,9 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Documentation Website — react-native-ruler-date-picker
+
+Interactive documentation and component showcase website for [`react-native-ruler-date-picker`](https://github.com/md-rehman/react-native-ruler-date-picker).
+
+- 🌐 **Live Documentation**: [https://md-rehman.dev/react-native-ruler-date-picker](https://md-rehman.dev/react-native-ruler-date-picker)
+- 📱 **Interactive Expo Snack**: [https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6](https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6)
 
 ## Getting Started
 
