@@ -23,8 +23,36 @@ export function DocHeader({
   badge,
   isExperimental,
 }: DocHeaderProps) {
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Documentation',
+        item: 'https://md-rehman.dev/react-native-ruler-date-picker/docs/getting-started',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: category,
+        item: 'https://md-rehman.dev/react-native-ruler-date-picker/docs/getting-started',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: title,
+      },
+    ],
+  };
+
   return (
     <header className={styles.headerContainer}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <div className={styles.badgeRow}>
         <span className={styles.categoryBadge}>{category}</span>
         {badge && <span className={styles.tagBadge}>{badge}</span>}
