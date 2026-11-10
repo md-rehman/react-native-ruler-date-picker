@@ -50,6 +50,21 @@ export default function GettingStartedPage() {
             header: { showResetToToday: true },
           }}
         />
+
+        <div style={{ marginTop: 16 }}>
+          <Callout type="tip" title="Try the Full Kitchensink on Your Phone">
+            Want to feel the real hardware haptic feedback? Open the live{' '}
+            <a
+              href="https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}
+            >
+              Kitchensink Expo Snack
+            </a>{' '}
+            or tap <strong>Test on Device</strong> in the navigation bar to scan the QR code with Expo Go.
+          </Callout>
+        </div>
       </section>
 
       <section style={{ marginBottom: 40 }}>

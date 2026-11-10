@@ -10,7 +10,21 @@
 
 <p align="center">
   <a href="https://github.com/md-rehman/react-native-ruler-date-picker"><strong>Documentation & Interactive Demos »</strong></a>
+  &nbsp;•&nbsp;
+  <a href="https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6"><strong>Try Live Snack on Phone 📱 »</strong></a>
 </p>
+
+## 📱 Interactive Live Demo
+
+Experience 60 FPS physics and feel the real physical taptic feedback on your device with our live Expo Snack:
+
+[![Open in Expo Snack](https://img.shields.io/badge/Expo_Snack-Open_Kitchensink_Demo-000000?style=for-the-badge&logo=expo&logoColor=white)](https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6)
+
+> **Test on Real Device**:
+> 1. Open the [Kitchensink Snack](https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6).
+> 2. Select the **"My Device"** tab to reveal the QR code.
+> 3. **iOS**: Scan with your Camera app and tap **"Open in Expo Go"**.  
+>    **Android**: Open **Expo Go** and scan the QR code.
 
 ## ✨ Features
 
