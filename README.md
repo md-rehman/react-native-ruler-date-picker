@@ -5,7 +5,7 @@
 <h1 align="center">react-native-ruler-date-picker</h1>
 
 <p align="center">
-  A performant, customizable horizontal ruler date picker & scroll wheel for React Native and Expo. Powered by 60 FPS Reanimated 3 physics and dual-speed haptic feedback.
+  A performant, customizable horizontal ruler date picker & scroll wheel for React Native and Expo. Powered by 60 FPS Reanimated 3 physics, dual-speed haptic feedback, compound anatomy, and fluid date range selection.
 </p>
 
 <p align="center">
@@ -56,6 +56,18 @@ Experience 60 FPS physics and feel the real physical taptic feedback on your dev
 - **Compound Anatomy API** — Full layout flexibility with `Ruler.*` and `RulerRange.*`
 - **Date Range Selection [Experimental]** — Dual-handle date range picker with `RulerDateRangePicker`
 - **Dark Mode Support** — Auto-detects system color scheme with custom theme palette override
+
+## 💡 Why react-native-ruler-date-picker?
+
+| Feature | `react-native-ruler-date-picker` | Native DateTimePicker | Standard Calendar Grid |
+|---|---|---|---|
+| **Orientation & Gesture** | Horizontal pan & swipe with inertial decay | Vertical spinner wheel | Tap-only multi-row grid |
+| **Animation Performance** | 60 FPS UI-thread animations (Reanimated 3) | Platform-native modal | JS re-renders on month change |
+| **Haptic Feedback** | Dual-speed discrete tick & continuous buzz | None / platform default | None |
+| **Date Range Selection** | Dual-handle continuous scrub with min/max spans | Requires two pickers | Complex multi-click cell highlighting |
+| **Custom Graduations** | Declarative rules (calendar, metric, custom) | Fixed date format | Fixed calendar day cells |
+| **Compound Subcomponents** | Fully composable `Ruler.*` & `RulerRange.*` | Black-box native dialog | Fixed monolith layout |
+| **Dark Mode & Theming** | System auto-detection + token overrides | Limited styling | Custom CSS/StyleSheet required |
 
 ## 📦 Installation
 
