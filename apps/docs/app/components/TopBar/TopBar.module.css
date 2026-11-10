@@ -211,9 +211,29 @@
 }
 
 .desktopModalToggle,
-.desktopGlassControls {
+.desktopGlassControls,
+.desktopDeviceQrButton {
   display: flex;
   align-items: center;
+}
+
+.deviceQrButton {
+  border-color: rgba(56, 189, 248, 0.3);
+  background-color: rgba(56, 189, 248, 0.08);
+  color: var(--color-accent);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.deviceQrButton:hover {
+  background-color: rgba(56, 189, 248, 0.16);
+  border-color: var(--color-accent);
+  color: #FFFFFF;
+  transform: scale(1.05);
+}
+
+.deviceQrButton:active {
+  transform: scale(0.95);
 }
 
 .settingsMenuWrapper {

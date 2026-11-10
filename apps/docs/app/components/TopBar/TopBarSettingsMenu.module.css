@@ -97,6 +97,28 @@
   opacity: 0.6;
 }
 
+.mobileQrButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--radius-lg);
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  color: var(--color-accent);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.mobileQrButton:hover {
+  background: rgba(56, 189, 248, 0.16);
+  border-color: var(--color-accent);
+  color: #FFFFFF;
+}
+
 /* ── Responsive Visibility for Sections inside Popover ── */
 /* On desktop/tablet (> 768px), panels are already visible in the top bar, so hide inside popover */
 .panelsSection {
