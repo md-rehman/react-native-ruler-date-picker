@@ -8,9 +8,11 @@
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "test": "turbo test",
+    "sync-snack": "node scripts/sync-snack.mjs",
     "clean": "turbo clean && rm -rf node_modules"
   },
   "devDependencies": {
+    "snack-sdk": "^6.6.2",
     "turbo": "^2.4.0"
   }
 }

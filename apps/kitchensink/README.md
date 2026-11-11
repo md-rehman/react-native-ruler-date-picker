@@ -18,3 +18,14 @@ pnpm --filter kitchensink ios
 pnpm --filter kitchensink android
 ```
 
+## Syncing to Expo Snack
+
+Whenever you update the kitchensink demo, sync the changes to Expo Snack:
+
+```bash
+pnpm sync-snack
+```
+
+> **Direct Account Sync**: Set `EXPO_TOKEN=your_token` in a `.env` file at the root to publish directly under your Expo account. Without a token, the script prints a public snapshot URL that you can open and save in one click.
+
+
