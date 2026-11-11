@@ -123,7 +123,7 @@ const jsonLd = {
       license: "https://opensource.org/licenses/MIT",
       description:
         "A performant, customizable horizontal ruler date picker & scroll wheel for React Native and Expo. Powered by 60 FPS Reanimated 3 physics and dual-speed haptic feedback.",
-      version: "0.2.0",
+      version: "0.2.1",
       author: {
         "@type": "Person",
         name: "Rehman",

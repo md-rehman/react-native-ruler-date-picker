@@ -13,7 +13,7 @@
     "react-native": "0.76.6",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-reanimated": "~3.16.1",
-    "react-native-ruler-date-picker": "^0.2.0",
+    "react-native-ruler-date-picker": "^0.2.1",
     "react-native-svg": "15.8.0",
     "react-native-web": "~0.19.13",
     "reanimated-color-picker": "^5.1.3"

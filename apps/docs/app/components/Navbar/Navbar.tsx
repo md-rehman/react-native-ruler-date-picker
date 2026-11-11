@@ -19,7 +19,7 @@ export default function Navbar() {
           </div>
           <div className={styles.brandName}>
             <span>ruler-date-picker</span>
-            <span className={styles.versionBadge}>v0.2.0</span>
+            <span className={styles.versionBadge}>v0.2.1</span>
           </div>
         </Link>
 

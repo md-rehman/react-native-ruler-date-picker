@@ -5,6 +5,18 @@ All notable changes to `react-native-ruler-date-picker` will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-11-11
+
+### Changed
+- Updated package homepage metadata to live documentation website (`https://md-rehman.dev/react-native-ruler-date-picker`).
+- Expanded npm discovery keywords for date pickers, range pickers, calendar strips, and timeline wheels.
+
+### Documentation
+- Added links and deep guides to the live documentation website across READMEs.
+- Linked official interactive Expo Snack under `@md-rehman/ruler-date-picker---kitchensink`.
+- Added feature comparison matrix highlighting 60 FPS Reanimated 3 physics, dual-speed haptics, and date range selection.
+- Added `pnpm sync-snack` tooling for automated kitchensink deployment.
+
 ## [0.2.0] - 2026-11-08
 
 ### Added
