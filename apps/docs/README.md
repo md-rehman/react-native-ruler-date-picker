@@ -3,7 +3,7 @@
 Interactive documentation and component showcase website for [`react-native-ruler-date-picker`](https://github.com/md-rehman/react-native-ruler-date-picker).
 
 - 🌐 **Live Documentation**: [https://md-rehman.dev/react-native-ruler-date-picker](https://md-rehman.dev/react-native-ruler-date-picker)
-- 📱 **Interactive Expo Snack**: [https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6](https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6)
+- 📱 **Interactive Expo Snack**: [https://snack.expo.dev/@md-rehman/ruler-date-picker---kitchensink](https://snack.expo.dev/@md-rehman/ruler-date-picker---kitchensink)
 
 ## Getting Started
 

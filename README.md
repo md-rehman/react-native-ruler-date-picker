@@ -11,14 +11,14 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/react-native-ruler-date-picker"><img src="https://img.shields.io/npm/v/react-native-ruler-date-picker?style=flat-square&color=38BDF8" alt="npm version" /></a>
   <a href="https://md-rehman.dev/react-native-ruler-date-picker"><img src="https://img.shields.io/badge/docs-md--rehman.dev-0284c7?style=flat-square" alt="documentation" /></a>
-  <a href="https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6"><img src="https://img.shields.io/badge/snack-try_on_device-000000?style=flat-square&logo=expo&logoColor=white" alt="expo snack" /></a>
+  <a href="https://snack.expo.dev/@md-rehman/ruler-date-picker---kitchensink"><img src="https://img.shields.io/badge/snack-try_on_device-000000?style=flat-square&logo=expo&logoColor=white" alt="expo snack" /></a>
   <a href="https://github.com/md-rehman/react-native-ruler-date-picker/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="license" /></a>
 </p>
 
 <p align="center">
   <a href="https://md-rehman.dev/react-native-ruler-date-picker"><strong>Explore Documentation & Interactive Demos »</strong></a>
   &nbsp;•&nbsp;
-  <a href="https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6"><strong>Try Live Snack on Phone 📱 »</strong></a>
+  <a href="https://snack.expo.dev/@md-rehman/ruler-date-picker---kitchensink"><strong>Try Live Snack on Phone 📱 »</strong></a>
 </p>
 
 ## 📖 Documentation & Guides
@@ -39,10 +39,10 @@ Explore comprehensive guides, props tables, code recipes, and interactive web pl
 
 Experience 60 FPS physics and feel the real physical taptic feedback on your device with our live Expo Snack:
 
-[![Open in Expo Snack](https://img.shields.io/badge/Expo_Snack-Open_Kitchensink_Demo-000000?style=for-the-badge&logo=expo&logoColor=white)](https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6)
+[![Open in Expo Snack](https://img.shields.io/badge/Expo_Snack-Open_Kitchensink_Demo-000000?style=for-the-badge&logo=expo&logoColor=white)](https://snack.expo.dev/@md-rehman/ruler-date-picker---kitchensink)
 
 > **Test on Real Device**:
-> 1. Open the [Kitchensink Snack](https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6).
+> 1. Open the [Kitchensink Snack](https://snack.expo.dev/@md-rehman/ruler-date-picker---kitchensink).
 > 2. Select the **"My Device"** tab to reveal the QR code.
 > 3. **iOS**: Scan with your Camera app and tap **"Open in Expo Go"**.  
 >    **Android**: Open **Expo Go** and scan the QR code.

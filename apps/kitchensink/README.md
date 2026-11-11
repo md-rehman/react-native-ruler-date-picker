@@ -3,7 +3,7 @@
 Interactive Expo application showcasing all configurations, themes, graduation presets, and prop combinations for [`react-native-ruler-date-picker`](https://github.com/md-rehman/react-native-ruler-date-picker).
 
 - 📖 **Documentation**: [https://md-rehman.dev/react-native-ruler-date-picker](https://md-rehman.dev/react-native-ruler-date-picker)
-- 📱 **Live Expo Snack**: [https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6](https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6)
+- 📱 **Live Expo Snack**: [https://snack.expo.dev/@md-rehman/ruler-date-picker---kitchensink](https://snack.expo.dev/@md-rehman/ruler-date-picker---kitchensink)
 
 ## Running Locally
 

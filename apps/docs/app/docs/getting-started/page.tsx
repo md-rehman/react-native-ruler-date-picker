@@ -55,7 +55,7 @@ export default function GettingStartedPage() {
           <Callout type="tip" title="Try the Full Kitchensink on Your Phone">
             Want to feel the real hardware haptic feedback? Open the live{' '}
             <a
-              href="https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6"
+              href="https://snack.expo.dev/@md-rehman/ruler-date-picker---kitchensink"
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}

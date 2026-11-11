@@ -11,7 +11,7 @@ interface QrDeviceModalProps {
 }
 
 export const KITCHENSINK_SNACK_URL =
-  'https://snack.expo.dev/ml8FWVY75Lzz1xkxUkTV6';
+  'https://snack.expo.dev/@md-rehman/ruler-date-picker---kitchensink';
 
 export default function QrDeviceModal({
   isOpen,
