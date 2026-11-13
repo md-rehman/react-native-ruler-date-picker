@@ -86,11 +86,29 @@ async function syncSnack() {
   const pkg = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
   const dependencies = {};
 
+  // Resolve library version if kitchensink uses workspace:*
+  const libraryPkgPath = path.join(rootDir, 'packages', 'react-native-ruler-date-picker', 'package.json');
+  let libraryVersion = '^0.2.1';
+  if (fs.existsSync(libraryPkgPath)) {
+    try {
+      const libPkg = JSON.parse(fs.readFileSync(libraryPkgPath, 'utf8'));
+      if (libPkg.version) {
+        libraryVersion = `^${libPkg.version}`;
+      }
+    } catch {
+      // fallback
+    }
+  }
+
   if (pkg.dependencies) {
     for (const [dep, version] of Object.entries(pkg.dependencies)) {
       // Exclude metro-runtime and web-only helpers not needed in Snack
       if (dep !== '@expo/metro-runtime' && dep !== 'react-native-web') {
-        dependencies[dep] = { version };
+        const resolvedVersion =
+          dep === 'react-native-ruler-date-picker' && (version.startsWith('workspace:') || version === '*')
+            ? libraryVersion
+            : version;
+        dependencies[dep] = { version: resolvedVersion };
       }
     }
   }
