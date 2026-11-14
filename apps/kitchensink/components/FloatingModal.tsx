@@ -43,8 +43,9 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
   onClose,
 }) => {
   const { colors, theme } = useTheme();
-  const { width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const modalWidth = Math.min(340, windowWidth - 40);
+  const maxContentHeight = Math.max(260, Math.min(520, windowHeight - 160));
   const snapThreshold = 60;
 
   const [docked, setDocked] = useState<DockState>(defaultDocked);
@@ -170,7 +171,7 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
             <View style={styles.header}>
               <View style={styles.titleWrapper}>
                 {icon && <View style={styles.iconContainer}>{icon}</View>}
-                <Text style={[styles.title, { color: colors.textPrimary }]} numberOfLines={1}>
+                <Text style={[styles.title, { color: colors.textMuted }]} numberOfLines={1}>
                   {title}
                 </Text>
               </View>
@@ -267,11 +268,22 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
           >
             <View style={styles.titleWrapper}>
               {icon && <View style={styles.iconContainer}>{icon}</View>}
-              <Text style={[styles.title, { color: colors.textPrimary }]} numberOfLines={1}>
+              <Text style={[styles.title, { color: colors.textMuted }]} numberOfLines={1}>
                 {title}
               </Text>
             </View>
             {headerRight && <View style={styles.headerRightContainer}>{headerRight}</View>}
+            <TouchableOpacity onPress={toggleCollapse} style={styles.chevronBtn} hitSlop={10}>
+              <Svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <Polyline
+                  points={isCollapsed ? '9 18 15 12 9 6' : '6 9 12 15 18 9'}
+                  stroke={colors.textSecondary}
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </Svg>
+            </TouchableOpacity>
             {onClose && (
               <TouchableOpacity onPress={onClose} style={styles.closeBtn} hitSlop={10}>
                 <Svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -285,20 +297,9 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
                 </Svg>
               </TouchableOpacity>
             )}
-            <TouchableOpacity onPress={toggleCollapse} style={styles.chevronBtn} hitSlop={10}>
-              <Svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <Polyline
-                  points={isCollapsed ? '6 9 12 15 18 9' : '18 15 12 9 6 15'}
-                  stroke={colors.textSecondary}
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </Svg>
-            </TouchableOpacity>
           </View>
 
-          {!isCollapsed && <View style={styles.content}>{children}</View>}
+          {!isCollapsed && <View style={[styles.content, { maxHeight: maxContentHeight }]}>{children}</View>}
         </GlassView>
       </Animated.View>
     </>
@@ -340,9 +341,10 @@ const styles = StyleSheet.create({
     marginRight: SPACING.xs + 2,
   },
   title: {
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: '700',
-    letterSpacing: -0.2,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
   },
   headerRightContainer: {
     marginRight: SPACING.xs + 2,
@@ -358,7 +360,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   content: {
-    maxHeight: 420,
+    maxHeight: 500,
   },
   dockTabContainer: {
     position: 'absolute',

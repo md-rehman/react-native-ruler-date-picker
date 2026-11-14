@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, Text, TextInput } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Platform } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
-import { RADII, SPACING } from '../../theme/tokens';
+import { RADII } from '../../theme/tokens';
 
 interface OffsetInputProps {
   value: [number, number] | any;
@@ -25,26 +25,36 @@ export const OffsetInput: React.FC<OffsetInputProps> = ({ value, onChange }) => 
 
   return (
     <View style={styles.container}>
-      <View style={[styles.inputBox, { borderColor: colors.border }]}>
-        <Text style={[styles.axisLabel, { color: colors.textMuted }]}>X</Text>
-        <TextInput
-          style={[styles.input, { color: colors.textPrimary }]}
-          value={String(currentVal[0])}
-          onChangeText={handleXChange}
-          keyboardType="numeric"
-          selectTextOnFocus
-        />
-      </View>
-      <View style={[styles.inputBox, { borderColor: colors.border }]}>
-        <Text style={[styles.axisLabel, { color: colors.textMuted }]}>Y</Text>
-        <TextInput
-          style={[styles.input, { color: colors.textPrimary }]}
-          value={String(currentVal[1])}
-          onChangeText={handleYChange}
-          keyboardType="numeric"
-          selectTextOnFocus
-        />
-      </View>
+      <Text style={[styles.axisLabel, { color: colors.textMuted }]}>X</Text>
+      <TextInput
+        style={[
+          styles.input,
+          {
+            color: colors.textPrimary,
+            borderColor: colors.border,
+            backgroundColor: colors.surface,
+          },
+        ]}
+        value={String(currentVal[0])}
+        onChangeText={handleXChange}
+        keyboardType="numeric"
+        selectTextOnFocus
+      />
+      <Text style={[styles.axisLabel, { color: colors.textMuted }]}>Y</Text>
+      <TextInput
+        style={[
+          styles.input,
+          {
+            color: colors.textPrimary,
+            borderColor: colors.border,
+            backgroundColor: colors.surface,
+          },
+        ]}
+        value={String(currentVal[1])}
+        onChangeText={handleYChange}
+        keyboardType="numeric"
+        selectTextOnFocus
+      />
     </View>
   );
 };
@@ -55,25 +65,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
   },
-  inputBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: RADII.md,
-    height: 32,
-    paddingHorizontal: 6,
-    backgroundColor: 'rgba(255,255,255,0.03)',
-  },
   axisLabel: {
     fontSize: 11,
     fontWeight: '700',
-    marginRight: 4,
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   input: {
-    width: 32,
+    width: 44,
+    height: 30,
+    borderWidth: 1,
+    borderRadius: RADII.sm + 2,
     textAlign: 'center',
     fontSize: 12,
     fontWeight: '600',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
     paddingVertical: 0,
+    paddingHorizontal: 4,
   },
 });
+
