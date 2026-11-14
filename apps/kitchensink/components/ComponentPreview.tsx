@@ -271,7 +271,7 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({
     const indicatorColor = userTheme.indicatorColor || accentColor;
 
     let rangeHighlightColor = userTheme.rangeHighlightColor;
-    if (rangeHighlightColor) {
+    if (typeof rangeHighlightColor === 'string') {
       rangeHighlightColor = isDark
         ? rangeHighlightColor
         : rangeHighlightColor.replace('0.22', '0.15').replace('0.25', '0.15');
@@ -279,7 +279,7 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({
 
     return {
       ...userTheme,
-      background: 'transparent',
+      background: userTheme.background !== undefined ? userTheme.background : 'transparent',
       labelColor,
       defaultTickColor: defaultTick,
       accentColor,
