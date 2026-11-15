@@ -8,7 +8,8 @@ import { FloatingModal } from './FloatingModal';
 import { ExamplesPanel } from './ExamplesPanel';
 import { PropsPanel } from './PropsPanel';
 import { GlassControls } from './GlassControls';
-import { FeaturesIcon } from './ModalToggle';
+import { PropsToggle, FeaturesIcon } from './ModalToggle';
+import { SPACING } from '../theme/tokens';
 
 export const AppShell: React.FC = () => {
   const { colors } = useTheme();
@@ -55,13 +56,12 @@ export const AppShell: React.FC = () => {
         />
       </FloatingModal>
 
-      {/* Unified Props Modal (Matches Playground) */}
+      {/* Unified Props Modal (Matches Playground, larger, animated from bottom FAB) */}
       <FloatingModal
         id="props"
         title="PROPS"
-        icon={<FeaturesIcon color={colors.textMuted} />}
-        defaultDocked="none"
-        defaultPosition={{ x: 20, y: 70 }}
+        icon={<FeaturesIcon color={colors.textMuted} size={16} />}
+        animateFromBottom
         visible={showProps}
         onClose={() => setShowProps(false)}
       >
@@ -76,9 +76,12 @@ export const AppShell: React.FC = () => {
       <TopBar
         showExamples={showExamples}
         onToggleExamples={handleToggleExamples}
-        showProps={showProps}
-        onToggleProps={handleToggleProps}
       />
+
+      {/* Floating Bottom Action Button (Round & Larger, positioned lower) */}
+      <View style={styles.bottomBar} pointerEvents="box-none">
+        <PropsToggle active={showProps} onToggle={handleToggleProps} />
+      </View>
     </View>
   );
 };
@@ -86,5 +89,14 @@ export const AppShell: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  bottomBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 90,
   },
 });
