@@ -112,7 +112,9 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
           }
           if (parsed.docked !== undefined) setDocked(parsed.docked);
           if (parsed.isCollapsed !== undefined) setIsCollapsed(parsed.isCollapsed);
-        } catch (e) {}
+        } catch {
+          // ignore invalid cached modal state
+        }
       }
     });
   }, [id, pan, fullScreen, animateFromBottom]);

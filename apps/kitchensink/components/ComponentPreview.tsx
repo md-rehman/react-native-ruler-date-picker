@@ -286,7 +286,7 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({
       indicatorColor,
       ...(rangeHighlightColor ? { rangeHighlightColor } : {}),
     };
-  }, [theme, colors, isDark, pickerProps.theme]);
+  }, [colors, isDark, pickerProps.theme]);
 
   const effectiveProps: Record<string, any> = useMemo(() => ({
     ...pickerProps,
