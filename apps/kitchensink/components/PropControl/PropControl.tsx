@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TextInput } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, Platform } from 'react-native';
 import { PropDefinition } from '../../data/propDefinitions';
 import { useTheme } from '../../context/ThemeContext';
 import { BooleanToggle } from './BooleanToggle';
@@ -66,12 +66,17 @@ export const PropControl: React.FC<PropControlProps> = ({ definition, value, onC
           <TextInput
             style={[
               styles.textInput,
-              { color: colors.textPrimary, borderColor: colors.border },
+              {
+                color: colors.textPrimary,
+                borderColor: colors.border,
+                backgroundColor: colors.surface,
+              },
             ]}
             value={value !== undefined ? String(value) : ''}
             onChangeText={onChange}
             placeholder={String(definition.defaultValue || '')}
             placeholderTextColor={colors.textMuted}
+            selectTextOnFocus
           />
         );
       case 'readonly':
@@ -85,22 +90,38 @@ export const PropControl: React.FC<PropControlProps> = ({ definition, value, onC
     }
   };
 
+  const isFullWidth = definition.type === 'tick-rules';
+  const displayLabel = definition.label.replace(/^(theme|header|value)\./, '');
+
   return (
-    <View style={styles.container}>
-      <View style={styles.labelWrapper}>
+    <View style={[styles.container, isFullWidth && styles.containerFullWidth]}>
+      <View style={styles.header}>
         <View style={styles.labelRow}>
-          <Text style={[styles.label, { color: colors.textPrimary }]}>{definition.label}</Text>
-          {definition.isExperimental && (
-            <ExperimentalBadge size="sm" />
-          )}
+          <Text style={[styles.label, { color: colors.textSecondary }]} numberOfLines={1}>
+            {displayLabel}
+          </Text>
+          {definition.isExperimental && <ExperimentalBadge size="sm" />}
         </View>
         {definition.description && (
-          <Text style={[styles.description, { color: colors.textMuted }]}>
-            {definition.description}
-          </Text>
+          <TouchableOpacity
+            style={[
+              styles.tooltipBtn,
+              {
+                borderColor: colors.glassBorderColor,
+                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+              },
+            ]}
+            onPress={() => Alert.alert(definition.label, definition.description)}
+            hitSlop={8}
+            activeOpacity={0.7}
+          >
+            <Text style={[styles.tooltipText, { color: colors.textMuted }]}>?</Text>
+          </TouchableOpacity>
         )}
       </View>
-      <View style={styles.controlWrapper}>{renderControl()}</View>
+      <View style={[styles.controlWrapper, isFullWidth && styles.controlWrapperFull]}>
+        {renderControl()}
+      </View>
     </View>
   );
 };
@@ -110,40 +131,70 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: SPACING.xs + 2,
-    paddingHorizontal: SPACING.md,
+    minHeight: 34,
+    paddingVertical: 3,
+    paddingHorizontal: 2,
+    gap: 12,
   },
-  labelWrapper: {
+  containerFullWidth: {
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    gap: 6,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
     flex: 1,
-    marginRight: SPACING.sm,
+    minWidth: 0,
   },
   labelRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
+    flexShrink: 1,
   },
   label: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '500',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
-  description: {
-    fontSize: 11,
-    marginTop: 2,
+  tooltipBtn: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tooltipText: {
+    fontSize: 9,
+    fontWeight: '700',
+    lineHeight: 11,
   },
   controlWrapper: {
     alignItems: 'flex-end',
+    justifyContent: 'center',
+  },
+  controlWrapperFull: {
+    alignItems: 'stretch',
   },
   readonlyText: {
     fontSize: 12,
     fontStyle: 'italic',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
   textInput: {
+    width: 110,
+    height: 30,
     borderWidth: 1,
-    borderRadius: RADII.md,
+    borderRadius: RADII.sm + 2,
     paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingVertical: 0,
     fontSize: 12,
-    minWidth: 90,
-    textAlign: 'right',
+    fontWeight: '600',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    textAlign: 'center',
   },
 });
+

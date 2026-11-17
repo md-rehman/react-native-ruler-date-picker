@@ -7,6 +7,7 @@ import {
   Pressable,
   Animated,
   PanResponder,
+  Easing,
   useWindowDimensions,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,6 +28,7 @@ interface FloatingModalProps {
   defaultDocked?: DockState;
   visible?: boolean;
   fullScreen?: boolean;
+  animateFromBottom?: boolean;
   onClose?: () => void;
 }
 
@@ -40,16 +42,53 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
   defaultDocked = 'none',
   visible = true,
   fullScreen = false,
+  animateFromBottom = false,
   onClose,
 }) => {
   const { colors, theme } = useTheme();
-  const { width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const modalWidth = Math.min(340, windowWidth - 40);
+  const maxContentHeight = Math.max(260, Math.min(520, windowHeight - 160));
   const snapThreshold = 60;
 
   const [docked, setDocked] = useState<DockState>(defaultDocked);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [snapPreview, setSnapPreview] = useState<'none' | 'left' | 'right'>('none');
+
+  // Bottom origin entrance/exit animation
+  const [isMounted, setIsMounted] = useState(visible);
+  const animValue = useRef(new Animated.Value(visible ? 1 : 0)).current;
+
+  useEffect(() => {
+    if (!animateFromBottom) {
+      setIsMounted(visible);
+      return;
+    }
+
+    if (visible) {
+      setIsMounted(true);
+      animValue.stopAnimation();
+      Animated.spring(animValue, {
+        toValue: 1,
+        damping: 24,
+        stiffness: 260,
+        mass: 0.8,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      animValue.stopAnimation();
+      Animated.timing(animValue, {
+        toValue: 0,
+        duration: 240,
+        easing: Easing.bezier(0.4, 0, 0.2, 1),
+        useNativeDriver: true,
+      }).start(({ finished }) => {
+        if (finished) {
+          setIsMounted(false);
+        }
+      });
+    }
+  }, [visible, animateFromBottom, animValue]);
 
   const pan = useRef(new Animated.ValueXY(defaultPosition)).current;
   const currentPos = useRef(defaultPosition);
@@ -62,7 +101,7 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
   }, [pan]);
 
   useEffect(() => {
-    if (fullScreen) return;
+    if (fullScreen || animateFromBottom) return;
     AsyncStorage.getItem(`modal-${id}`).then((stored) => {
       if (stored) {
         try {
@@ -73,10 +112,12 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
           }
           if (parsed.docked !== undefined) setDocked(parsed.docked);
           if (parsed.isCollapsed !== undefined) setIsCollapsed(parsed.isCollapsed);
-        } catch (e) {}
+        } catch {
+          // ignore invalid cached modal state
+        }
       }
     });
-  }, [id, pan, fullScreen]);
+  }, [id, pan, fullScreen, animateFromBottom]);
 
   const saveState = (pos: { x: number; y: number }, dock: DockState, collapsed: boolean) => {
     AsyncStorage.setItem(
@@ -149,6 +190,109 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
     });
   };
 
+  // ── Animate From Bottom FAB (Larger, tap-outside-to-dismiss, bottom pop-in/pop-out) ──
+  if (animateFromBottom) {
+    if (!isMounted) return null;
+
+    const buttonCenterY = windowHeight - 34; // 6px bottom + 28px button half-height
+    const modalCenterY = (windowHeight - 72 + SPACING.xl) / 2;
+    const deltaY = buttonCenterY - modalCenterY;
+
+    const translateY = animValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [deltaY, 0],
+    });
+
+    const scale = animValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0.08, 1],
+    });
+
+    const opacity = animValue.interpolate({
+      inputRange: [0, 0.15, 1],
+      outputRange: [0, 1, 1],
+    });
+
+    const backdropOpacity = animValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, theme === 'dark' ? 0.6 : 0.35],
+    });
+
+    return (
+      <View style={styles.bottomOriginOverlay} pointerEvents="box-none">
+        {/* Animated backdrop with tap outside to dismiss */}
+        <Animated.View
+          style={[
+            styles.backdrop,
+            {
+              opacity: backdropOpacity,
+              backgroundColor: '#000000',
+            },
+          ]}
+        >
+          <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+        </Animated.View>
+
+        {/* Animated modal card popping out of / into the bottom button */}
+        <Animated.View
+          style={[
+            styles.bottomOriginModalCard,
+            {
+              maxWidth: Math.min(420, windowWidth - 24),
+              height: isCollapsed ? 'auto' : Math.min(640, Math.round(windowHeight * 0.74)),
+              opacity,
+              transform: [{ translateY }, { scale }],
+            },
+          ]}
+          pointerEvents="auto"
+        >
+          <GlassView style={styles.bottomOriginGlass} borderRadius={RADII.xl}>
+            <View style={styles.header}>
+              <View style={styles.titleWrapper}>
+                {icon && <View style={styles.iconContainer}>{icon}</View>}
+                <Text style={[styles.title, { color: colors.textMuted }]} numberOfLines={1}>
+                  {title}
+                </Text>
+              </View>
+
+              {headerRight && <View style={styles.headerRightContainer}>{headerRight}</View>}
+
+              <TouchableOpacity onPress={toggleCollapse} style={styles.chevronBtn} hitSlop={10}>
+                <Svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <Polyline
+                    points={isCollapsed ? '9 18 15 12 9 6' : '6 9 12 15 18 9'}
+                    stroke={colors.textSecondary}
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </Svg>
+              </TouchableOpacity>
+
+              {onClose && (
+                <TouchableOpacity onPress={onClose} style={styles.closeBtn} hitSlop={10}>
+                  <Svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <Path
+                      d="M18 6L6 18M6 6l12 12"
+                      stroke={colors.textSecondary}
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </Svg>
+                </TouchableOpacity>
+              )}
+            </View>
+
+            {!isCollapsed && (
+              <View style={styles.bottomOriginContent}>{children}</View>
+            )}
+          </GlassView>
+        </Animated.View>
+      </View>
+    );
+  }
+
   if (!visible) return null;
 
   // ── Full Screen Mode with Tap Outside to Dismiss ──────────────────────────
@@ -170,7 +314,7 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
             <View style={styles.header}>
               <View style={styles.titleWrapper}>
                 {icon && <View style={styles.iconContainer}>{icon}</View>}
-                <Text style={[styles.title, { color: colors.textPrimary }]} numberOfLines={1}>
+                <Text style={[styles.title, { color: colors.textMuted }]} numberOfLines={1}>
                   {title}
                 </Text>
               </View>
@@ -267,11 +411,22 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
           >
             <View style={styles.titleWrapper}>
               {icon && <View style={styles.iconContainer}>{icon}</View>}
-              <Text style={[styles.title, { color: colors.textPrimary }]} numberOfLines={1}>
+              <Text style={[styles.title, { color: colors.textMuted }]} numberOfLines={1}>
                 {title}
               </Text>
             </View>
             {headerRight && <View style={styles.headerRightContainer}>{headerRight}</View>}
+            <TouchableOpacity onPress={toggleCollapse} style={styles.chevronBtn} hitSlop={10}>
+              <Svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <Polyline
+                  points={isCollapsed ? '9 18 15 12 9 6' : '6 9 12 15 18 9'}
+                  stroke={colors.textSecondary}
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </Svg>
+            </TouchableOpacity>
             {onClose && (
               <TouchableOpacity onPress={onClose} style={styles.closeBtn} hitSlop={10}>
                 <Svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -285,20 +440,9 @@ export const FloatingModal: React.FC<FloatingModalProps> = ({
                 </Svg>
               </TouchableOpacity>
             )}
-            <TouchableOpacity onPress={toggleCollapse} style={styles.chevronBtn} hitSlop={10}>
-              <Svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <Polyline
-                  points={isCollapsed ? '6 9 12 15 18 9' : '18 15 12 9 6 15'}
-                  stroke={colors.textSecondary}
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </Svg>
-            </TouchableOpacity>
           </View>
 
-          {!isCollapsed && <View style={styles.content}>{children}</View>}
+          {!isCollapsed && <View style={[styles.content, { maxHeight: maxContentHeight }]}>{children}</View>}
         </GlassView>
       </Animated.View>
     </>
@@ -340,9 +484,10 @@ const styles = StyleSheet.create({
     marginRight: SPACING.xs + 2,
   },
   title: {
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: '700',
-    letterSpacing: -0.2,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
   },
   headerRightContainer: {
     marginRight: SPACING.xs + 2,
@@ -358,7 +503,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   content: {
-    maxHeight: 420,
+    maxHeight: 500,
   },
   dockTabContainer: {
     position: 'absolute',
@@ -387,6 +532,39 @@ const styles = StyleSheet.create({
     borderRadius: RADII.lg,
     zIndex: 40,
     opacity: 0.8,
+  },
+
+  // Bottom Origin Mode Styles
+  bottomOriginOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 150,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: SPACING.sm,
+    paddingTop: SPACING.xl,
+    paddingBottom: 72,
+  },
+  bottomOriginModalCard: {
+    width: '100%',
+    borderRadius: RADII.xl,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.4,
+    shadowRadius: 24,
+    elevation: 12,
+  },
+  bottomOriginGlass: {
+    flex: 1,
+    paddingBottom: SPACING.xs,
+  },
+  bottomOriginContent: {
+    flex: 1,
+    overflow: 'hidden',
   },
 
   // Full Screen Mode Styles
