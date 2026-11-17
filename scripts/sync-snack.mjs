@@ -253,6 +253,13 @@ async function alignRecommendedDependencies(sdkVersion, dependencies, pkgPath) {
   if (packageJsonUpdated && pkg) {
     fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n', 'utf8');
     console.log('📝 Updated apps/kitchensink/package.json to persist recommended dependency versions.');
+    try {
+      console.log('🔒 Synchronizing pnpm-lock.yaml to prevent frozen-lockfile CI failures...');
+      execSync('pnpm install --no-frozen-lockfile', { cwd: rootDir, stdio: 'pipe' });
+      console.log('✅ pnpm-lock.yaml updated cleanly.');
+    } catch {
+      // ignore install error in non-network environments
+    }
   }
 
   console.log('✅ Dependencies verified and aligned with Expo SDK recommendations.');
