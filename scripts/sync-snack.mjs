@@ -69,7 +69,50 @@ function getFiles(dir, base = '') {
   return results;
 }
 
-// 2. Main sync execution
+// 2. Resolve Expo authentication credentials
+function getExpoAuth() {
+  // Explicit EXPO_SESSION_SECRET in env/.env takes highest precedence
+  if (process.env.EXPO_SESSION_SECRET) {
+    return { sessionSecret: process.env.EXPO_SESSION_SECRET };
+  }
+
+  // Local Expo CLI login session stored in ~/.expo/state.json
+  const homeDir = process.env.HOME || process.env.USERPROFILE;
+  if (homeDir) {
+    const expoStatePath = path.join(homeDir, '.expo', 'state.json');
+    if (fs.existsSync(expoStatePath)) {
+      try {
+        const state = JSON.parse(fs.readFileSync(expoStatePath, 'utf8'));
+        if (state.auth?.sessionSecret) {
+          return {
+            sessionSecret: state.auth.sessionSecret,
+            username: state.auth.username,
+          };
+        }
+      } catch {
+        // Ignore parse error and fall through
+      }
+    }
+  }
+
+  // Personal Access Token from EXPO_TOKEN
+  const token = process.env.EXPO_TOKEN;
+  if (token) {
+    if (token.startsWith('{') && token.includes('sessionSecret')) {
+      try {
+        const parsed = JSON.parse(token);
+        return { sessionSecret: parsed.sessionSecret || token };
+      } catch {
+        return { sessionSecret: token };
+      }
+    }
+    return { accessToken: token };
+  }
+
+  return null;
+}
+
+// 3. Main sync execution
 async function syncSnack() {
   console.log('📦 Reading kitchensink files...');
   const files = getFiles(kitchensinkDir);
@@ -115,7 +158,7 @@ async function syncSnack() {
 
   console.log(`📁 Uploading ${Object.keys(files).length} files to Expo Snack...`);
 
-  const token = process.env.EXPO_TOKEN || process.env.EXPO_SESSION_SECRET;
+  const auth = getExpoAuth();
 
   const snackOptions = {
     name: 'Ruler Date Picker - Kitchensink',
@@ -125,27 +168,38 @@ async function syncSnack() {
     dependencies,
   };
 
-  if (token) {
-    console.log('🔑 Authenticating with EXPO_TOKEN...');
-    snackOptions.user = { sessionSecret: token };
+  if (auth) {
+    if (auth.sessionSecret) {
+      console.log(`🔑 Authenticating with Expo account session${auth.username ? ` (@${auth.username})` : ''}...`);
+      snackOptions.user = { sessionSecret: auth.sessionSecret };
+    } else if (auth.accessToken) {
+      console.log('🔑 Authenticating with EXPO_TOKEN...');
+      snackOptions.user = { accessToken: auth.accessToken };
+    }
   } else {
-    console.log('ℹ️  No EXPO_TOKEN found in environment (will save as public snapshot).');
+    console.log('ℹ️  No Expo account session or token found (will save as public snapshot).');
   }
 
   const snack = new Snack(snackOptions);
   const result = await snack.saveAsync();
 
+  const isAccountSnack = result.id?.startsWith('@');
+  const snackUrl = isAccountSnack
+    ? `https://snack.expo.dev/${result.id}`
+    : `https://snack.expo.dev/${result.id}`;
+
   console.log('\n========================================');
   console.log('✅ Expo Snack synced successfully!');
-  console.log(`🔗 URL: ${result.url || `https://snack.expo.dev/${result.id}`}`);
+  console.log(`🔗 URL: ${snackUrl}`);
   console.log(`🆔 ID:  ${result.id}`);
+  if (result.accountSnackId) {
+    console.log(`📦 Account Snack ID: ${result.accountSnackId}`);
+  }
   console.log('========================================\n');
 
-  if (!token) {
-    console.log('💡 Tip: If you want to sync directly into @md-rehman/ruler-date-picker---kitchensink:');
-    console.log('   1. Open the URL above');
-    console.log('   2. Click "Save" while logged into your Expo account (@md-rehman)');
-    console.log('   Or set EXPO_TOKEN=your_token in a .env file.\n');
+  if (!auth?.sessionSecret) {
+    console.log('💡 Tip: To sync directly into @md-rehman/ruler-date-picker---kitchensink:');
+    console.log('   Run `npx expo login` on this machine, or set EXPO_SESSION_SECRET in .env.\n');
   }
 }
 
