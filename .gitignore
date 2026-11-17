@@ -10,6 +10,7 @@ storybook-static/
 
 # Documentation / Internal planning docs
 /docs/
+/archive/
 
 # Turborepo
 .turbo/
